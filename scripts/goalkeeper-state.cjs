@@ -462,6 +462,9 @@ function printDo(project, intent = '') {
   } else if (/\b(map codebase|map the codebase|codebase map|repo map|repository map|map repo|analyze codebase|understand repo|scan repo)\b/.test(lower)) {
     command = '$goalkeeper-map-codebase';
     reason = 'intent asks to create durable repository context';
+  } else if (/\b(ship|shipping|release|publish|deploy|pr|pull request|merge|ready to go live)\b/.test(lower)) {
+    command = '$goalkeeper-ship';
+    reason = 'intent asks to prepare external shipping';
   } else if (/\b(quick|small|tiny|typo|one[- ]?line|minor|hotfix)\b/.test(lower)) {
     command = '$goalkeeper-quick';
     reason = 'intent asks for a small self-contained task';
@@ -626,7 +629,7 @@ function validate(project) {
       failCount += 1;
     }
   }
-  for (const dir of ['archive', 'codebase', 'gaps', 'phases', 'quick', 'templates']) {
+  for (const dir of ['archive', 'codebase', 'gaps', 'phases', 'quick', 'ship', 'templates']) {
     if (fs.existsSync(path.join(project.gkDir, dir))) console.log(`OK ${dir}/`);
     else {
       console.log(`FAIL missing ${dir}/`);

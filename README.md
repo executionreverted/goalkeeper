@@ -94,6 +94,7 @@ $goalkeeper-new-project
 $goalkeeper-do
 $goalkeeper-quick
 $goalkeeper-map-codebase
+$goalkeeper-ship
 $goalkeeper-intake
 $goalkeeper-config
 $goalkeeper-research
@@ -117,6 +118,7 @@ npx @goalkpr/goalkeeper init .
 npx @goalkpr/goalkeeper do . --text "what should we do next?"
 npx @goalkpr/goalkeeper quick . --text "fix typo in README"
 npx @goalkpr/goalkeeper map-codebase .
+npx @goalkpr/goalkeeper ship .
 npx @goalkpr/goalkeeper config .
 npx @goalkpr/goalkeeper validate .
 npx @goalkpr/goalkeeper doctor
@@ -124,7 +126,7 @@ npx @goalkpr/goalkeeper doctor
 
 Most users only need `install` and `init`, then continue in chat with `$goalkeeper-*` skills.
 
-The CLI also includes shell helpers like `do`, `quick`, `map-codebase`, `status`, `config`, `next`, `loop`, `pause`, and `analyze-phase`. They are for skills, debugging, and maintainers. They are not the main user workflow.
+The CLI also includes shell helpers like `do`, `quick`, `map-codebase`, `ship`, `status`, `config`, `next`, `loop`, `pause`, and `analyze-phase`. They are for skills, debugging, and maintainers. They are not the main user workflow.
 
 Every Goalkeeper skill should end with one clear next command, for example `Next: $goalkeeper-plan`. If a command is called too early, the agent should say why and recommend the valid command instead of doing filler work.
 
@@ -180,6 +182,7 @@ Goalkeeper creates small Markdown files so state is human-readable and git-frien
   resume-snapshot.md
   codebase/
   quick/
+  ship/
   phases/
     PHASE-0001-short-title/
       phase.md
@@ -206,6 +209,7 @@ Important files:
 - `progress-log.md` and `verification-log.md`: compact indexes that point to scoped files.
 - `codebase/`: compact repository memory for structure, stack, testing, conventions, integrations, and risks.
 - `quick/`: small ad-hoc tasks that should not become full phases.
+- `ship/`: readiness packets and draft PR/release notes before external action.
 - `gaps/`: missing work found after phase analysis.
 - `archive/`: verified phase completion reports.
 
@@ -277,6 +281,7 @@ goalkeeper-new-project
 goalkeeper-do
 goalkeeper-quick
 goalkeeper-map-codebase
+goalkeeper-ship
 goalkeeper-intake
 goalkeeper-config
 goalkeeper-plan

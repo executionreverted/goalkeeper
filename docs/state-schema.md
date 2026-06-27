@@ -21,6 +21,7 @@ Goalkeeper uses Markdown artifacts because they are human-readable, diffable, an
 - `.goalkeeper/resume-snapshot.md`: compact state for context recovery.
 - `.goalkeeper/codebase/`: compact repository map used to avoid rediscovering structure every loop.
 - `.goalkeeper/quick/`: small tracked ad-hoc tasks outside the phase plan.
+- `.goalkeeper/ship/`: ship readiness packets, PR/release drafts, and approval evidence.
 - `.goalkeeper/phases/`: detailed phase/wave/step working artifacts.
 - `.goalkeeper/archive/`: completed phase reports with commit evidence.
 - `.goalkeeper/gaps/`: open or invalidated phase gap reports.
@@ -72,6 +73,17 @@ Codebase memory lives under `.goalkeeper/codebase/`:
 ```
 
 The generated map is intentionally compact and evidence-first. Refresh it after major folder, framework, test, or integration changes.
+
+## Ship Packet Shape
+
+Ship packets live under `.goalkeeper/ship/`:
+
+```text
+.goalkeeper/ship/
+  20260627-120000-ship-readiness.md
+```
+
+Packets record blockers, open work, gaps, archive evidence, verification count, git state, recent commits, draft PR body, and the approval gate. They do not authorize external actions by themselves.
 
 ## Work Statuses
 

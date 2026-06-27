@@ -60,6 +60,16 @@ expect_contains "$TMP_DIR/.goalkeeper/codebase/structure.md" "# Codebase Structu
 expect_contains "$TMP_DIR/.goalkeeper/codebase/stack.md" "# Codebase Stack"
 expect_contains "$TMP_DIR/.goalkeeper/codebase/testing.md" "# Codebase Testing"
 "$ROOT_DIR/scripts/goalkeeper-validate.sh" "$TMP_DIR" >"$TMP_DIR/validate-codebase.out"
+node "$ROOT_DIR/bin/goalkeeper.cjs" do "$TMP_DIR" --text "ship this project" >"$TMP_DIR/do-ship-new.out"
+expect_contains "$TMP_DIR/do-ship-new.out" 'recommended_command: $goalkeeper-ship'
+node "$ROOT_DIR/bin/goalkeeper.cjs" ship "$TMP_DIR" >"$TMP_DIR/ship.out"
+expect_contains "$TMP_DIR/ship.out" "Goalkeeper ship"
+expect_contains "$TMP_DIR/ship.out" "status: blocked"
+expect_contains "$TMP_DIR/ship.out" ".goalkeeper/ship/"
+ship_file="$(awk -F': ' '/^ship:/ { print $2 }' "$TMP_DIR/ship.out")"
+test -f "$TMP_DIR/$ship_file"
+expect_contains "$TMP_DIR/$ship_file" "# Ship Readiness"
+"$ROOT_DIR/scripts/goalkeeper-validate.sh" "$TMP_DIR" >"$TMP_DIR/validate-ship.out"
 node "$ROOT_DIR/bin/goalkeeper.cjs" do "$TMP_DIR" --text "quick fix typo in README" >"$TMP_DIR/do-quick-new.out"
 expect_contains "$TMP_DIR/do-quick-new.out" 'recommended_command: $goalkeeper-quick'
 node "$ROOT_DIR/bin/goalkeeper.cjs" quick "$TMP_DIR" --text "fix typo in README" >"$TMP_DIR/quick-run.out"

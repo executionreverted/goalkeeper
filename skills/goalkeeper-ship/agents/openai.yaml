@@ -1,0 +1,4 @@
+name: goalkeeper-ship
+description: Prepare Goalkeeper ship readiness packets and external-action drafts.
+instructions:
+  default_prompt: "Use $goalkeeper-ship to prepare shipping evidence and stop for approval before external action."

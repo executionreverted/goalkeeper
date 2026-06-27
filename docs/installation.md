@@ -53,6 +53,7 @@ bash scripts/goalkeeper-init.sh . --force
   resume-snapshot.md
   codebase/
   quick/
+  ship/
   phases/
   archive/
   gaps/
@@ -68,6 +69,7 @@ bash scripts/goalkeeper-new-project.sh /path/to/project --idea "build a p2p mobi
 node bin/goalkeeper.cjs do /path/to/project --text "what next?"
 node bin/goalkeeper.cjs quick /path/to/project --text "fix typo in README"
 node bin/goalkeeper.cjs map-codebase /path/to/project
+node bin/goalkeeper.cjs ship /path/to/project
 bash scripts/goalkeeper-status.sh /path/to/project
 node scripts/goalkeeper-state.cjs config /path/to/project
 bash scripts/goalkeeper-next.sh /path/to/project

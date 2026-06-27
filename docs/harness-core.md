@@ -8,6 +8,7 @@ Goalkeeper v0.1 harness is introspective, not autonomous runtime.
 - `goalkeeper do`: route freeform user intent to a valid next skill.
 - `goalkeeper quick`: create/list/status/resume small tracked quick tasks.
 - `goalkeeper map-codebase`: write compact durable repo context under `.goalkeeper/codebase/`.
+- `goalkeeper ship`: write ship readiness packets and draft external-action notes.
 - `goalkeeper config`: print project `config.json` through the state parser.
 - `scripts/goalkeeper-next.sh`: find next actionable phase/wave/step without executing.
 - `scripts/goalkeeper-loop.sh`: emit the next bounded goal-loop cycle card.
@@ -28,6 +29,7 @@ status -> inspect
 do -> route intent
 quick -> small tracked task
 map-codebase -> durable repo memory
+ship -> readiness packet and approval gate
 config -> inspect machine-readable workflow settings
 next -> select
 new-project -> raw idea intake packet

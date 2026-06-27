@@ -37,6 +37,7 @@ GK_ARCHIVE_DIR="$GK_DIR/archive"
 GK_GAPS_DIR="$GK_DIR/gaps"
 GK_QUICK_DIR="$GK_DIR/quick"
 GK_CODEBASE_DIR="$GK_DIR/codebase"
+GK_SHIP_DIR="$GK_DIR/ship"
 
 if [[ ! -d "$TEMPLATE_DIR" ]]; then
   echo "error: templates dir missing: $TEMPLATE_DIR" >&2
@@ -72,6 +73,7 @@ run mkdir -p "$GK_ARCHIVE_DIR"
 run mkdir -p "$GK_GAPS_DIR"
 run mkdir -p "$GK_QUICK_DIR"
 run mkdir -p "$GK_CODEBASE_DIR"
+run mkdir -p "$GK_SHIP_DIR"
 
 for template in "$TEMPLATE_DIR"/*.md; do
   [[ -f "$template" ]] || continue

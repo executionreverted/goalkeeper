@@ -33,6 +33,7 @@ Usage:
   goalkeeper do [dir] --text TEXT    helper: route freeform intent to a skill
   goalkeeper quick [dir] [options]   helper: create/list/status/resume quick tasks
   goalkeeper map-codebase [dir]      helper: write compact .goalkeeper/codebase docs
+  goalkeeper ship [dir] [options]    helper: write ship readiness packet
   goalkeeper status [dir]            helper: show current Goalkeeper state
   goalkeeper config [dir]            helper: print project config JSON
   goalkeeper next [dir]              helper: show next action card
@@ -82,6 +83,7 @@ async function main() {
   if (command === 'do') return doCommand(rest);
   if (command === 'quick') return quickCommand(rest);
   if (command === 'map-codebase' || command === 'map') return mapCodebaseCommand(rest);
+  if (command === 'ship') return shipCommand(rest);
   if (command === 'status') return stateCommand('status', rest);
   if (command === 'config') return stateCommand('config', rest);
   if (command === 'next') return stateCommand('next', rest);
@@ -345,6 +347,36 @@ function mapCodebaseCommand(args) {
   console.log('recommended_command: $goalkeeper-next');
 }
 
+function shipCommand(args) {
+  const options = parseOptions(args);
+  const target = firstPositional(args) || '.';
+  const targetDir = path.resolve(expandHome(target));
+  const gkDir = path.join(targetDir, '.goalkeeper');
+  if (!fs.existsSync(gkDir)) fail(`.goalkeeper not found in ${targetDir}`);
+  const shipRoot = path.join(gkDir, 'ship');
+  fs.mkdirSync(shipRoot, { recursive: true });
+
+  const now = new Date();
+  const stamp = now.toISOString().replace(/[-:]/g, '').replace(/\..+$/, '').replace('T', '-');
+  const file = path.join(shipRoot, `${stamp}-ship-readiness.md`);
+  const readiness = inspectShipReadiness(targetDir, gkDir);
+  const status = readiness.blockers.length === 0 ? 'ready' : 'blocked';
+  const recommended = status === 'ready' ? '$goalkeeper-ship' : recommendedShipFollowup(readiness);
+  const body = shipReadinessBody({ now: now.toISOString(), status, recommended, readiness });
+
+  if (!options.dryRun) {
+    fs.writeFileSync(file, body);
+    appendProgress(gkDir, `- Index: wrote ship readiness packet\n- Detail: .goalkeeper/ship/${path.basename(file)}\n`);
+  }
+
+  console.log('Goalkeeper ship');
+  console.log(`status: ${status}`);
+  if (!options.dryRun) console.log(`ship: .goalkeeper/ship/${path.basename(file)}`);
+  else console.log('ship: dry-run');
+  for (const blocker of readiness.blockers) console.log(`blocker: ${blocker}`);
+  console.log(`recommended_command: ${recommended}`);
+}
+
 function quickEntries(quickRoot) {
   if (!fs.existsSync(quickRoot)) return [];
   return fs.readdirSync(quickRoot, { withFileTypes: true })
@@ -382,6 +414,126 @@ function inspectCodebase(targetDir) {
     scripts,
     git: gitSnapshot(targetDir),
   };
+}
+
+function inspectShipReadiness(targetDir, gkDir) {
+  const phasePlan = readText(path.join(gkDir, 'phase-plan.md'));
+  const verification = readText(path.join(gkDir, 'verification-log.md'));
+  const openWork = openWorkItems(phasePlan);
+  const verificationCount = (verification.match(/^## VER-/gm) || []).length;
+  const openGaps = listMarkdownFiles(path.join(gkDir, 'gaps'))
+    .filter((file) => /^Status:\s*open$/m.test(readText(file)));
+  const archives = listMarkdownFiles(path.join(gkDir, 'archive'));
+  const git = gitSnapshot(targetDir);
+  const blockers = [];
+  if (openWork.length > 0) blockers.push(`${openWork.length} open phase/wave/step item(s)`);
+  if (openGaps.length > 0) blockers.push(`${openGaps.length} open gap report(s)`);
+  if (verificationCount === 0) blockers.push('no verification records found');
+  if (git.dirty) blockers.push('working tree has uncommitted changes');
+  return {
+    openWork,
+    openGaps: openGaps.map((file) => path.relative(targetDir, file)),
+    archives: archives.map((file) => path.relative(targetDir, file)),
+    verificationCount,
+    git,
+    blockers,
+  };
+}
+
+function openWorkItems(phasePlan) {
+  const items = [];
+  let current = '';
+  for (const line of phasePlan.split(/\r?\n/)) {
+    const heading = line.match(/^(#{2,4})\s+((?:PHASE|WAVE|STEP)-[A-Z0-9-]+):\s*(.+)$/);
+    if (heading) {
+      current = `${heading[2]}: ${heading[3].trim()}`;
+      continue;
+    }
+    const status = line.match(/^Status:\s*(.*)$/);
+    if (!status || !current) continue;
+    const value = status[1].trim().toLowerCase();
+    if (!['done', 'verified', 'skipped', 'complete'].includes(value)) {
+      items.push(`${current} (${value || 'missing status'})`);
+    }
+  }
+  return items;
+}
+
+function listMarkdownFiles(dir) {
+  if (!fs.existsSync(dir)) return [];
+  return fs.readdirSync(dir, { withFileTypes: true })
+    .filter((entry) => entry.isFile() && entry.name.endsWith('.md'))
+    .map((entry) => path.join(dir, entry.name))
+    .sort();
+}
+
+function readText(file) {
+  return fs.existsSync(file) ? fs.readFileSync(file, 'utf8') : '';
+}
+
+function recommendedShipFollowup(readiness) {
+  if (readiness.openGaps.length > 0) return '$goalkeeper-close-gaps';
+  if (readiness.verificationCount === 0) return '$goalkeeper-verify';
+  return '$goalkeeper-next';
+}
+
+function shipReadinessBody({ now, status, recommended, readiness }) {
+  return `# Ship Readiness
+
+Date: ${now}
+Status: ${status}
+Recommended command: ${recommended}
+
+## Blockers
+
+${readiness.blockers.map((blocker) => `- ${blocker}`).join('\n') || '- none'}
+
+## Open Work
+
+${readiness.openWork.map((item) => `- ${item}`).join('\n') || '- none'}
+
+## Open Gaps
+
+${readiness.openGaps.map((file) => `- ${file}`).join('\n') || '- none'}
+
+## Archive Evidence
+
+${readiness.archives.map((file) => `- ${file}`).join('\n') || '- none'}
+
+## Verification Records
+
+- Count: ${readiness.verificationCount}
+
+## Working Tree
+
+\`\`\`text
+${readiness.git.dirty || (readiness.git.hasGit ? 'clean' : 'No git repo.')}
+\`\`\`
+
+## Recent Commits
+
+\`\`\`text
+${readiness.git.commits || 'No commits available.'}
+\`\`\`
+
+## Draft PR Body
+
+### Summary
+
+- Pending final verified summary.
+
+### Verification
+
+- Pending final verification evidence.
+
+### Risks
+
+- Review blockers above before external action.
+
+## Approval Gate
+
+Do not push, publish, deploy, or open a PR without explicit user approval.
+`;
 }
 
 function readManifests(targetDir) {
