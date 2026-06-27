@@ -1,0 +1,38 @@
+{
+  "name": "@canersevince/goalkeeper",
+  "version": "0.1.0",
+  "description": "Goal-loop workflow harness and skills for long-running LLM coding agents.",
+  "license": "MIT",
+  "type": "commonjs",
+  "bin": {
+    "goalkeeper": "bin/goalkeeper.cjs"
+  },
+  "files": [
+    "bin/",
+    "docs/",
+    "scripts/",
+    "skills/",
+    "templates/",
+    "README.md"
+  ],
+  "scripts": {
+    "check": "node --check bin/goalkeeper.cjs && node --check scripts/goalkeeper-state.cjs",
+    "smoke": "npm run check && node bin/goalkeeper.cjs doctor",
+    "publish:0.1": "bash scripts/publish-npm.sh"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "keywords": [
+    "llm",
+    "agent",
+    "workflow",
+    "codex",
+    "claude",
+    "skills",
+    "harness"
+  ]
+}
