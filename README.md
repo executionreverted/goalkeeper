@@ -43,6 +43,15 @@ npx @goalkpr/goalkeeper install --agent claude --scope user --force
 npx @goalkpr/goalkeeper install --agent both --scope project
 ```
 
+Update installed skills from the latest npm package:
+
+```bash
+npx @goalkpr/goalkeeper@latest update --agent codex --scope user --yes
+goalkeeper update --agent codex --scope user --global
+```
+
+`update` reinstalls `goalkeeper-*` skills with `--force`. Add `--global` when you also want the globally installed `goalkeeper` binary updated.
+
 For a persistent local command:
 
 ```bash
@@ -106,6 +115,7 @@ The LLM performs the work and updates the files. The CLI is only the installer/b
 
 ```bash
 npx @goalkpr/goalkeeper install --agent codex --scope user
+npx @goalkpr/goalkeeper@latest update --agent codex --scope user --yes
 npx @goalkpr/goalkeeper uninstall --agent codex --scope user
 npx @goalkpr/goalkeeper init .
 npx @goalkpr/goalkeeper do . --text "what should we do next?"

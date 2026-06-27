@@ -27,6 +27,7 @@ function usage() {
 Usage:
   goalkeeper                         run install wizard
   goalkeeper install [options]       install Goalkeeper skills
+  goalkeeper update [options]        update installed skills from npm latest
   goalkeeper uninstall [options]     remove Goalkeeper skills
   goalkeeper init [dir] [options]    create .goalkeeper artifacts
   goalkeeper new [dir] --idea TEXT   helper: write new-project intake packet
@@ -43,7 +44,7 @@ Usage:
   goalkeeper analyze-phase <dir> <PHASE-ID>
   goalkeeper doctor                  inspect package and install targets
 
-Install options:
+Install/update options:
   --agent codex|claude|both          target agent, default: prompt
   --scope user|project               install scope, default: user
   --target DIR                       custom skills directory
@@ -51,6 +52,8 @@ Install options:
   --config-dir DIR                   custom agent config root; uses DIR/skills
   --dry-run                          print actions only
   --yes                              use defaults without prompting
+  --global                           update global npm package too
+  --skills-only                      update skills only, skip global npm package
 
 Project options:
   --force                            overwrite generated Goalkeeper files
@@ -77,6 +80,7 @@ async function main() {
 
   const rest = args.slice(1);
   if (command === 'install') return installCommand(rest);
+  if (command === 'update' || command === 'upgrade') return updateCommand(rest);
   if (command === 'uninstall' || command === 'remove' || command === 'rm') return uninstallCommand(rest);
   if (command === 'init') return initCommand(rest);
   if (command === 'new' || command === 'new-project') return newProjectCommand(rest);
@@ -146,6 +150,40 @@ function installCommand(args) {
     force: options.force,
     dryRun: options.dryRun,
   });
+}
+
+function updateCommand(args) {
+  const options = parseOptions(args);
+  const target = resolveCustomTarget(options);
+  const agent = target ? 'custom' : options.agent || (options.yes ? 'codex' : null);
+  const scope = options.scope || 'user';
+
+  if (!agent) {
+    fail('update requires --agent codex|claude|both, --target DIR, or --yes for the Codex default');
+  }
+
+  if (options.global && options.skillsOnly) fail('use either --global or --skills-only, not both');
+
+  const installArgs = ['@goalkpr/goalkeeper@latest', 'install', '--force'];
+  if (target) installArgs.push('--target', path.resolve(expandHome(target)));
+  else installArgs.push('--agent', agent, '--scope', scope);
+  if (options.dryRun) installArgs.push('--dry-run');
+  if (options.yes) installArgs.push('--yes');
+
+  if (options.dryRun) {
+    if (options.global) console.log('dry-run: npm install -g @goalkpr/goalkeeper@latest');
+    console.log(`dry-run: npx --yes ${installArgs.join(' ')}`);
+    return;
+  }
+
+  if (options.global) {
+    console.log('update: npm install -g @goalkpr/goalkeeper@latest');
+    runCommand('npm', ['install', '-g', '@goalkpr/goalkeeper@latest']);
+    if (process.exitCode) return;
+  }
+
+  console.log('update: installing latest Goalkeeper skills from npm');
+  runCommand('npx', ['--yes', ...installArgs]);
 }
 
 function uninstallCommand(args) {
@@ -904,6 +942,12 @@ function run(command, args) {
   process.exitCode = result.status || 0;
 }
 
+function runCommand(command, args) {
+  const result = spawnSync(command, args, { stdio: 'inherit' });
+  if (result.error) fail(result.error.message);
+  process.exitCode = result.status || 0;
+}
+
 function parseOptions(args) {
   const options = {
     force: false,
@@ -917,7 +961,7 @@ function parseOptions(args) {
     const [rawKey, inlineValue] = arg.slice(2).split('=', 2);
     const key = rawKey.replace(/-([a-z])/g, (_, char) => char.toUpperCase());
 
-    if (['force', 'dryRun', 'yes', 'research', 'validate', 'full'].includes(key)) {
+    if (['force', 'dryRun', 'yes', 'research', 'validate', 'full', 'global', 'skillsOnly'].includes(key)) {
       options[key] = true;
       continue;
     }
@@ -939,7 +983,7 @@ function positionalArgs(args) {
       continue;
     }
     const key = arg.slice(2).split('=', 1)[0].replace(/-([a-z])/g, (_, char) => char.toUpperCase());
-    if (!['force', 'dryRun', 'yes', 'research', 'validate', 'full'].includes(key) && !arg.includes('=')) i += 1;
+    if (!['force', 'dryRun', 'yes', 'research', 'validate', 'full', 'global', 'skillsOnly'].includes(key) && !arg.includes('=')) i += 1;
   }
   return out;
 }

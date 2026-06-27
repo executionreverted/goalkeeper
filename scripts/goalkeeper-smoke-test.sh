@@ -82,6 +82,12 @@ expect_contains "$ROOT_DIR/skills/goalkeeper-plan/SKILL.md" ".goalkeeper/policie
 expect_not_contains "$ROOT_DIR/skills/goalkeeper-execute/SKILL.md" "docs/tool-policy.md"
 expect_not_contains "$ROOT_DIR/skills/goalkeeper-execute/SKILL.md" "docs/subagent-policy.md"
 expect_not_contains "$ROOT_DIR/skills/goalkeeper-plan/SKILL.md" "docs/parallelization.md"
+node "$ROOT_DIR/bin/goalkeeper.cjs" update --agent codex --scope user --dry-run >"$TMP_DIR/update-dry-run.out"
+expect_contains "$TMP_DIR/update-dry-run.out" "dry-run: npx --yes @goalkpr/goalkeeper@latest install --force --agent codex --scope user --dry-run"
+node "$ROOT_DIR/bin/goalkeeper.cjs" update --target "$TMP_DIR/custom-skills" --dry-run >"$TMP_DIR/update-target-dry-run.out"
+expect_contains "$TMP_DIR/update-target-dry-run.out" "dry-run: npx --yes @goalkpr/goalkeeper@latest install --force --target $TMP_DIR/custom-skills --dry-run"
+"$ROOT_DIR/scripts/goalkeeper-update.sh" --agent claude --scope user --dry-run >"$TMP_DIR/update-script-dry-run.out"
+expect_contains "$TMP_DIR/update-script-dry-run.out" "npx --yes @goalkpr/goalkeeper@latest install --force --agent claude --scope user --dry-run"
 
 git -C "$TMP_DIR" init >/dev/null 2>&1
 "$ROOT_DIR/scripts/goalkeeper-init.sh" "$TMP_DIR" >"$TMP_DIR/init.out"
