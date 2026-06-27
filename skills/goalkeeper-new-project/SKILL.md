@@ -56,12 +56,35 @@ First user: <specific user/persona>
 Job: <observable job they need done>
 ```
 
+## Discovery Question Format
+
+When asking any discovery question, use only this compact block:
+
+```text
+Question: <direct next question>
+Why: <one short sentence explaining why this matters>
+Recommended answer: <concrete answer the user can accept or edit>
+Options:
+1. <best likely option> - <short tradeoff>
+2. <second likely option> - <short tradeoff>
+3. <weakest reasonable option> - <short tradeoff>
+Next: answer with an option number or your own wording
+```
+
+Rules:
+
+- Use options only when the question can be meaningfully multiple-choice.
+- Order options from most sensible for MVP/focus to least sensible.
+- Do not add greetings, recap, long rationale, or extra sections around the question block.
+- If no useful multiple-choice set exists, omit `Options:` and keep the other lines.
+
 ## Output Rules
 
 - Apply `.goalkeeper/compression-profile.md` main-agent reply budget after `.goalkeeper/` exists; before that, use the same budget from the package template.
 - Do not ask the user to run `goalkeeper init`, `goalkeeper new`, `npx`, or shell commands; run them yourself through tools.
 - Do not expose CLI commands as the main next action. The user-facing workflow is skill-first.
 - Ask one question per turn.
+- Use the Discovery Question Format for every discovery question.
 - Make the recommended answer concrete, not generic.
 - Challenge vague words such as easy, fast, smart, automatic, minimal, robust, and production-ready.
 - Do not plan implementation yet.

@@ -312,10 +312,17 @@ The agent reads:
 .goalkeeper/resume-snapshot.md
 ```
 
-The first useful question should be narrow, for example:
+The first useful question uses a compact choice format:
 
 ```text
-Who is the first real user of this TODO app, and what exact job are they trying to finish?
+Question: Who is the first real user of this TODO app, and what exact job are they trying to finish?
+Why: This keeps the MVP tied to one real workflow.
+Recommended answer: First user: me, a solo builder. Job: capture tasks quickly, choose what to do today, and keep the list after refresh.
+Options:
+1. Me, a solo builder - fastest path to a focused MVP.
+2. A small household/team - useful if sharing is core.
+3. General productivity users - broadest and weakest for a first MVP.
+Next: answer with an option number or your own wording
 ```
 
 You might answer:

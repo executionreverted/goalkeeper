@@ -272,6 +272,7 @@ Constraints:
 User preferences:
 - Keep questions concise.
 - Ask one grill-style question at a time.
+- Use compact discovery format: Question, Why, Recommended answer, ordered Options when useful, Next.
 
 Autonomy level:
 $AUTONOMY
@@ -429,6 +430,7 @@ Decisions:
 - Use grill-style discovery before intake.
 Notes:
 - Ask one concise question before planning implementation.
+- Use compact discovery format: Question, Why, Recommended answer, ordered Options when useful, Next.
 EOF
 fi
 
@@ -494,7 +496,15 @@ Clarify raw project idea into a Goalkeeper goal contract.
 
 ## Next Action
 
-Ask: Who is the first real user, and what exact job are they trying to finish?
+Ask using compact discovery format:
+Question: Who is the first real user, and what exact job are they trying to finish?
+Why: This anchors the project to a real workflow before planning.
+Recommended answer: First user: me, a solo builder. Job: capture tasks quickly, choose what to do today, and avoid losing follow-ups.
+Options:
+1. Me, a solo builder - fastest path to a focused MVP.
+2. A small team - useful if sharing/collaboration is core.
+3. General public users - broadest and weakest for a first MVP.
+Next: answer with an option number or your own wording
 
 ## Next Phase Target
 
@@ -516,4 +526,11 @@ cat >> "$GK_DIR/progress-log.md" <<EOF
 EOF
 
 echo "ok: new project intake packet written to $GK_DIR"
-echo "next question: Who is the first real user, and what exact job are they trying to finish?"
+echo "Question: Who is the first real user, and what exact job are they trying to finish?"
+echo "Why: This anchors the project to a real workflow before planning."
+echo "Recommended answer: First user: me, a solo builder. Job: capture tasks quickly, choose what to do today, and avoid losing follow-ups."
+echo "Options:"
+echo "1. Me, a solo builder - fastest path to a focused MVP."
+echo "2. A small team - useful if sharing/collaboration is core."
+echo "3. General public users - broadest and weakest for a first MVP."
+echo "Next: answer with an option number or your own wording"

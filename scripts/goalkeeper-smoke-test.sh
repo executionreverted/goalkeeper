@@ -40,6 +40,10 @@ expect_fails() {
 expect_contains "$ROOT_DIR/skills/goalkeeper-new-project/SKILL.md" "npx --yes @goalkpr/goalkeeper init"
 expect_contains "$ROOT_DIR/skills/goalkeeper-new-project/SKILL.md" "Do not hand-create partial"
 expect_contains "$ROOT_DIR/skills/goalkeeper-new-project/SKILL.md" "run them yourself through tools"
+expect_contains "$ROOT_DIR/skills/goalkeeper-new-project/SKILL.md" "## Discovery Question Format"
+expect_contains "$ROOT_DIR/skills/goalkeeper-new-project/SKILL.md" "Question: <direct next question>"
+expect_contains "$ROOT_DIR/skills/goalkeeper-new-project/SKILL.md" "Options:"
+expect_contains "$ROOT_DIR/skills/goalkeeper-new-project/SKILL.md" "Order options from most sensible for MVP/focus to least sensible"
 expect_not_contains "$ROOT_DIR/skills/goalkeeper-new-project/SKILL.md" "tell the user the exact init command"
 expect_not_contains "$ROOT_DIR/skills/goalkeeper-new-project/SKILL.md" "bash scripts/goalkeeper-init.sh"
 expect_contains "$ROOT_DIR/skills/goalkeeper-loop/SKILL.md" "npx --yes @goalkpr/goalkeeper loop"
@@ -77,6 +81,12 @@ expect_contains "$TMP_DIR/do-config.out" 'recommended_command: $goalkeeper-confi
 expect_contains "$TMP_DIR/next-init.out" 'recommended_command: $goalkeeper-new-project'
 
 "$ROOT_DIR/scripts/goalkeeper-new-project.sh" "$TMP_DIR" --idea "build TODO" --context7 yes --autonomy A2 >"$TMP_DIR/new.out"
+expect_contains "$TMP_DIR/new.out" "Question: Who is the first real user"
+expect_contains "$TMP_DIR/new.out" "Why: This anchors the project"
+expect_contains "$TMP_DIR/new.out" "Recommended answer:"
+expect_contains "$TMP_DIR/new.out" "Options:"
+expect_contains "$TMP_DIR/new.out" "Next: answer with an option number"
+expect_not_contains "$TMP_DIR/new.out" "next question:"
 "$ROOT_DIR/scripts/goalkeeper-validate.sh" "$TMP_DIR" >"$TMP_DIR/validate-new.out"
 node "$ROOT_DIR/bin/goalkeeper.cjs" config "$TMP_DIR" >"$TMP_DIR/config-new.out"
 expect_contains "$TMP_DIR/config-new.out" '"autonomy_level": "A2"'
