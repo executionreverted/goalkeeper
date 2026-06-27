@@ -92,9 +92,7 @@ Typical flow:
 ```text
 $goalkeeper-new-project
 $goalkeeper-do
-$goalkeeper-quick
 $goalkeeper-map-codebase
-$goalkeeper-ship
 $goalkeeper-intake
 $goalkeeper-config
 $goalkeeper-research
@@ -103,6 +101,8 @@ $goalkeeper-execute
 $goalkeeper-verify
 $goalkeeper-analyze-phase
 $goalkeeper-close-gaps
+$goalkeeper-ship
+$goalkeeper-quick
 $goalkeeper-pause
 $goalkeeper-resume
 ```
@@ -400,7 +400,29 @@ Decision:
 Use plain React state plus localStorage.
 ```
 
-### 6. Create Phases, Waves, And Steps
+### 6. Map The Existing Codebase
+
+If the project already has code, or after the scaffold exists, ask:
+
+```text
+$goalkeeper-map-codebase
+```
+
+The agent creates compact repository memory under:
+
+```text
+.goalkeeper/codebase/structure.md
+.goalkeeper/codebase/architecture.md
+.goalkeeper/codebase/stack.md
+.goalkeeper/codebase/testing.md
+.goalkeeper/codebase/conventions.md
+.goalkeeper/codebase/integrations.md
+.goalkeeper/codebase/risks.md
+```
+
+This keeps later loops from rediscovering the same folder structure, scripts, stack, and risks.
+
+### 7. Create Phases, Waves, And Steps
 
 Tell the agent:
 
@@ -438,7 +460,7 @@ The detailed files live under `phases/`:
 .goalkeeper/phases/PHASE-0002-todo-core/waves/WAVE-0002-A-task-behavior/steps/STEP-0002-A-01-create-task-flow.md
 ```
 
-### 7. Execute One Bounded Loop
+### 8. Execute One Bounded Loop
 
 Ask:
 
@@ -466,7 +488,7 @@ It should do only the selected step, then update:
 
 Root `progress-log.md` stays short; detailed changed files, commands, and notes go into the active step file.
 
-### 8. Verify Before Marking Done
+### 9. Verify Before Marking Done
 
 After implementation:
 
@@ -492,7 +514,7 @@ The evidence goes into the scoped step file first, then the compact verification
 
 Goalkeeper should not mark a step or phase done without evidence.
 
-### 9. Analyze The Phase
+### 10. Analyze The Phase
 
 When a phase appears complete:
 
@@ -522,7 +544,23 @@ $goalkeeper-close-gaps
 Close gaps for PHASE-0002.
 ```
 
-### 10. Pause And Resume
+### 11. Prepare To Ship
+
+After phases are verified and gaps are closed:
+
+```text
+$goalkeeper-ship
+```
+
+Goalkeeper writes a readiness packet under:
+
+```text
+.goalkeeper/ship/
+```
+
+The packet summarizes open work, gaps, archive evidence, verification records, git state, recent commits, and a draft PR/release body. It must stop for approval before push, publish, deploy, PR creation, merge, or package release.
+
+### 12. Pause And Resume
 
 At the end of a session:
 
