@@ -1,0 +1,4 @@
+interface:
+  display_name: "Goalkeeper Close Gaps"
+  short_description: "Plan and close phase gaps"
+  default_prompt: "Use $goalkeeper-close-gaps with a phase number or gap file path to close missing work."

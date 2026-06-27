@@ -1,0 +1,4 @@
+interface:
+  display_name: "Goalkeeper Execute"
+  short_description: "Run the next tracked task safely"
+  default_prompt: "Use $goalkeeper-execute to continue the next ready step or wave from the active Goalkeeper phase plan."

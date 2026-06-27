@@ -1,0 +1,4 @@
+interface:
+  display_name: "Goalkeeper Research"
+  short_description: "Gather evidence for goal decisions"
+  default_prompt: "Use $goalkeeper-research to research options before we decide the next plan."

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Goalkeeper Plan"
+  short_description: "Split goals into tracked phases"
+  default_prompt: "Use $goalkeeper-plan to break this goal into executable tracked tasks."

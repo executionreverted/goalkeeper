@@ -1,0 +1,4 @@
+interface:
+  display_name: "Goalkeeper Resume"
+  short_description: "Recover context from artifacts"
+  default_prompt: "Use $goalkeeper-resume to recover the latest context and continue the goal loop."

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Goalkeeper Next"
+  short_description: "Find next ready wave or step"
+  default_prompt: "Use $goalkeeper-next to find the next Goalkeeper wave or step."

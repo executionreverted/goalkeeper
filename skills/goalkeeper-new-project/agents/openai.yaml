@@ -1,0 +1,4 @@
+interface:
+  display_name: "Goalkeeper New Project"
+  short_description: "Start goals from raw project ideas"
+  default_prompt: "Use $goalkeeper-new-project to turn my raw project idea into a discovery session."

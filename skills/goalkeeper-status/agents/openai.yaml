@@ -1,0 +1,4 @@
+interface:
+  display_name: "Goalkeeper Status"
+  short_description: "Summarize current goal state"
+  default_prompt: "Use $goalkeeper-status to summarize current Goalkeeper state."

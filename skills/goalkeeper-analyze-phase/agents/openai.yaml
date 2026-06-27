@@ -1,0 +1,4 @@
+interface:
+  display_name: "Goalkeeper Analyze Phase"
+  short_description: "Find phase gaps before archive"
+  default_prompt: "Use $goalkeeper-analyze-phase to check a completed phase for gaps."

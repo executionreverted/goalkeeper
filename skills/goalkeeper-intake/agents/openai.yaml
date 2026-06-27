@@ -1,0 +1,4 @@
+interface:
+  display_name: "Goalkeeper Intake"
+  short_description: "Clarify durable goal contracts"
+  default_prompt: "Use $goalkeeper-intake to turn my rough idea into a clear goal contract."

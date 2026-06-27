@@ -1,0 +1,4 @@
+interface:
+  display_name: "Goalkeeper Pause"
+  short_description: "Sync state before stopping work"
+  default_prompt: "Use $goalkeeper-pause to sync Goalkeeper artifacts before stopping."
