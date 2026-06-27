@@ -8,6 +8,6 @@ Date:
 Status: accepted
 Context: Goalkeeper initialized in this project.
 Options:
-Decision:
-Rationale:
-Consequences:
+Decision: Use Goalkeeper artifacts as the workflow state source.
+Rationale: Persistent Markdown state lets later agent sessions resume without relying on chat history.
+Consequences: Keep root decisions cross-phase; put phase-local decisions in scoped phase files.

@@ -54,6 +54,59 @@ if find "$TMP_DIR/.goalkeeper/archive" -maxdepth 1 -type f | grep -q .; then
 fi
 
 "$ROOT_DIR/scripts/goalkeeper-new-project.sh" "$TMP_DIR" --idea "build TODO" --context7 yes --autonomy A2 --force >"$TMP_DIR/new-force-2.out"
+cat >>"$TMP_DIR/.goalkeeper/context-ledger.md" <<'EOF'
+
+### RSR-0001: Todo Storage
+
+Status: accepted
+Question: Which storage should the TODO app use?
+Normalized question: todo storage choice
+Scope: project
+Sources:
+- local reasoning
+Decision links:
+- DEC-0001
+Last checked: 2026-06-27
+Freshness: stable
+Result: Use localStorage for MVP persistence.
+EOF
+expect_fails "$TMP_DIR/validate-missing-decision.out" "$ROOT_DIR/scripts/goalkeeper-validate.sh" "$TMP_DIR"
+expect_contains "$TMP_DIR/validate-missing-decision.out" "links missing decision DEC-0001"
+cat >>"$TMP_DIR/.goalkeeper/decision-log.md" <<'EOF'
+
+## DEC-0001: Use Local Storage
+
+Date: 2026-06-27
+Status: accepted
+Context: TODO MVP persistence
+Options:
+- localStorage
+- backend database
+Decision: Use localStorage for the MVP.
+Rationale: It satisfies offline local TODO persistence with no backend.
+Consequences: Data remains browser-local.
+EOF
+"$ROOT_DIR/scripts/goalkeeper-validate.sh" "$TMP_DIR" >"$TMP_DIR/validate-research-fixed.out"
+cat >>"$TMP_DIR/.goalkeeper/context-ledger.md" <<'EOF'
+
+### RSR-0002: Todo Persistence
+
+Status: proposed
+Question: What should persist TODO items?
+Normalized question: todo storage choice
+Scope: project
+Sources:
+- local reasoning
+Decision links:
+- DEC-0001
+Last checked: 2026-06-27
+Freshness: stable
+Result: Duplicate active research should be rejected.
+EOF
+expect_fails "$TMP_DIR/validate-duplicate-research.out" "$ROOT_DIR/scripts/goalkeeper-validate.sh" "$TMP_DIR"
+expect_contains "$TMP_DIR/validate-duplicate-research.out" "duplicate active research question"
+perl -0pi -e 's/(### RSR-0002:[\s\S]*?Status: )proposed/$1superseded/' "$TMP_DIR/.goalkeeper/context-ledger.md"
+"$ROOT_DIR/scripts/goalkeeper-validate.sh" "$TMP_DIR" >"$TMP_DIR/validate-superseded-research.out"
 perl -0pi -e 's/\$goalkeeper-new-project/\$goalkeeper-plan/' "$TMP_DIR/.goalkeeper/next-target.md"
 expect_fails "$TMP_DIR/validate-bad-next-command.out" "$ROOT_DIR/scripts/goalkeeper-validate.sh" "$TMP_DIR"
 expect_contains "$TMP_DIR/validate-bad-next-command.out" "recommended command mismatch"

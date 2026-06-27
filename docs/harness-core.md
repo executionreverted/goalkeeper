@@ -134,6 +134,9 @@ If docs conflict with code, inspect git status, diff, recent commits, and source
 - any Phase/Wave/Step in `phase-plan.md` lacks its expected scoped artifact under `.goalkeeper/phases/`
 - a `done` or `verified` step lacks both phase-plan evidence and scoped step evidence
 - `next-target.md` recommended command disagrees with parser state
+- active research records duplicate the same normalized question
+- research records link to missing decisions
+- decision or research record statuses are outside `proposed | accepted | superseded`
 
 Warnings are allowed for soft metadata gaps only. Completion/evidence gaps are failures.
 

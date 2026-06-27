@@ -143,6 +143,8 @@ function loadProject(targetArg) {
     phases: parsePhasePlan(phasePlan),
     nextTarget: parseNextTarget(nextTarget),
     goalContract: read(path.join(gkDir, 'goal-contract.md')),
+    contextLedger: read(path.join(gkDir, 'context-ledger.md')),
+    decisionLog: read(path.join(gkDir, 'decision-log.md')),
     resume: read(path.join(gkDir, 'resume-snapshot.md')),
     verification: read(path.join(gkDir, 'verification-log.md')),
     progress: read(path.join(gkDir, 'progress-log.md')),
@@ -230,6 +232,68 @@ function stepHasScopedEvidence(project, phase, wave, step) {
   const markdown = read(absPath);
   const status = (markdown.match(/^Status:\s*(.*)$/m) || [])[1] || '';
   return isClosed(status) && hasRealEvidenceText(markdown);
+}
+
+function parseStructuredRecords(markdown, headingRegex) {
+  const records = [];
+  let record = null;
+  let currentKey = '';
+  let inFence = false;
+
+  for (const rawLine of markdown.split(/\r?\n/)) {
+    const line = rawLine.trimEnd();
+    if (line.trim().startsWith('```')) {
+      inFence = !inFence;
+      continue;
+    }
+    if (inFence) continue;
+    const heading = line.match(headingRegex);
+    if (heading) {
+      record = { id: heading[1], title: heading[2].trim(), fields: {} };
+      records.push(record);
+      currentKey = '';
+      continue;
+    }
+    if (!record) continue;
+    if (/^#{1,3}\s+/.test(line)) {
+      currentKey = '';
+      continue;
+    }
+    const kv = parseKeyValue(line);
+    if (kv) {
+      const [key, value] = kv;
+      record.fields[key] = value;
+      currentKey = key;
+      continue;
+    }
+    if (currentKey && line.trim()) {
+      const nextValue = line.trim();
+      record.fields[currentKey] = [record.fields[currentKey], nextValue].filter(Boolean).join('\n');
+    }
+  }
+
+  return records;
+}
+
+function parseDecisions(markdown) {
+  return parseStructuredRecords(markdown, /^## (DEC-\d+):\s*(.+)$/);
+}
+
+function parseResearchRecords(markdown) {
+  return parseStructuredRecords(markdown, /^### (RSR-\d+):\s*(.+)$/);
+}
+
+function normalizeResearchQuestion(value) {
+  return (value || '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, ' ')
+    .trim()
+    .replace(/\s+/g, ' ');
+}
+
+function linkedDecisionIds(record) {
+  const value = record.fields.decision_links || record.fields.decision_link || '';
+  return value.match(/DEC-\d+/g) || [];
 }
 
 function suggestPhase(project, requestedId) {
@@ -490,6 +554,46 @@ function validate(project) {
     console.log('FAIL no phases parsed');
     failCount += 1;
   }
+  const validRecordStatuses = new Set(['proposed', 'accepted', 'superseded']);
+  const decisions = parseDecisions(project.decisionLog);
+  const decisionIds = new Set(decisions.map((decision) => decision.id));
+  for (const decision of decisions) {
+    const status = normalizeStatus(decision.fields.status);
+    if (!validRecordStatuses.has(status)) {
+      console.log(`FAIL ${decision.id} invalid decision status: ${decision.fields.status || 'missing'}`);
+      failCount += 1;
+    }
+  }
+
+  const researchRecords = parseResearchRecords(project.contextLedger);
+  const activeResearchByQuestion = new Map();
+  for (const record of researchRecords) {
+    const status = normalizeStatus(record.fields.status);
+    if (!validRecordStatuses.has(status)) {
+      console.log(`FAIL ${record.id} invalid research status: ${record.fields.status || 'missing'}`);
+      failCount += 1;
+    }
+    const normalizedQuestion = normalizeResearchQuestion(record.fields.normalized_question || record.fields.question);
+    if (!normalizedQuestion) {
+      console.log(`FAIL ${record.id} missing normalized research question`);
+      failCount += 1;
+    } else if (status !== 'superseded') {
+      const existing = activeResearchByQuestion.get(normalizedQuestion);
+      if (existing) {
+        console.log(`FAIL duplicate active research question: ${existing} and ${record.id} -> ${normalizedQuestion}`);
+        failCount += 1;
+      } else {
+        activeResearchByQuestion.set(normalizedQuestion, record.id);
+      }
+    }
+    for (const decisionId of linkedDecisionIds(record)) {
+      if (!decisionIds.has(decisionId)) {
+        console.log(`FAIL ${record.id} links missing decision ${decisionId}`);
+        failCount += 1;
+      }
+    }
+  }
+
   for (const phase of project.phases) {
     if (!phase.status) {
       console.log(`WARN ${phase.id} missing status`);

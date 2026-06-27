@@ -119,7 +119,30 @@ Options:
 Decision:
 Rationale:
 Consequences:
+Supersedes:
 ```
+
+## Research Record Shape
+
+Research records live in `context-ledger.md` under `## Research Records`.
+
+```text
+### RSR-0001: Title
+
+Status: proposed | accepted | superseded
+Question:
+Normalized question:
+Scope:
+Sources:
+- source
+Decision links:
+- DEC-0001
+Last checked:
+Freshness:
+Result:
+```
+
+`Normalized question` is a lowercase canonical form used to prevent duplicate research. Active records (`proposed` or `accepted`) must not share the same normalized question. Decision links must point to real `DEC-*` records.
 
 ## Phase/Wave/Step Shape
 
