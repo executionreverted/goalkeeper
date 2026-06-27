@@ -28,10 +28,10 @@ Usage:
   goalkeeper                         run install wizard
   goalkeeper install [options]       install Goalkeeper skills
   goalkeeper init [dir] [options]    create .goalkeeper artifacts
-  goalkeeper new [dir] --idea TEXT   start a new project intake
-  goalkeeper status [dir]            show current Goalkeeper state
-  goalkeeper next [dir]              show next action
-  goalkeeper loop [dir]              print one bounded loop card
+  goalkeeper new [dir] --idea TEXT   helper: write new-project intake packet
+  goalkeeper status [dir]            helper: show current Goalkeeper state
+  goalkeeper next [dir]              helper: show next action card
+  goalkeeper loop [dir]              helper: print one bounded loop card
   goalkeeper pause [dir] [options]   pause and sync state
   goalkeeper validate [dir]          validate artifacts
   goalkeeper analyze-phase <dir> <PHASE-ID>

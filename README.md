@@ -14,8 +14,8 @@ Instead of trusting chat history, Goalkeeper writes the project goal, decisions,
 
 Goalkeeper ships three things:
 
-- `goalkeeper` CLI for setup and state inspection.
 - `goalkeeper-*` skills for Codex and Claude Code style agents.
+- `goalkeeper` CLI for installing skills and bootstrapping `.goalkeeper/`.
 - `.goalkeeper/` templates for project-local workflow state.
 
 The package is scoped because `goalkeeper` is already taken on npm. The installed binary is still named `goalkeeper`.
@@ -54,58 +54,67 @@ From inside your project folder:
 
 ```bash
 npx @goalkpr/goalkeeper init .
-npx @goalkpr/goalkeeper new . --idea "build a simple p2p mobile chat app"
 ```
 
 `init` creates `.goalkeeper/`.
 
-`new` records the raw idea and sets the first discovery question. The agent should then interrogate the idea before planning implementation.
+Then continue in your agent chat:
+
+```text
+$goalkeeper-new-project
+
+I want to build a simple p2p mobile chat app.
+```
+
+The skill records the raw idea and starts discovery. Goalkeeper should interrogate the idea before planning implementation.
 
 ## Use Inside Your Agent
 
-After install, ask your coding agent for the next Goalkeeper action:
+After install, invoke Goalkeeper skills directly in chat.
+
+In Codex, use `$skill-name`:
 
 ```text
-Use goalkeeper-next
+$goalkeeper-next
 ```
 
 or:
 
 ```text
-Use goalkeeper-loop and continue while allowed.
+$goalkeeper-loop
+
+Continue while allowed.
 ```
 
 Typical flow:
 
 ```text
-goalkeeper-new-project
-goalkeeper-intake
-goalkeeper-research
-goalkeeper-plan
-goalkeeper-execute
-goalkeeper-verify
-goalkeeper-analyze-phase
-goalkeeper-close-gaps
-goalkeeper-pause
-goalkeeper-resume
+$goalkeeper-new-project
+$goalkeeper-intake
+$goalkeeper-research
+$goalkeeper-plan
+$goalkeeper-execute
+$goalkeeper-verify
+$goalkeeper-analyze-phase
+$goalkeeper-close-gaps
+$goalkeeper-pause
+$goalkeeper-resume
 ```
 
-The CLI prints deterministic state cards. The LLM performs the work and updates the files.
+The LLM performs the work and updates the files. The CLI is only the installer/bootstrapper plus optional state/debug helper.
 
-## CLI Commands
+## CLI Helper Commands
 
 ```bash
 npx @goalkpr/goalkeeper install --agent codex --scope user
 npx @goalkpr/goalkeeper init .
-npx @goalkpr/goalkeeper new . --idea "your idea"
-npx @goalkpr/goalkeeper status .
-npx @goalkpr/goalkeeper next .
-npx @goalkpr/goalkeeper loop .
-npx @goalkpr/goalkeeper pause . --reason "stopping work"
 npx @goalkpr/goalkeeper validate .
-npx @goalkpr/goalkeeper analyze-phase . PHASE-0001
 npx @goalkpr/goalkeeper doctor
 ```
+
+Most users only need `install` and `init`, then continue in chat with `$goalkeeper-*` skills.
+
+The CLI also includes shell helpers like `status`, `next`, `loop`, `pause`, and `analyze-phase`. They are for skills, debugging, and maintainers. They are not the main user workflow.
 
 Install options:
 
@@ -193,22 +202,24 @@ Goalkeeper should stop and ask when the next action changes product direction, r
 ```bash
 cd my-app
 npx @goalkpr/goalkeeper init .
-npx @goalkpr/goalkeeper new . --idea "I want a simple p2p mobile chat app" --context7 yes --autonomy A2
-npx @goalkpr/goalkeeper loop .
 ```
 
 Then tell your agent:
 
 ```text
-Use goalkeeper-loop. Ask the next discovery question, update the Goalkeeper files, and stop if product direction is ambiguous.
+$goalkeeper-new-project
+
+I want a simple p2p mobile chat app.
+Ask the next discovery question, update the Goalkeeper files, and stop if product direction is ambiguous.
 ```
 
 Later:
 
-```bash
-npx @goalkpr/goalkeeper status .
-npx @goalkpr/goalkeeper next .
-npx @goalkpr/goalkeeper pause . --reason "end of session"
+```text
+$goalkeeper-next
+$goalkeeper-pause
+
+Reason: end of session.
 ```
 
 ## Walkthrough: TODO App
@@ -246,14 +257,12 @@ Goalkeeper creates `.goalkeeper/` with bootstrap state files.
 
 ### 3. Start From A Raw Idea
 
-```bash
-npx @goalkpr/goalkeeper new . --idea "I want to build a simple TODO app" --context7 yes --autonomy A2
-```
-
-Then tell your agent:
-
 ```text
-Use goalkeeper-new-project.
+$goalkeeper-new-project
+
+I want to build a simple TODO app.
+Context7 is available.
+Autonomy level: A2.
 ```
 
 The agent reads:
@@ -284,7 +293,7 @@ The agent records that answer in `discovery-log.md`.
 Tell the agent:
 
 ```text
-Use goalkeeper-intake.
+$goalkeeper-intake
 ```
 
 Goalkeeper turns the raw idea into `goal-contract.md`, roughly:
@@ -313,7 +322,7 @@ If the idea is still vague, `goalkeeper-intake` should ask another question inst
 If the stack matters, use:
 
 ```text
-Use goalkeeper-research.
+$goalkeeper-research
 ```
 
 For example, if the project uses React or Next.js, the agent should use current docs when available and record durable findings in:
@@ -335,7 +344,7 @@ Use plain React state plus localStorage.
 Tell the agent:
 
 ```text
-Use goalkeeper-plan.
+$goalkeeper-plan
 ```
 
 The agent writes `phase-plan.md`:
@@ -365,19 +374,13 @@ If steps are independent, Goalkeeper can mark a wave as `Dispatch: subagents`. S
 Ask:
 
 ```text
-Use goalkeeper-loop.
+$goalkeeper-loop
 ```
 
-or inspect first:
-
-```bash
-npx @goalkpr/goalkeeper next .
-```
-
-The CLI prints the current phase, wave, step, mode, dispatch type, and next action. The agent then uses:
+The skill reads the current phase, wave, step, mode, dispatch type, and next action. It may call the local CLI helper internally when useful. The agent then uses:
 
 ```text
-goalkeeper-execute
+$goalkeeper-execute
 ```
 
 It should do only the selected step, then update:
@@ -394,7 +397,7 @@ It should do only the selected step, then update:
 After implementation:
 
 ```text
-Use goalkeeper-verify.
+$goalkeeper-verify
 ```
 
 For the TODO app, verification might run:
@@ -418,8 +421,10 @@ Goalkeeper should not mark a step or phase done without evidence.
 
 When a phase appears complete:
 
-```bash
-npx @goalkpr/goalkeeper analyze-phase . PHASE-0002
+```text
+$goalkeeper-analyze-phase
+
+Analyze PHASE-0002.
 ```
 
 If complete, Goalkeeper writes:
@@ -437,21 +442,25 @@ If something is missing, it writes:
 Then ask:
 
 ```text
-Use goalkeeper-close-gaps for PHASE-0002.
+$goalkeeper-close-gaps
+
+Close gaps for PHASE-0002.
 ```
 
 ### 10. Pause And Resume
 
 At the end of a session:
 
-```bash
-npx @goalkpr/goalkeeper pause . --reason "end of session"
+```text
+$goalkeeper-pause
+
+Reason: end of session.
 ```
 
 Later:
 
 ```text
-Use goalkeeper-resume.
+$goalkeeper-resume
 ```
 
 The agent reloads `.goalkeeper/resume-snapshot.md`, checks docs/code/git consistency, and continues from the next safe phase or step.
