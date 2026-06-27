@@ -458,11 +458,7 @@ Ask:
 $goalkeeper-loop
 ```
 
-The skill reads the current phase, wave, step, mode, dispatch type, and next action. It may call the local CLI helper internally when useful. The agent then uses:
-
-```text
-$goalkeeper-execute
-```
+The skill is the active orchestrator. It reads the current phase, wave, step, mode, dispatch type, and next action, then performs the matching workflow when safe. It may apply the `goalkeeper-execute` workflow for a bounded step, continue into verification, sync artifacts, commit after verification when required, and keep looping while autonomy and stop conditions allow.
 
 It should do only the selected step, then update:
 

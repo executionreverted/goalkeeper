@@ -44,6 +44,11 @@ expect_not_contains "$ROOT_DIR/skills/goalkeeper-new-project/SKILL.md" "tell the
 expect_not_contains "$ROOT_DIR/skills/goalkeeper-new-project/SKILL.md" "bash scripts/goalkeeper-init.sh"
 expect_contains "$ROOT_DIR/skills/goalkeeper-loop/SKILL.md" "npx --yes @goalkpr/goalkeeper loop"
 expect_contains "$ROOT_DIR/skills/goalkeeper-loop/SKILL.md" "those are internal helper calls"
+expect_contains "$ROOT_DIR/skills/goalkeeper-loop/SKILL.md" "active orchestration"
+expect_contains "$ROOT_DIR/skills/goalkeeper-loop/SKILL.md" 'Do not stop just to say `Next: $goalkeeper-execute`'
+expect_not_contains "$ROOT_DIR/skills/goalkeeper-loop/SKILL.md" "recommend that exact skill instead of making the user infer it"
+expect_contains "$ROOT_DIR/README.md" "The skill is the active orchestrator"
+expect_not_contains "$ROOT_DIR/README.md" "The agent then uses:"
 expect_contains "$ROOT_DIR/templates/always-read.md" "After verification passes for a step or quick task"
 expect_contains "$ROOT_DIR/skills/goalkeeper-verify/SKILL.md" "commit code plus updated Goalkeeper artifacts"
 expect_contains "$ROOT_DIR/skills/goalkeeper-quick/SKILL.md" "Prefer the final commit after verification"

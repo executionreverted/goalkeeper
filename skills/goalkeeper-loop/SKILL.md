@@ -5,7 +5,7 @@ description: Use when a user wants Goalkeeper to continue work with minimal prom
 
 # Goalkeeper Loop
 
-Run one bounded loop cycle at a time; continue only while policy allows.
+Act as the Goalkeeper orchestrator: find the next valid action, perform it when safe, sync state, verify/commit when required, then continue while policy allows.
 
 ## Workflow
 
@@ -14,10 +14,10 @@ Run one bounded loop cycle at a time; continue only while policy allows.
 3. If required root files are missing, repair them yourself with `goalkeeper init <project-dir>` or `npx --yes @goalkpr/goalkeeper init <project-dir>` before deciding the loop is blocked.
 4. Prefer running `goalkeeper loop <project-dir>` or `npx --yes @goalkpr/goalkeeper loop <project-dir>` yourself.
 5. Run `goalkeeper validate <project-dir>` or `npx --yes @goalkpr/goalkeeper validate <project-dir>` yourself before edits when available.
-6. Follow the loop card:
+6. Follow the loop card by applying the matching workflow directly; do not merely recommend another skill when the action is safe:
    - `verify`: run checks, record evidence, update statuses.
    - `interrogate`: ask one discovery question, record answer, continue or hand off to intake.
-   - `main-agent`: execute one bounded step, then verify.
+   - `main-agent`: apply the `goalkeeper-execute` workflow for one bounded step, then continue into verify when policy allows.
    - `subagents`: dispatch independent briefs with `.goalkeeper/compression-profile.md`, integrate, then verify.
    - `blocked`: inspect docs, git, commits, and code before asking user.
    - skipped dependency guard: ask whether to continue later or handle the open phase first.
@@ -42,7 +42,9 @@ Run one bounded loop cycle at a time; continue only while policy allows.
 - Keep next target phase-level.
 - Do not continue when the loop card says an earlier/dependency phase is open unless the user confirms.
 - Keep root logs compact; detailed loop output belongs in the scoped step file.
-- If the loop card points to another skill, recommend that exact skill instead of making the user infer it.
+- `goalkeeper-next` is read-only routing; `goalkeeper-loop` is active orchestration.
+- Do not stop just to say `Next: $goalkeeper-execute` or `Next: $goalkeeper-verify` when the action is local, safe, and allowed. Run the corresponding workflow inside the loop.
+- Only recommend another skill instead of acting when the required action is blocked by missing context, approval, unsafe scope, failed verification, or autonomy limits.
 - Use exact skill syntax in replies, e.g. `Next: $goalkeeper-new-project`, not prose labels like `Goalkeeper New Project`.
 - Do not tell the user to run `goalkeeper`, `npx`, or shell commands as the next step; those are internal helper calls for the agent.
 - Do not advance past a verified step in a git repo until the post-verification commit has succeeded or the blocker is recorded.
