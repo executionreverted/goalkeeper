@@ -124,7 +124,7 @@ npx @goalkpr/goalkeeper validate .
 npx @goalkpr/goalkeeper doctor
 ```
 
-Most users only need `install` and `init`, then continue in chat with `$goalkeeper-*` skills.
+Most users only install the skills, then continue in chat with `$goalkeeper-*` skills. When a skill needs `init`, `new`, `loop`, or validation helpers, the agent should run those helper commands internally rather than asking the user to type them.
 
 The CLI also includes shell helpers like `do`, `quick`, `map-codebase`, `ship`, `status`, `config`, `next`, `loop`, `pause`, and `analyze-phase`. They are for skills, debugging, and maintainers. They are not the main user workflow.
 

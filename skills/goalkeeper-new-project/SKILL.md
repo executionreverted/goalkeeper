@@ -9,15 +9,15 @@ Use this skill as the first gate before `goalkeeper-intake`.
 
 ## Workflow
 
-1. Check whether `.goalkeeper/` exists in the user's project.
-2. If missing, initialize it automatically unless the user explicitly forbids edits:
+1. Infer the raw project idea from the user's current message or recent conversation. If the idea is not present, ask one short question for the idea and stop.
+2. Check whether `.goalkeeper/` exists in the user's project.
+3. If missing, initialize it yourself with the shell/tooling available to the agent unless the user explicitly forbids edits:
    - prefer `goalkeeper init <project-dir>` when the CLI is on PATH
    - otherwise use `npx --yes @goalkpr/goalkeeper init <project-dir>`
-3. If `.goalkeeper/` exists but required root files such as `goal-contract.md`, `phase-plan.md`, or `always-read.md` are missing, run the same init command without `--force` to repair missing files.
-4. Read `.goalkeeper/always-read.md` and `.goalkeeper/config.json` when present.
-5. Prefer `goalkeeper new <project-dir> --idea "<raw idea>" --context7 yes|no|unknown --autonomy A1` or `npx --yes @goalkpr/goalkeeper new <project-dir> --idea "<raw idea>" --context7 yes|no|unknown --autonomy A1`.
-6. Do not hand-create partial `.goalkeeper` state. If both CLI forms fail, stop and tell the user the exact init command to run.
-7. If no raw idea was provided, ask for the project idea before running `goalkeeper new`.
+4. If `.goalkeeper/` exists but required root files such as `goal-contract.md`, `phase-plan.md`, or `always-read.md` are missing, repair it yourself by running the same init command without `--force`.
+5. Read `.goalkeeper/always-read.md` and `.goalkeeper/config.json` when present.
+6. Run `goalkeeper new <project-dir> --idea "<raw idea>" --context7 yes|no|unknown --autonomy A1` or `npx --yes @goalkpr/goalkeeper new <project-dir> --idea "<raw idea>" --context7 yes|no|unknown --autonomy A1` yourself.
+7. Do not hand-create partial `.goalkeeper` state. If both CLI forms fail, stop with `Stop: Goalkeeper CLI unavailable` and include the exact error, not a manual fallback.
 8. Ask whether Context7 is installed/configured when unknown. Record answer in `project-seed.md` and `context-ledger.md`.
 9. Ask one question at a time, like `grill-me`.
 10. For each question, include your recommended answer and why.
@@ -58,6 +58,8 @@ Job: <observable job they need done>
 
 ## Output Rules
 
+- Do not ask the user to run `goalkeeper init`, `goalkeeper new`, `npx`, or shell commands; run them yourself through tools.
+- Do not expose CLI commands as the main next action. The user-facing workflow is skill-first.
 - Ask one question per turn.
 - Make the recommended answer concrete, not generic.
 - Challenge vague words such as easy, fast, smart, automatic, minimal, robust, and production-ready.
@@ -69,3 +71,4 @@ Job: <observable job they need done>
 - End with exactly one route:
   - `Next: answer the discovery question` when more discovery is needed.
   - `Next: $goalkeeper-intake` when boundaries are clear enough for a project-level contract.
+  - `Stop: Goalkeeper CLI unavailable` only when the agent cannot run either CLI form.

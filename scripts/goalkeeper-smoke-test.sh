@@ -39,8 +39,11 @@ expect_fails() {
 
 expect_contains "$ROOT_DIR/skills/goalkeeper-new-project/SKILL.md" "npx --yes @goalkpr/goalkeeper init"
 expect_contains "$ROOT_DIR/skills/goalkeeper-new-project/SKILL.md" "Do not hand-create partial"
+expect_contains "$ROOT_DIR/skills/goalkeeper-new-project/SKILL.md" "run them yourself through tools"
+expect_not_contains "$ROOT_DIR/skills/goalkeeper-new-project/SKILL.md" "tell the user the exact init command"
 expect_not_contains "$ROOT_DIR/skills/goalkeeper-new-project/SKILL.md" "bash scripts/goalkeeper-init.sh"
 expect_contains "$ROOT_DIR/skills/goalkeeper-loop/SKILL.md" "npx --yes @goalkpr/goalkeeper loop"
+expect_contains "$ROOT_DIR/skills/goalkeeper-loop/SKILL.md" "those are internal helper calls"
 
 git -C "$TMP_DIR" init >/dev/null 2>&1
 "$ROOT_DIR/scripts/goalkeeper-init.sh" "$TMP_DIR" >"$TMP_DIR/init.out"

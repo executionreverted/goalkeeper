@@ -10,10 +10,10 @@ Run one bounded loop cycle at a time; continue only while policy allows.
 ## Workflow
 
 1. Read `.goalkeeper/always-read.md`, `config.json`, `resume-snapshot.md`, `next-target.md`, `goal-contract.md`, `phase-plan.md`, and the active scoped phase/wave/step files under `.goalkeeper/phases/`.
-2. If `.goalkeeper/` is missing, stop and recommend `Next: $goalkeeper-new-project`.
-3. If required root files are missing, repair with `goalkeeper init <project-dir>` or `npx --yes @goalkpr/goalkeeper init <project-dir>` before deciding the loop is blocked.
-4. Prefer `goalkeeper loop <project-dir>` or `npx --yes @goalkpr/goalkeeper loop <project-dir>`.
-5. Run `goalkeeper validate <project-dir>` or `npx --yes @goalkpr/goalkeeper validate <project-dir>` before edits when available.
+2. If `.goalkeeper/` is missing, do not ask the user to run CLI commands; stop with `Next: $goalkeeper-new-project`.
+3. If required root files are missing, repair them yourself with `goalkeeper init <project-dir>` or `npx --yes @goalkpr/goalkeeper init <project-dir>` before deciding the loop is blocked.
+4. Prefer running `goalkeeper loop <project-dir>` or `npx --yes @goalkpr/goalkeeper loop <project-dir>` yourself.
+5. Run `goalkeeper validate <project-dir>` or `npx --yes @goalkpr/goalkeeper validate <project-dir>` yourself before edits when available.
 6. Follow the loop card:
    - `verify`: run checks, record evidence, update statuses.
    - `interrogate`: ask one discovery question, record answer, continue or hand off to intake.
@@ -43,3 +43,4 @@ Run one bounded loop cycle at a time; continue only while policy allows.
 - Keep root logs compact; detailed loop output belongs in the scoped step file.
 - If the loop card points to another skill, recommend that exact skill instead of making the user infer it.
 - Use exact skill syntax in replies, e.g. `Next: $goalkeeper-new-project`, not prose labels like `Goalkeeper New Project`.
+- Do not tell the user to run `goalkeeper`, `npx`, or shell commands as the next step; those are internal helper calls for the agent.
