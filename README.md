@@ -8,7 +8,7 @@ It gives agents a durable goal loop:
 New Project -> Clarify -> Research -> Decide -> Plan -> Execute -> Verify -> Snapshot -> Continue
 ```
 
-Instead of trusting chat history, Goalkeeper writes the project goal, decisions, phase plan, verification evidence, gaps, and resume state into `.goalkeeper/` files that any later agent session can reload.
+Instead of trusting chat history, Goalkeeper writes the project goal, decisions, phase index, scoped phase/wave/step work files, verification evidence, gaps, and resume state into `.goalkeeper/` files that any later agent session can reload.
 
 ## What It Installs
 
@@ -167,6 +167,14 @@ Goalkeeper creates small Markdown files so state is human-readable and git-frien
   progress-log.md
   verification-log.md
   resume-snapshot.md
+  phases/
+    PHASE-0001-short-title/
+      phase.md
+      waves/
+        WAVE-0001-A-short-title/
+          wave.md
+          steps/
+            STEP-0001-A-01-short-title.md
   archive/
   gaps/
   templates/
@@ -175,11 +183,13 @@ Goalkeeper creates small Markdown files so state is human-readable and git-frien
 Important files:
 
 - `goal-contract.md`: what success means.
-- `phase-plan.md`: Phase -> Wave -> Step plan.
+- `phase-plan.md`: compact Phase -> Wave -> Step index.
+- `phases/`: detailed phase, wave, and step working files.
 - `always-read.md`: rules the agent must read before every loop.
 - `compression-profile.md`: built-in token discipline for subagents.
 - `next-target.md`: larger next phase target, not tiny local drift.
 - `resume-snapshot.md`: compact recovery state if context is lost.
+- `progress-log.md` and `verification-log.md`: compact indexes that point to scoped files.
 - `gaps/`: missing work found after phase analysis.
 - `archive/`: verified phase completion reports.
 
@@ -299,6 +309,11 @@ Me. I want a local web app where I can add tasks, mark them done, filter active/
 ```
 
 The agent records that answer in `discovery-log.md`.
+It also updates the active discovery files under:
+
+```text
+.goalkeeper/phases/PHASE-0001-new-project-discovery/
+```
 
 ### 4. Turn Answers Into A Goal Contract
 
@@ -359,7 +374,7 @@ Tell the agent:
 $goalkeeper-plan
 ```
 
-The agent writes `phase-plan.md`:
+The agent writes compact `phase-plan.md`:
 
 ```text
 PHASE-0001: App Scaffold
@@ -381,6 +396,14 @@ PHASE-0003: Persistence And Verification
 
 If steps are independent, Goalkeeper can mark a wave as `Dispatch: subagents`. Subagents use `.goalkeeper/compression-profile.md`.
 
+The detailed files live under `phases/`:
+
+```text
+.goalkeeper/phases/PHASE-0002-todo-core/phase.md
+.goalkeeper/phases/PHASE-0002-todo-core/waves/WAVE-0002-A-task-behavior/wave.md
+.goalkeeper/phases/PHASE-0002-todo-core/waves/WAVE-0002-A-task-behavior/steps/STEP-0002-A-01-create-task-flow.md
+```
+
 ### 7. Execute One Bounded Loop
 
 Ask:
@@ -398,11 +421,16 @@ $goalkeeper-execute
 It should do only the selected step, then update:
 
 ```text
-.goalkeeper/progress-log.md
+.goalkeeper/phases/<active-phase>/waves/<active-wave>/steps/<active-step>.md
+.goalkeeper/phases/<active-phase>/waves/<active-wave>/wave.md
+.goalkeeper/phases/<active-phase>/phase.md
 .goalkeeper/phase-plan.md
+.goalkeeper/progress-log.md
 .goalkeeper/resume-snapshot.md
 .goalkeeper/next-target.md
 ```
+
+Root `progress-log.md` stays short; detailed changed files, commands, and notes go into the active step file.
 
 ### 8. Verify Before Marking Done
 
@@ -421,9 +449,10 @@ npm run build
 
 or manually inspect behavior if no tests exist yet.
 
-The evidence goes into:
+The evidence goes into the scoped step file first, then the compact verification index:
 
 ```text
+.goalkeeper/phases/<active-phase>/waves/<active-wave>/steps/<active-step>.md
 .goalkeeper/verification-log.md
 ```
 

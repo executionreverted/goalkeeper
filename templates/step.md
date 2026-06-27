@@ -10,5 +10,11 @@ Acceptance checks:
 - 
 Verification evidence:
 - 
+Changed files:
+- TBD
+Commands:
+- TBD
+Decisions:
+- TBD
 Notes:
-- 
+- TBD

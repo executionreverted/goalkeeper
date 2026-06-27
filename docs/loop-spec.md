@@ -23,11 +23,11 @@ done
 
 Every iteration must:
 
-1. Read `.goalkeeper/always-read.md`, `.goalkeeper/resume-snapshot.md`, and the relevant active artifacts.
+1. Read `.goalkeeper/always-read.md`, `.goalkeeper/resume-snapshot.md`, and the relevant active scoped artifacts under `.goalkeeper/phases/`.
 2. Select the next phase, wave, and step from `.goalkeeper/phase-plan.md`.
 3. Load only the context required for that state.
 4. Perform one bounded unit of work.
-5. Write progress, decisions, wave dispatch results, and verification evidence.
+5. Write progress, decisions, wave dispatch results, and verification evidence into the scoped step/wave/phase files.
 6. Refresh `.goalkeeper/resume-snapshot.md`.
 7. Continue automatically when policy allows it.
 
@@ -54,7 +54,7 @@ Stop and ask the user when:
 Mark a goal done only when:
 
 - Every success criterion in `goal-contract.md` is satisfied.
-- Required verification is recorded in `verification-log.md`.
+- Required verification is recorded in scoped step/wave/phase files and indexed in `verification-log.md`.
 - `phase-plan.md` has no open required phases, waves, or steps.
 - `resume-snapshot.md` includes the final state and no dangling blockers.
 
@@ -79,6 +79,20 @@ Phase -> Wave -> Step
 - `Step`: smallest executable and verifiable unit.
 
 Parallel waves may dispatch independent steps to subagents. Main agent must integrate and verify results before marking the wave done.
+
+## Scoped Artifacts
+
+`phase-plan.md` stays compact. Detailed work is stored like this:
+
+```text
+.goalkeeper/phases/PHASE-0002-short-title/
+  phase.md
+  waves/WAVE-0002-A-short-title/
+    wave.md
+    steps/STEP-0002-A-01-short-title.md
+```
+
+Root `progress-log.md` and `verification-log.md` are indexes that point to these files.
 
 ## New Project Gate
 

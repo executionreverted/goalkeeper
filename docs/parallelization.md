@@ -31,4 +31,4 @@ Return format:
 Token mode: compressed
 ```
 
-Subagents return raw artifact changes, findings, or concise summaries. Main agent integrates results and updates `phase-plan.md`, `progress-log.md`, `verification-log.md`, and `resume-snapshot.md`.
+Subagents return raw artifact changes, findings, or concise summaries. Main agent integrates results into scoped step/wave files, then updates `phase-plan.md`, compact root indexes, and `resume-snapshot.md`.

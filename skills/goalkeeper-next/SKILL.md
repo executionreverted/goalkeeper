@@ -9,7 +9,7 @@ Use this skill to select next action, not execute it.
 
 ## Workflow
 
-1. Read `.goalkeeper/always-read.md`, `.goalkeeper/resume-snapshot.md`, `.goalkeeper/next-target.md`, `.goalkeeper/goal-contract.md`, and `.goalkeeper/phase-plan.md`.
+1. Read `.goalkeeper/always-read.md`, `.goalkeeper/resume-snapshot.md`, `.goalkeeper/next-target.md`, `.goalkeeper/goal-contract.md`, `.goalkeeper/phase-plan.md`, and only the active scoped files needed under `.goalkeeper/phases/`.
 2. Prefer running `scripts/goalkeeper-next.sh <project-dir>` when available.
 3. Select first actionable unit:
    - `ready` step
@@ -21,8 +21,9 @@ Use this skill to select next action, not execute it.
    - `subagents`
    - `verify`
    - `blocked`
-5. If a requested or hinted later phase skips an open earlier/dependency phase, stop and ask whether to continue later or handle the open phase first.
-6. Keep response terse.
+5. Report the active scoped artifact paths so the executor can load minimal context.
+6. If a requested or hinted later phase skips an open earlier/dependency phase, stop and ask whether to continue later or handle the open phase first.
+7. Keep response terse.
 
 ## Rules
 

@@ -1,5 +1,7 @@
 # Phase Plan
 
+This is the compact Phase/Wave/Step index. Detailed progress, commands, decisions, and verification evidence live under `.goalkeeper/phases/`.
+
 ## PHASE-0000: Bootstrap Goalkeeper
 
 Status: ready

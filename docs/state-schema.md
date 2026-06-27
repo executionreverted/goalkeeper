@@ -11,15 +11,33 @@ Goalkeeper uses Markdown artifacts because they are human-readable, diffable, an
 - `.goalkeeper/discovery-log.md`: grill-style questions, answers, recommended defaults, and unresolved branches.
 - `.goalkeeper/goal-contract.md`: objective, constraints, autonomy, success criteria.
 - `.goalkeeper/context-ledger.md`: durable facts learned during intake and research.
-- `.goalkeeper/decision-log.md`: decisions with rationale and date.
-- `.goalkeeper/phase-plan.md`: canonical Phase/Wave/Step plan with dependencies and parallelization.
+- `.goalkeeper/decision-log.md`: cross-phase decisions with rationale and date.
+- `.goalkeeper/phase-plan.md`: compact canonical Phase/Wave/Step index with dependencies and parallelization.
 - `.goalkeeper/next-target.md`: phase-level next target plus current active phase/wave/step.
 - `.goalkeeper/task-queue.md`: legacy flat task queue; keep only while migrating old goals.
-- `.goalkeeper/progress-log.md`: chronological work log.
-- `.goalkeeper/verification-log.md`: evidence for completed work.
+- `.goalkeeper/progress-log.md`: compact chronological index that points to scoped files.
+- `.goalkeeper/verification-log.md`: compact verification index that points to scoped evidence.
 - `.goalkeeper/resume-snapshot.md`: compact state for context recovery.
+- `.goalkeeper/phases/`: detailed phase/wave/step working artifacts.
 - `.goalkeeper/archive/`: completed phase reports with commit evidence.
 - `.goalkeeper/gaps/`: open or invalidated phase gap reports.
+
+## Scoped Work Artifacts
+
+Detailed work belongs under phase folders, not root logs:
+
+```text
+.goalkeeper/phases/
+  PHASE-0002-todo-core/
+    phase.md
+    waves/
+      WAVE-0002-A-task-behavior/
+        wave.md
+        steps/
+          STEP-0002-A-01-create-task-flow.md
+```
+
+Use ids plus 3-4 word lowercase slugs so files are searchable and cherry-pickable.
 
 ## Work Statuses
 
@@ -88,4 +106,7 @@ Expected output:
 Acceptance checks:
 Verification evidence:
 Notes:
+Changed files:
+Commands:
+Decisions:
 ```

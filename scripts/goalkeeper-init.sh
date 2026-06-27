@@ -32,6 +32,7 @@ TEMPLATE_DIR="$ROOT_DIR/templates"
 TARGET_DIR="$(cd "$TARGET" && pwd)"
 GK_DIR="$TARGET_DIR/.goalkeeper"
 GK_TEMPLATE_DIR="$GK_DIR/templates"
+GK_PHASES_DIR="$GK_DIR/phases"
 GK_ARCHIVE_DIR="$GK_DIR/archive"
 GK_GAPS_DIR="$GK_DIR/gaps"
 
@@ -64,6 +65,7 @@ write_from_template() {
 
 run mkdir -p "$GK_DIR"
 run mkdir -p "$GK_TEMPLATE_DIR"
+run mkdir -p "$GK_PHASES_DIR"
 run mkdir -p "$GK_ARCHIVE_DIR"
 run mkdir -p "$GK_GAPS_DIR"
 

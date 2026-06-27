@@ -9,7 +9,7 @@ Use this skill to inspect, not mutate.
 
 ## Workflow
 
-1. Read `.goalkeeper/always-read.md`, `.goalkeeper/resume-snapshot.md`, `.goalkeeper/next-target.md`, `.goalkeeper/active-goal.md`, `.goalkeeper/goal-contract.md`, `.goalkeeper/phase-plan.md`, `.goalkeeper/progress-log.md`, and `.goalkeeper/verification-log.md`.
+1. Read `.goalkeeper/always-read.md`, `.goalkeeper/resume-snapshot.md`, `.goalkeeper/next-target.md`, `.goalkeeper/active-goal.md`, `.goalkeeper/goal-contract.md`, `.goalkeeper/phase-plan.md`, compact root logs, and the active scoped files under `.goalkeeper/phases/`.
 2. Prefer running `scripts/goalkeeper-status.sh <project-dir>` when available.
 3. Report:
    - status
@@ -18,6 +18,7 @@ Use this skill to inspect, not mutate.
    - next phase target
    - blockers
    - last verification
+   - active scoped artifact paths
 4. Keep response terse.
 
 ## Rules

@@ -1,4 +1,4 @@
 interface:
   display_name: "Goalkeeper Verify"
   short_description: "Check evidence before done claims"
-  default_prompt: "Use $goalkeeper-verify to verify the current task before marking it done."
+  default_prompt: "Use $goalkeeper-verify to verify the current step, wave, or phase before marking it done."

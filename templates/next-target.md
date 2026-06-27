@@ -19,10 +19,11 @@ Goalkeeper has been initialized but no project-specific discovery has been compl
 
 ## Required Sync After Each Step Or Commit
 
-- Update `phase-plan.md`.
-- Update `progress-log.md`.
-- Update `verification-log.md` when checks run.
-- Update `decision-log.md` when choices change.
+- Update active phase/wave/step files under `phases/`.
+- Update `phase-plan.md` index statuses.
+- Update root `progress-log.md` only as a compact index.
+- Update root `verification-log.md` only as a compact index when checks run.
+- Update root `decision-log.md` only for cross-phase decisions.
 - Update `resume-snapshot.md`.
 - Update this file.
 

@@ -18,8 +18,8 @@ Require one:
 
 1. Read `.goalkeeper/always-read.md`.
 2. Read the gap report.
-3. Read `.goalkeeper/phase-plan.md`, `.goalkeeper/verification-log.md`, `.goalkeeper/progress-log.md`, and `.goalkeeper/next-target.md`.
-4. Convert gaps into closure phase/wave/step plan.
+3. Read `.goalkeeper/phase-plan.md`, compact root logs, `.goalkeeper/next-target.md`, and scoped files for the target phase under `.goalkeeper/phases/`.
+4. Convert gaps into closure phase/wave/step plan and create/update scoped step files for each closure item.
 5. Execute missing work using normal `goalkeeper-execute` rules.
 6. Verify using `goalkeeper-verify`.
 7. Re-run `goalkeeper-analyze-phase`.
@@ -29,6 +29,7 @@ Require one:
    - update gap report `Status: invalidated`
    - record archive path and commit hashes
 9. If gaps remain, update same gap file with remaining items and next closure target.
+10. Sync scoped phase/wave/step files first, then root indexes.
 
 ## Rules
 
@@ -36,3 +37,4 @@ Require one:
 - Do not skip review after code changes.
 - Do not invalidate gap report until archive exists.
 - Ask user only if evidence conflict remains low-confidence after git/code inspection.
+- Keep closure details in scoped step files; root gap file is the missing-work summary.

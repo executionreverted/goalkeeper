@@ -29,8 +29,9 @@ Before using a tool, identify:
 
 After using a tool, update at least one of:
 
+- active scoped files under `.goalkeeper/phases/`
 - `context-ledger.md`
-- `progress-log.md`
-- `decision-log.md`
-- `verification-log.md`
+- `progress-log.md` as a compact index
+- `decision-log.md` for cross-phase decisions
+- `verification-log.md` as a compact index
 - `resume-snapshot.md`

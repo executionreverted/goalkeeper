@@ -22,7 +22,8 @@ Use this skill to turn an ambiguous request or completed `goalkeeper-new-project
    - `.goalkeeper/active-goal.md`
    - `.goalkeeper/goal-contract.md`
    - `.goalkeeper/context-ledger.md`
-   - `.goalkeeper/progress-log.md`
+   - active scoped phase/wave/step files under `.goalkeeper/phases/`
+   - `.goalkeeper/progress-log.md` as a compact index
    - `.goalkeeper/resume-snapshot.md`
 
 ## Output Rules
@@ -31,5 +32,5 @@ Use this skill to turn an ambiguous request or completed `goalkeeper-new-project
 - Prefer explicit success criteria over broad aspiration.
 - Put durable facts in `context-ledger.md`, not only in the final answer.
 - If the raw idea is still too vague, hand back to `goalkeeper-new-project` instead of forcing a contract.
-- Do not create a task plan here unless the contract is stable; use `goalkeeper-plan` next.
+- Do not create a phase/wave/step plan here unless the contract is stable; use `goalkeeper-plan` next.
 - Keep user-facing replies concise unless the user asks for detail.

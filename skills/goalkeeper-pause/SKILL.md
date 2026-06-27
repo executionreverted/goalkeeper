@@ -9,7 +9,7 @@ Use this skill to stop safely.
 
 ## Workflow
 
-1. Read `.goalkeeper/always-read.md`, `.goalkeeper/resume-snapshot.md`, `.goalkeeper/next-target.md`, `.goalkeeper/phase-plan.md`, `.goalkeeper/progress-log.md`, and `.goalkeeper/verification-log.md`.
+1. Read `.goalkeeper/always-read.md`, `.goalkeeper/resume-snapshot.md`, `.goalkeeper/next-target.md`, `.goalkeeper/phase-plan.md`, compact root logs, and the active scoped phase/wave/step files under `.goalkeeper/phases/`.
 2. Prefer running `scripts/goalkeeper-pause.sh <project-dir> --reason "..."`
 3. Sync:
    - current phase/wave/step
@@ -18,6 +18,7 @@ Use this skill to stop safely.
    - blockers
    - next action
    - verification state
+   - active scoped artifact paths
 4. Do not move to next step.
 5. Final response: concise paused state.
 
@@ -26,3 +27,4 @@ Use this skill to stop safely.
 - Pause means no continuation.
 - Preserve enough context for `goalkeeper-resume`.
 - Do not mark work done unless verification already exists.
+- Sync active scoped files before root indexes.

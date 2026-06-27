@@ -62,6 +62,7 @@ Pause requested. Do not advance to next step.
 - Pause reason: $REASON
 - Last progress: ${last_progress:-unknown}
 - Last verification: ${last_verification:-none}
+- Active artifacts are listed in the Goalkeeper next output below when available.
 
 ## Next Action
 
@@ -80,7 +81,7 @@ cat >> "$PROGRESS" <<EOF
 
 ## $now
 
-- Paused Goalkeeper work. Reason: $REASON
+- Index: paused Goalkeeper work. Reason: $REASON
 EOF
 
 if [[ -f "$NEXT_TARGET" ]]; then

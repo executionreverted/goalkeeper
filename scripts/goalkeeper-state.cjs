@@ -156,6 +156,32 @@ function phaseNumber(phaseOrId) {
   return match ? Number(match[1]) : Number.POSITIVE_INFINITY;
 }
 
+function slugTitle(title) {
+  return (title || 'untitled')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+    .split('-')
+    .filter(Boolean)
+    .slice(0, 4)
+    .join('-') || 'untitled';
+}
+
+function scopedArtifactPaths(project, next) {
+  if (!next?.phase) return [];
+  const phaseSlug = `${next.phase.id}-${slugTitle(next.phase.title)}`;
+  const paths = [`.goalkeeper/phases/${phaseSlug}/phase.md`];
+  if (next.wave) {
+    const waveSlug = `${next.wave.id}-${slugTitle(next.wave.title)}`;
+    paths.push(`.goalkeeper/phases/${phaseSlug}/waves/${waveSlug}/wave.md`);
+    if (next.step) {
+      const stepSlug = `${next.step.id}-${slugTitle(next.step.title)}`;
+      paths.push(`.goalkeeper/phases/${phaseSlug}/waves/${waveSlug}/steps/${stepSlug}.md`);
+    }
+  }
+  return paths;
+}
+
 function suggestPhase(project, requestedId) {
   const requestedNum = phaseNumber(requestedId);
   const phases = project.phases.slice().sort((a, b) => {
@@ -266,6 +292,8 @@ function printStatus(project) {
   console.log(`next_phase_target: ${project.nextTarget.next_phase_target || 'unknown'}`);
   console.log(`blockers: ${blocker}`);
   console.log(`verification: ${lastVerification}`);
+  const paths = scopedArtifactPaths(project, next);
+  if (paths.length) console.log(`active_artifacts: ${paths.join(', ')}`);
 }
 
 function printNext(project) {
@@ -280,6 +308,8 @@ function printNext(project) {
   console.log(`phase: ## ${next.phase.id}: ${next.phase.title}`);
   if (next.wave) console.log(`wave: ### ${next.wave.id}: ${next.wave.title}`);
   if (next.step) console.log(`step: #### ${next.step.id}: ${next.step.title}`);
+  const paths = scopedArtifactPaths(project, next);
+  if (paths.length) console.log(`active_artifacts: ${paths.join(', ')}`);
   const status = next.step?.status || next.wave?.status || next.phase.status;
   console.log(`status: Status: ${status}`);
   if (next.wave) {
@@ -309,7 +339,7 @@ function printLoop(project) {
   const next = selectNext(project);
   console.log('Goalkeeper loop');
   console.log('intent: run one bounded goal-loop cycle');
-  console.log('required_read: .goalkeeper/always-read.md, .goalkeeper/compression-profile.md, .goalkeeper/resume-snapshot.md, .goalkeeper/next-target.md, .goalkeeper/goal-contract.md, .goalkeeper/phase-plan.md');
+  console.log('required_read: .goalkeeper/always-read.md, .goalkeeper/compression-profile.md, .goalkeeper/resume-snapshot.md, .goalkeeper/next-target.md, .goalkeeper/goal-contract.md, .goalkeeper/phase-plan.md, active scoped files under .goalkeeper/phases/');
   console.log('preflight: run goalkeeper-validate before edits when available');
   if (!next) {
     console.log('mode: none');
@@ -324,6 +354,8 @@ function printLoop(project) {
   console.log(`phase: ${next.phase.id}: ${next.phase.title}`);
   if (next.wave) console.log(`wave: ${next.wave.id}: ${next.wave.title}`);
   if (next.step) console.log(`step: ${next.step.id}: ${next.step.title}`);
+  const paths = scopedArtifactPaths(project, next);
+  if (paths.length) console.log(`active_artifacts: ${paths.join(', ')}`);
   console.log(`status: ${status}`);
   console.log(`mode: ${mode}`);
   console.log(`dispatch: ${next.wave?.dispatch || 'main-agent'}`);
@@ -346,7 +378,7 @@ function printLoop(project) {
     console.log('action: execute the bounded step, update artifacts, then run verification');
   }
 
-  console.log('after_action: update phase-plan, progress-log, verification-log when checks run, resume-snapshot, and next-target');
+  console.log('after_action: update active scoped phase/wave/step files, phase-plan index, compact root logs, resume-snapshot, and next-target');
   console.log('continue_rule: continue automatically only while autonomy and stop conditions allow');
   console.log(`next_phase_target: ${project.nextTarget.next_phase_target || 'unknown'}`);
 }
@@ -375,7 +407,7 @@ function validate(project) {
       failCount += 1;
     }
   }
-  for (const dir of ['archive', 'gaps', 'templates']) {
+  for (const dir of ['archive', 'gaps', 'phases', 'templates']) {
     if (fs.existsSync(path.join(project.gkDir, dir))) console.log(`OK ${dir}/`);
     else {
       console.log(`FAIL missing ${dir}/`);
@@ -494,7 +526,7 @@ ${phase.waves.flatMap((wave) => wave.steps.map((step) => `- ${step.id}: ${step.t
 
 ## Verification
 
-See .goalkeeper/verification-log.md.
+See the active scoped phase/wave/step files under .goalkeeper/phases/ plus the compact .goalkeeper/verification-log.md index.
 
 ## Commit Evidence
 
@@ -544,7 +576,8 @@ ${gaps.join('\n')}
 ## Evidence Checked
 
 - .goalkeeper/phase-plan.md
-- .goalkeeper/verification-log.md
+- active scoped files under .goalkeeper/phases/
+- .goalkeeper/verification-log.md compact index
 - git log/status when available
 
 ## Commit Evidence

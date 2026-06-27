@@ -9,7 +9,7 @@ Run one bounded loop cycle at a time; continue only while policy allows.
 
 ## Workflow
 
-1. Read `.goalkeeper/always-read.md`, `resume-snapshot.md`, `next-target.md`, `goal-contract.md`, and `phase-plan.md`.
+1. Read `.goalkeeper/always-read.md`, `resume-snapshot.md`, `next-target.md`, `goal-contract.md`, `phase-plan.md`, and the active scoped phase/wave/step files under `.goalkeeper/phases/`.
 2. Prefer `scripts/goalkeeper-loop.sh <project-dir>` when available.
 3. Run `scripts/goalkeeper-validate.sh <project-dir>` before edits when available.
 4. Follow the loop card:
@@ -19,7 +19,7 @@ Run one bounded loop cycle at a time; continue only while policy allows.
    - `subagents`: dispatch independent briefs with `.goalkeeper/compression-profile.md`, integrate, then verify.
    - `blocked`: inspect docs, git, commits, and code before asking user.
    - skipped dependency guard: ask whether to continue later or handle the open phase first.
-5. Sync `phase-plan.md`, `progress-log.md`, `verification-log.md`, `resume-snapshot.md`, and `next-target.md`.
+5. Sync active scoped files first, then `phase-plan.md`, compact root logs, `resume-snapshot.md`, and `next-target.md`.
 6. Repeat from step 2 only if autonomy allows and no stop condition fired.
 
 ## Stop Conditions
@@ -37,3 +37,4 @@ Run one bounded loop cycle at a time; continue only while policy allows.
 - Do not bury pause requests; use `goalkeeper-pause`.
 - Keep next target phase-level.
 - Do not continue when the loop card says an earlier/dependency phase is open unless the user confirms.
+- Keep root logs compact; detailed loop output belongs in the scoped step file.

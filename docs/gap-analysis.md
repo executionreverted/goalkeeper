@@ -14,8 +14,9 @@ Behavior:
 
 - Read `.goalkeeper/always-read.md`.
 - Read `.goalkeeper/phase-plan.md`.
+- Read scoped files for the requested phase under `.goalkeeper/phases/`.
 - Extract requested phase.
-- Compare wave/step statuses with git history.
+- Compare wave/step statuses and scoped evidence with git history.
 - If all required waves/steps are complete, write `.goalkeeper/archive/<phase>-report.md`.
 - If gaps exist, write `.goalkeeper/gaps/<phase>-gaps.md`.
 
@@ -27,11 +28,13 @@ Flow:
 
 1. Read `always-read.md`.
 2. Read gap report.
-3. Create gap closure phase/wave/step plan.
+3. Create gap closure phase/wave/step plan with scoped step files.
 4. Execute missing work using normal Goalkeeper rules.
 5. Verify.
 6. Re-run phase analysis.
 7. If complete, archive phase and invalidate gap report.
+
+Gap reports summarize missing work. Detailed closure attempts belong in scoped step files.
 
 ## Commit Evidence
 

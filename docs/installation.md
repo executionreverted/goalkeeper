@@ -50,6 +50,7 @@ bash scripts/goalkeeper-init.sh . --force
   progress-log.md
   verification-log.md
   resume-snapshot.md
+  phases/
   archive/
   gaps/
   templates/

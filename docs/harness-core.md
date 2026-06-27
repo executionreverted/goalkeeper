@@ -33,7 +33,7 @@ No script calls LLMs. No script edits product code. Scripts only read/write Goal
 
 ## Parser Contract
 
-`goalkeeper-state.cjs` parses `phase-plan.md` into:
+`goalkeeper-state.cjs` parses compact `phase-plan.md` into:
 
 - phases
 - waves
@@ -42,7 +42,7 @@ No script calls LLMs. No script edits product code. Scripts only read/write Goal
 - dispatch metadata
 - verification evidence refs
 
-Wrappers must use parser output instead of ad hoc grep/awk scanning.
+Wrappers must use parser output instead of ad hoc grep/awk scanning. Agents then load the matching scoped files under `.goalkeeper/phases/` for detail.
 
 ## Always-Read Contract
 
@@ -54,7 +54,8 @@ Pause must:
 
 - not advance to next step
 - refresh `resume-snapshot.md`
-- append `progress-log.md`
+- sync active scoped files
+- append compact `progress-log.md` index entries only when useful
 - preserve next action for later resume
 - preserve phase-level next target
 - avoid completion claims without verification
@@ -78,7 +79,7 @@ Loop must:
 - validate state before edits when possible
 - follow mode from parser: `interrogate`, `verify`, `main-agent`, `subagents`, `blocked`, or `none`
 - block and ask when a hinted/requested phase skips an open earlier or dependency phase
-- sync state after action
+- sync scoped state after action, then root indexes
 - continue only while autonomy and stop conditions allow
 
 ## Edge Guards
@@ -94,10 +95,12 @@ Goalkeeper must avoid silent drift:
 
 After each step or commit, sync:
 
-- `phase-plan.md`
-- `progress-log.md`
-- `verification-log.md`
-- `decision-log.md` when decisions changed
+- active files under `.goalkeeper/phases/<phase>/waves/<wave>/steps/`
+- parent `wave.md` and `phase.md` when wave/phase state changed
+- `phase-plan.md` as compact index
+- `progress-log.md` as compact index
+- `verification-log.md` as compact index when checks ran
+- `decision-log.md` only when cross-phase decisions changed
 - `resume-snapshot.md`
 - `next-target.md`
 

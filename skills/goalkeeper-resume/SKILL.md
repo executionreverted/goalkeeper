@@ -15,10 +15,9 @@ Use this skill to rebuild working context from artifacts.
    - `.goalkeeper/goal-contract.md`
    - `.goalkeeper/phase-plan.md`
    - `.goalkeeper/next-target.md`
-   - `.goalkeeper/progress-log.md`
-   - `.goalkeeper/decision-log.md`
-   - `.goalkeeper/verification-log.md`
-3. Compare the snapshot with the phase plan and progress log.
+   - compact root logs
+   - active scoped phase/wave/step files under `.goalkeeper/phases/`
+3. Compare the snapshot with the phase plan, compact root indexes, and active scoped files.
 4. If artifacts conflict, inspect git status/diff/recent commits when available, then inspect code/source of truth.
 5. Prefer code plus verified artifacts over stale docs.
 6. If confidence is low, ask one question before choosing the next step.
@@ -32,3 +31,4 @@ Use this skill to rebuild working context from artifacts.
 - Continue with the first `ready` step or parallelizable wave when policy allows it.
 - Ask one concise question only if no artifact establishes the next safe action.
 - Preserve phase-level next target while selecting specific current step.
+- Prefer scoped step files for detailed evidence; root logs are only indexes.

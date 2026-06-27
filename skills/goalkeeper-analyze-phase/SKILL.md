@@ -10,7 +10,7 @@ Use this skill after a phase is believed complete.
 ## Workflow
 
 1. Read `.goalkeeper/always-read.md`.
-2. Read `.goalkeeper/phase-plan.md`, `.goalkeeper/verification-log.md`, `.goalkeeper/progress-log.md`, `.goalkeeper/next-target.md`, and `.goalkeeper/resume-snapshot.md`.
+2. Read `.goalkeeper/phase-plan.md`, compact root logs, `.goalkeeper/next-target.md`, `.goalkeeper/resume-snapshot.md`, and all scoped files for the target phase under `.goalkeeper/phases/<phase>/`.
 3. Accept phase id, phase title, or explicit phase block.
 4. Prefer running `scripts/goalkeeper-analyze-phase.sh <project-dir> <phase-id>` when available.
 5. If the phase does not exist, stop and ask which suggested phase the user meant.
@@ -20,10 +20,12 @@ Use this skill after a phase is believed complete.
    - phase steps
    - statuses
    - verification evidence
+   - scoped step evidence
    - git status/diff/recent commits when available
 8. If all required waves/steps are complete and verified:
    - write `.goalkeeper/archive/<phase>-report.md`
    - include commit hashes
+   - include scoped artifact paths checked
    - update phase status if needed
    - update resume snapshot and next target
 9. If gaps exist:
@@ -38,3 +40,4 @@ Use this skill after a phase is believed complete.
 - Code + verified artifacts beat stale docs.
 - Keep output terse.
 - Never silently continue past a missing phase, already-archived phase, or phase/dependency mismatch.
+- Treat root logs as indexes; gap/archive judgment should inspect scoped phase/wave/step files.

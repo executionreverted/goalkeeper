@@ -71,11 +71,17 @@ ROOT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 TEMPLATE_DIR="$ROOT_DIR/templates"
 TARGET_DIR="$(cd "$TARGET" && pwd)"
 GK_DIR="$TARGET_DIR/.goalkeeper"
+PHASE_DIR="$GK_DIR/phases/PHASE-0001-new-project-discovery"
+WAVE_DIR="$PHASE_DIR/waves/WAVE-0001-A-grill-and-clarify"
+STEP_DIR="$WAVE_DIR/steps"
+STEP_FILE="$STEP_DIR/STEP-0001-A-01-ask-first-user-question.md"
 
 if [[ ! -d "$GK_DIR" ]]; then
   echo "error: .goalkeeper not found in $TARGET_DIR. Run goalkeeper-init.sh first." >&2
   exit 1
 fi
+
+mkdir -p "$STEP_DIR"
 
 if [[ ! -f "$GK_DIR/compression-profile.md" && -f "$TEMPLATE_DIR/compression-profile.md" ]]; then
   cp "$TEMPLATE_DIR/compression-profile.md" "$GK_DIR/compression-profile.md"
@@ -85,6 +91,11 @@ fi
 write_file() {
   local file="$1"
   if [[ -e "$file" && "$FORCE" -ne 1 ]]; then
+    local template="$TEMPLATE_DIR/$(basename "$file")"
+    if [[ -f "$template" ]] && cmp -s "$file" "$template"; then
+      echo "overwrite placeholder: ${file#$TARGET_DIR/}"
+      return 0
+    fi
     echo "skip: ${file#$TARGET_DIR/} exists. use --force to overwrite"
     return 1
   fi
@@ -261,6 +272,111 @@ Verification evidence:
 EOF
 fi
 
+if write_file "$PHASE_DIR/phase.md"; then
+  cat > "$PHASE_DIR/phase.md" <<EOF
+# Phase
+
+## PHASE-0001: New Project Discovery
+
+Status: in_progress
+Goal link: Active Goal
+Depends on: none
+Purpose: Turn raw idea into a clear goal contract.
+Acceptance checks:
+- First user is defined.
+- Core workflow is defined.
+- Non-goals are defined.
+- Success evidence is defined.
+Waves:
+- WAVE-0001-A: Grill and Clarify
+
+## Working Files
+
+\`\`\`text
+waves/
+  WAVE-0001-A-grill-and-clarify/
+    wave.md
+    steps/
+      STEP-0001-A-01-ask-first-user-question.md
+\`\`\`
+
+## Phase Progress
+
+- $now: Raw idea captured; discovery started.
+
+## Phase Decisions
+
+- Pending discovery.
+
+## Phase Verification
+
+- Pending discovery answers.
+EOF
+fi
+
+if write_file "$WAVE_DIR/wave.md"; then
+  cat > "$WAVE_DIR/wave.md" <<EOF
+# Wave
+
+### WAVE-0001-A: Grill and Clarify
+
+Status: ready
+Parallelizable: no
+Depends on: none
+Dispatch: main-agent
+Steps:
+- STEP-0001-A-01: Ask first-user question
+Merge requirements:
+- Discovery answer is recorded before intake.
+
+## Working Files
+
+\`\`\`text
+steps/
+  STEP-0001-A-01-ask-first-user-question.md
+\`\`\`
+
+## Wave Progress
+
+- $now: Ready to ask the first discovery question.
+
+## Wave Verification
+
+- Pending discovery-log evidence.
+EOF
+fi
+
+if write_file "$STEP_FILE"; then
+  cat > "$STEP_FILE" <<EOF
+# Step
+
+#### STEP-0001-A-01: Ask first-user question
+
+Status: ready
+Owner: main-agent
+Inputs: project-seed.md, discovery-log.md
+Expected output: first-user answer recorded
+Acceptance checks:
+- One concrete first user/persona is selected.
+- The user job is described in observable terms.
+Verification evidence:
+- discovery-log.md contains the answer.
+Changed files:
+- .goalkeeper/project-seed.md
+- .goalkeeper/discovery-log.md
+- .goalkeeper/phase-plan.md
+- .goalkeeper/phases/PHASE-0001-new-project-discovery/phase.md
+- .goalkeeper/phases/PHASE-0001-new-project-discovery/waves/WAVE-0001-A-grill-and-clarify/wave.md
+- .goalkeeper/phases/PHASE-0001-new-project-discovery/waves/WAVE-0001-A-grill-and-clarify/steps/STEP-0001-A-01-ask-first-user-question.md
+Commands:
+- goalkeeper new --idea "..."
+Decisions:
+- Use grill-style discovery before intake.
+Notes:
+- Ask one concise question before planning implementation.
+EOF
+fi
+
 if write_file "$GK_DIR/next-target.md"; then
   cat > "$GK_DIR/next-target.md" <<EOF
 # Next Target
@@ -284,10 +400,11 @@ The project is still a raw idea. Goalkeeper must interrogate before planning or 
 
 ## Required Sync After Each Step Or Commit
 
-- Update phase-plan.md.
-- Update progress-log.md.
-- Update verification-log.md when checks run.
-- Update decision-log.md when choices change.
+- Update active files under phases/ for the current phase/wave/step.
+- Update phase-plan.md index statuses.
+- Update progress-log.md only as a compact index.
+- Update verification-log.md only as a compact index when checks run.
+- Update decision-log.md only for cross-phase decisions.
 - Update resume-snapshot.md.
 - Update this file.
 
@@ -334,8 +451,9 @@ cat >> "$GK_DIR/progress-log.md" <<EOF
 
 ## $now
 
-- Started new Goalkeeper project intake.
+- Index: started new Goalkeeper project intake.
 - Raw idea: $IDEA
+- Detail: .goalkeeper/phases/PHASE-0001-new-project-discovery/
 EOF
 
 echo "ok: new project intake packet written to $GK_DIR"

@@ -9,7 +9,7 @@ Use this skill to gather evidence for a Goalkeeper decision or plan.
 
 ## Workflow
 
-1. Read `.goalkeeper/goal-contract.md`, `.goalkeeper/context-ledger.md`, `.goalkeeper/decision-log.md`, and `.goalkeeper/resume-snapshot.md`.
+1. Read `.goalkeeper/goal-contract.md`, `.goalkeeper/context-ledger.md`, `.goalkeeper/decision-log.md`, `.goalkeeper/resume-snapshot.md`, and the active scoped phase/wave/step files when research belongs to a planned step.
 2. Identify the research question and scope from the active goal.
 3. Use appropriate sources:
    - Use Context7 for current library, framework, SDK, API, CLI, or cloud service docs.
@@ -18,7 +18,8 @@ Use this skill to gather evidence for a Goalkeeper decision or plan.
 4. Separate facts from inferences.
 5. Record durable findings in `.goalkeeper/context-ledger.md`.
 6. Add proposed decisions or tradeoffs to `.goalkeeper/decision-log.md`.
-7. Refresh `.goalkeeper/resume-snapshot.md`.
+7. Record step-specific research evidence in the active scoped step file.
+8. Refresh `.goalkeeper/resume-snapshot.md`.
 
 ## Output Rules
 
