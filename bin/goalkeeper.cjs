@@ -27,6 +27,7 @@ function usage() {
 Usage:
   goalkeeper                         run install wizard
   goalkeeper install [options]       install Goalkeeper skills
+  goalkeeper uninstall [options]     remove Goalkeeper skills
   goalkeeper init [dir] [options]    create .goalkeeper artifacts
   goalkeeper new [dir] --idea TEXT   helper: write new-project intake packet
   goalkeeper status [dir]            helper: show current Goalkeeper state
@@ -42,6 +43,7 @@ Install options:
   --scope user|project               install scope, default: user
   --target DIR                       custom skills directory
   --force                            overwrite existing goalkeeper-* skills
+  --config-dir DIR                   custom agent config root; uses DIR/skills
   --dry-run                          print actions only
   --yes                              use defaults without prompting
 
@@ -66,6 +68,7 @@ async function main() {
 
   const rest = args.slice(1);
   if (command === 'install') return installCommand(rest);
+  if (command === 'uninstall' || command === 'remove' || command === 'rm') return uninstallCommand(rest);
   if (command === 'init') return initCommand(rest);
   if (command === 'new' || command === 'new-project') return newProjectCommand(rest);
   if (command === 'status') return stateCommand('status', rest);
@@ -113,7 +116,8 @@ async function wizard(args) {
 
 function installCommand(args) {
   const options = parseOptions(args);
-  const agent = options.target ? 'custom' : options.agent || (options.yes ? 'codex' : null);
+  const target = resolveCustomTarget(options);
+  const agent = target ? 'custom' : options.agent || (options.yes ? 'codex' : null);
   const scope = options.scope || 'user';
 
   if (!agent) {
@@ -124,8 +128,26 @@ function installCommand(args) {
   installSkills({
     agent,
     scope,
-    target: options.target,
+    target,
     force: options.force,
+    dryRun: options.dryRun,
+  });
+}
+
+function uninstallCommand(args) {
+  const options = parseOptions(args);
+  const target = resolveCustomTarget(options);
+  const agent = target ? 'custom' : options.agent || (options.yes ? 'codex' : null);
+  const scope = options.scope || 'user';
+
+  if (!agent) {
+    fail('uninstall requires --agent codex|claude|both, --target DIR, or --yes for the Codex default');
+  }
+
+  uninstallSkills({
+    agent,
+    scope,
+    target,
     dryRun: options.dryRun,
   });
 }
@@ -176,16 +198,24 @@ function pauseCommand(args) {
 }
 
 function doctorCommand() {
+  const expected = listSkillNames();
   console.log(`Goalkeeper ${VERSION}`);
   console.log(`package_root: ${ROOT}`);
   console.log(`node: ${process.version}`);
-  console.log(`skills: ${SKILLS_DIR} (${countSkillDirs()} skills)`);
+  console.log(`skills: ${SKILLS_DIR} (${expected.length} skills)`);
   console.log(`templates: ${TEMPLATES_DIR}`);
-  console.log(`codex_user_target: ${targetFor('codex', 'user')}`);
-  console.log(`claude_user_target: ${targetFor('claude', 'user')}`);
-  console.log(`codex_project_target: ${targetFor('codex', 'project')}`);
-  console.log(`claude_project_target: ${targetFor('claude', 'project')}`);
   console.log(`state_script: ${fs.existsSync(STATE_SCRIPT) ? 'present' : 'missing'}`);
+  for (const agent of ['codex', 'claude']) {
+    for (const scope of ['user', 'project']) {
+      const target = targetFor(agent, scope);
+      const installed = installedSkillNames(target, expected);
+      const missing = expected.filter((name) => !installed.includes(name));
+      const status = missing.length === 0 ? 'complete' : (installed.length === 0 ? 'missing' : 'partial');
+      console.log(`${agent}_${scope}_target: ${target}`);
+      console.log(`${agent}_${scope}_installed: ${installed.length}/${expected.length} ${status}`);
+      if (missing.length > 0 && installed.length > 0) console.log(`${agent}_${scope}_missing: ${missing.join(', ')}`);
+    }
+  }
 }
 
 function installSkills({ agent, scope, target, force, dryRun }) {
@@ -197,6 +227,15 @@ function installSkills({ agent, scope, target, force, dryRun }) {
   }
 }
 
+function uninstallSkills({ agent, scope, target, dryRun }) {
+  const targets = resolveTargets(agent, scope, target);
+  if (targets.length === 0) fail('no uninstall targets resolved');
+
+  for (const uninstallTarget of targets) {
+    removeSkillSet(uninstallTarget, { dryRun });
+  }
+}
+
 function resolveTargets(agent, scope, target) {
   if (target) return [path.resolve(expandHome(target))];
   if (agent === 'custom') fail('--target is required for custom install');
@@ -205,16 +244,26 @@ function resolveTargets(agent, scope, target) {
   fail(`unknown agent: ${agent}`);
 }
 
+function resolveCustomTarget(options) {
+  if (options.target && options.configDir) fail('use either --target or --config-dir, not both');
+  if (options.target) return options.target;
+  if (options.configDir) return path.join(options.configDir, 'skills');
+  return null;
+}
+
 function targetFor(agent, scope) {
   if (scope !== 'user' && scope !== 'project') fail(`unknown scope: ${scope}`);
   if (scope === 'project') {
-    return path.join(process.cwd(), agent === 'codex' ? '.codex' : '.claude', 'skills');
+    return path.join(process.cwd(), agent === 'codex' ? '.agents' : '.claude', 'skills');
   }
   if (agent === 'codex') {
     return path.join(process.env.CODEX_HOME || path.join(os.homedir(), '.codex'), 'skills');
   }
   if (agent === 'claude') {
-    return path.join(process.env.CLAUDE_HOME || path.join(os.homedir(), '.claude'), 'skills');
+    return path.join(
+      process.env.CLAUDE_CONFIG_DIR || process.env.CLAUDE_HOME || path.join(os.homedir(), '.claude'),
+      'skills'
+    );
   }
   fail(`unknown agent: ${agent}`);
 }
@@ -243,6 +292,29 @@ function copySkillSet(target, { force, dryRun }) {
     console.log(`install: ${entry.name} -> ${dst}`);
   }
   console.log(`ok: Goalkeeper skills installed to ${target}`);
+}
+
+function removeSkillSet(target, { dryRun }) {
+  const expected = listSkillNames();
+  if (dryRun) console.log(`dry-run: inspect ${target}`);
+
+  let removed = 0;
+  for (const name of expected) {
+    const dst = path.join(target, name);
+    if (!fs.existsSync(dst)) {
+      console.log(`skip: ${name} not installed at ${target}`);
+      continue;
+    }
+    if (dryRun) {
+      console.log(`dry-run: rm -rf ${dst}`);
+      removed += 1;
+      continue;
+    }
+    fs.rmSync(dst, { recursive: true, force: true });
+    console.log(`remove: ${name} -> ${dst}`);
+    removed += 1;
+  }
+  console.log(`ok: removed ${removed} Goalkeeper skill${removed === 1 ? '' : 's'} from ${target}`);
 }
 
 function runShellScript(name, args) {
@@ -345,13 +417,22 @@ function expandHome(value) {
 }
 
 function countSkillDirs() {
+  return listSkillNames().length;
+}
+
+function listSkillNames() {
   try {
     return fs.readdirSync(SKILLS_DIR, { withFileTypes: true })
       .filter((entry) => entry.isDirectory() && entry.name.startsWith('goalkeeper-'))
-      .length;
+      .map((entry) => entry.name)
+      .sort();
   } catch {
-    return 0;
+    return [];
   }
+}
+
+function installedSkillNames(target, expected) {
+  return expected.filter((name) => fs.existsSync(path.join(target, name, 'SKILL.md')));
 }
 
 function fail(message) {

@@ -40,6 +40,7 @@ Non-interactive install:
 ```bash
 npx @goalkpr/goalkeeper install --agent codex --scope user --force
 npx @goalkpr/goalkeeper install --agent claude --scope user --force
+npx @goalkpr/goalkeeper install --agent both --scope project
 ```
 
 For a persistent local command:
@@ -107,6 +108,7 @@ The LLM performs the work and updates the files. The CLI is only the installer/b
 
 ```bash
 npx @goalkpr/goalkeeper install --agent codex --scope user
+npx @goalkpr/goalkeeper uninstall --agent codex --scope user
 npx @goalkpr/goalkeeper init .
 npx @goalkpr/goalkeeper validate .
 npx @goalkpr/goalkeeper doctor
@@ -122,10 +124,20 @@ Install options:
 --agent codex|claude|both
 --scope user|project
 --target DIR
+--config-dir DIR
 --force
 --dry-run
 --yes
 ```
+
+Supported install paths:
+
+| Agent | User scope | Project scope |
+|---|---|---|
+| Codex | `~/.codex/skills/` | `./.agents/skills/` |
+| Claude Code | `~/.claude/skills/` | `./.claude/skills/` |
+
+Use `--target DIR` for an exact skills directory. Use `--config-dir DIR` for an agent config root; Goalkeeper installs into `DIR/skills`.
 
 Project options:
 
