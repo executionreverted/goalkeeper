@@ -124,6 +124,8 @@ Accepted values:
 - `model_profile`: `inherit | budget | balanced | quality`
 - `branch_strategy`: `current_branch | phase_branch | worktree`
 
+`commit_docs: true` means a git-backed project should commit after verification passes for a step or quick task. The commit should include both product changes and the matching `.goalkeeper` evidence updates.
+
 ## Project Seed Shape
 
 ```text

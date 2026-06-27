@@ -206,6 +206,8 @@ Important files:
 - `gaps/`: missing work found after phase analysis.
 - `archive/`: verified phase completion reports.
 
+When `commit_docs` is enabled, Goalkeeper expects git-backed projects to commit after verification passes for each step or quick task. The commit should include the code change and the matching `.goalkeeper` evidence updates.
+
 ## Phase, Wave, Step
 
 Goalkeeper plans work as:

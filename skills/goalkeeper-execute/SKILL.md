@@ -33,6 +33,8 @@ Use this skill to perform the next bounded step or dispatch a parallel wave.
 - If context is stale, use `goalkeeper-resume` before continuing.
 - Subagents must use `.goalkeeper/compression-profile.md` by default.
 - After code changes, review findings, fix actionable issues, then verify.
+- Do not mark a step `done` or advance to the next step from execute; route to verify first.
+- Leave final step commits to `goalkeeper-verify` after verification passes, unless the user explicitly asks for a WIP commit.
 - After each step or commit, sync active docs before continuing.
 - Never dump long execution details into root logs; put them in the scoped step file.
 - End with exactly one route: `Next: $goalkeeper-verify`, `Next: $goalkeeper-next`, or `Stop: <approval/blocker>`.

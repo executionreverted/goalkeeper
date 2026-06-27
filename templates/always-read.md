@@ -10,8 +10,10 @@ Read this before every phase, wave, step, resume, or subagent dispatch.
 4. Use subagent-driven development for independent wave steps when safe.
 5. Read `compression-profile.md` before subagent dispatch and require that profile in every subagent brief.
 6. After code changes, review the work, record findings, fix actionable issues, then verify.
-7. After every step and commit, update the active phase/wave/step files, compact root indexes, phase plan, resume snapshot, and next target before stopping.
-8. After a phase appears complete, run phase gap analysis before archiving.
+7. After verification passes for a step or quick task, sync docs first, then commit code plus Goalkeeper artifacts before moving to the next step when the project is a git repo and `commit_docs` is true.
+8. If the required verification commit cannot be made, record the blocker and stop instead of marking the step done.
+9. After every step and commit, update the active phase/wave/step files, compact root indexes, phase plan, resume snapshot, and next target before stopping.
+10. After a phase appears complete, run phase gap analysis before archiving.
 
 ## Next Target Policy
 

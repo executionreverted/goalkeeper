@@ -27,6 +27,9 @@ Use this skill to decide whether a step, wave, phase, or goal can move from `nee
 13. Mark a phase done only after all required waves pass.
 14. Refresh `.goalkeeper/resume-snapshot.md`.
 15. Refresh `.goalkeeper/next-target.md`.
+16. If verification passes and the target project is a git repo with `commit_docs: true`, commit code plus updated Goalkeeper artifacts before reporting completion or moving to the next step.
+17. Record the commit hash in the scoped step/wave/phase file and compact logs when available.
+18. If the required commit fails, set the item to `blocked`, record the reason, and stop.
 
 ## Verification Rules
 
@@ -34,6 +37,7 @@ Use this skill to decide whether a step, wave, phase, or goal can move from `nee
 - Use concrete outputs: command results, diff summaries, screenshots, source links, or user-visible artifacts.
 - Record residual risk when verification is partial.
 - Do not mark the overall goal done until all project success criteria and phase goals in `goal-contract.md` are satisfied or explicitly superseded.
+- Do not mark a step `done` in a git repo without a post-verification commit unless `commit_docs` is false or the user explicitly forbids commits.
 - Do not silently re-verify archived phases; ask before spending time on deep verification.
 - Root verification log is an index; detailed output belongs in the scoped step/wave/phase files.
 - End with exactly one route: `Next: $goalkeeper-analyze-phase`, `Next: $goalkeeper-execute`, `Next: $goalkeeper-next`, or `Stop: <blocker>`.

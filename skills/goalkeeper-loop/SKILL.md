@@ -22,8 +22,9 @@ Run one bounded loop cycle at a time; continue only while policy allows.
    - `blocked`: inspect docs, git, commits, and code before asking user.
    - skipped dependency guard: ask whether to continue later or handle the open phase first.
 7. Sync active scoped files first, then `phase-plan.md`, compact root logs, `resume-snapshot.md`, and `next-target.md`.
-8. End with exactly one recommended command or stop reason.
-9. Repeat from step 4 only if autonomy allows and no stop condition fired.
+8. In `verify` mode, after checks pass and docs are synced, commit code plus Goalkeeper artifacts before moving to the next step when the project is a git repo and `commit_docs` is true.
+9. End with exactly one recommended command or stop reason.
+10. Repeat from step 4 only if autonomy allows and no stop condition fired.
 
 ## Stop Conditions
 
@@ -44,3 +45,4 @@ Run one bounded loop cycle at a time; continue only while policy allows.
 - If the loop card points to another skill, recommend that exact skill instead of making the user infer it.
 - Use exact skill syntax in replies, e.g. `Next: $goalkeeper-new-project`, not prose labels like `Goalkeeper New Project`.
 - Do not tell the user to run `goalkeeper`, `npx`, or shell commands as the next step; those are internal helper calls for the agent.
+- Do not advance past a verified step in a git repo until the post-verification commit has succeeded or the blocker is recorded.

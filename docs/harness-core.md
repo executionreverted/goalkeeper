@@ -137,6 +137,17 @@ After each step or commit, sync:
 
 If docs conflict with code, inspect git status, diff, recent commits, and source files before deciding. Ask user only when confidence is low.
 
+## Commit Contract
+
+When `commit_docs` is true and the target project is a git repo:
+
+- execute moves work to `needs_review`, not `done`
+- verify runs checks and records evidence
+- after verification passes, sync Goalkeeper artifacts
+- commit product changes plus matching `.goalkeeper` evidence before moving to the next step
+- record the commit hash in scoped evidence when available
+- if the commit fails, mark the item blocked and stop
+
 ## Validation Contract
 
 `validate` must hard-fail when:

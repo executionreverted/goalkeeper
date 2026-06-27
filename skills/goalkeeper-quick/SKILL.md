@@ -16,11 +16,15 @@ Use this skill for small ad-hoc work with Goalkeeper guarantees.
 5. Execute the smallest safe change.
 6. Update the quick file with changed files, commands, failed attempts, verification, and summary.
 7. Run verification before marking `Status: done`.
-8. Refresh `.goalkeeper/resume-snapshot.md` and append a compact `progress-log.md` entry.
+8. If verification passes and the target project is a git repo with `commit_docs: true`, commit code plus the quick/progress/resume/verification artifacts before reporting completion.
+9. Record the commit hash in the quick file and compact logs when available.
+10. If the required commit fails, leave the quick task blocked and stop.
+11. Refresh `.goalkeeper/resume-snapshot.md` and append a compact `progress-log.md` entry.
 
 ## Quick Rules
 
 - Use quick only when the task fits one focused loop.
 - Use `--research`, `--validate`, or `--full` when uncertainty or risk warrants it.
 - Keep user-facing output short.
+- Prefer the final commit after verification, not before.
 - End with exactly one route: `Next: $goalkeeper-verify`, `Next: $goalkeeper-next`, `Next: $goalkeeper-plan`, or `Stop: <blocker>`.
