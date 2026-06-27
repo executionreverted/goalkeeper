@@ -13,6 +13,10 @@ Step: STEP-0000-A-01: Run new-project discovery
 
 Run `goalkeeper-new-project` with the user's raw idea, then replace the bootstrap plan.
 
+## Recommended Command
+
+$goalkeeper-new-project
+
 ## Why
 
 Goalkeeper has been initialized but no project-specific discovery has been completed yet.

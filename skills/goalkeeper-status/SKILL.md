@@ -19,6 +19,7 @@ Use this skill to inspect, not mutate.
    - blockers
    - last verification
    - active scoped artifact paths
+   - recommended command
 4. Keep response terse.
 
 ## Rules
@@ -26,3 +27,4 @@ Use this skill to inspect, not mutate.
 - Do not choose new scope.
 - Do not advance state.
 - Do not ask unless artifacts conflict.
+- End with exactly one `Next: $goalkeeper-...` route unless blocked.

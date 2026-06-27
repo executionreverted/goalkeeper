@@ -20,7 +20,8 @@ Run one bounded loop cycle at a time; continue only while policy allows.
    - `blocked`: inspect docs, git, commits, and code before asking user.
    - skipped dependency guard: ask whether to continue later or handle the open phase first.
 5. Sync active scoped files first, then `phase-plan.md`, compact root logs, `resume-snapshot.md`, and `next-target.md`.
-6. Repeat from step 2 only if autonomy allows and no stop condition fired.
+6. End with exactly one recommended command or stop reason.
+7. Repeat from step 2 only if autonomy allows and no stop condition fired.
 
 ## Stop Conditions
 
@@ -38,3 +39,4 @@ Run one bounded loop cycle at a time; continue only while policy allows.
 - Keep next target phase-level.
 - Do not continue when the loop card says an earlier/dependency phase is open unless the user confirms.
 - Keep root logs compact; detailed loop output belongs in the scoped step file.
+- If the loop card points to another skill, recommend that exact skill instead of making the user infer it.

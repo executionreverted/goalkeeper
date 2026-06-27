@@ -16,9 +16,11 @@ Behavior:
 - Read `.goalkeeper/phase-plan.md`.
 - Read scoped files for the requested phase under `.goalkeeper/phases/`.
 - Extract requested phase.
-- Compare wave/step statuses and scoped evidence with git history.
-- If all required waves/steps are complete, write `.goalkeeper/archive/<phase>-report.md`.
+- Compare wave/step statuses, scoped artifact existence, scoped step evidence, and git history.
+- If all required waves/steps are complete and scoped evidence exists, write `.goalkeeper/archive/<phase>-report.md`.
 - If gaps exist, write `.goalkeeper/gaps/<phase>-gaps.md`.
+
+`analyze-phase` must not archive a phase from `phase-plan.md` status alone.
 
 ## Close Gaps
 

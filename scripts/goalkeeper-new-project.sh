@@ -400,6 +400,10 @@ Step: STEP-0001-A-01: Ask first-user question
 
 Clarify the project enough to write goal-contract.md, then run goalkeeper-plan.
 
+## Recommended Command
+
+\$goalkeeper-new-project
+
 ## Why
 
 The project is still a raw idea. Goalkeeper must interrogate before planning or execution.

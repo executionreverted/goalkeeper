@@ -39,6 +39,8 @@ Detailed work belongs under phase folders, not root logs:
 
 Use ids plus 3-4 word lowercase slugs so files are searchable and cherry-pickable.
 
+Every phase, wave, and step in `phase-plan.md` must have its expected scoped artifact. Closed steps must also have closed status and verification evidence in their scoped step file.
+
 ## Work Statuses
 
 ```text
@@ -88,6 +90,22 @@ Definition of done:
 ```
 
 Phase goals in `goal-contract.md` are short project-map entries. Detailed phase purpose, acceptance checks, decisions, and verification live in `.goalkeeper/phases/<phase>/phase.md`.
+
+## Next Target Shape
+
+```text
+Current Active Scope:
+Phase:
+Wave:
+Step:
+
+Next Phase Target:
+
+Recommended Command:
+$goalkeeper-...
+```
+
+`Recommended Command` is the single next skill the agent should suggest unless it must stop for user input.
 
 ## Decision Record Shape
 

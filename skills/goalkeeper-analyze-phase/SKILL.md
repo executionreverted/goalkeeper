@@ -15,24 +15,25 @@ Use this skill after a phase is believed complete.
 4. Prefer running `scripts/goalkeeper-analyze-phase.sh <project-dir> <phase-id>` when available.
 5. If the phase does not exist, stop and ask which suggested phase the user meant.
 6. If the phase is already archived and no open gap exists, say that and ask whether the user wants a deeper docs/code/commit verification pass.
-7. Compare:
+7. If the phase still has open executable steps, do not archive; route to `goalkeeper-execute` or `goalkeeper-verify`.
+8. Compare:
    - phase waves
    - phase steps
    - statuses
    - verification evidence
    - scoped step evidence
    - git status/diff/recent commits when available
-8. If all required waves/steps are complete and verified:
+9. If all required waves/steps are complete and verified:
    - write `.goalkeeper/archive/<phase>-report.md`
    - include commit hashes
    - include scoped artifact paths checked
    - update phase status if needed
    - update resume snapshot and next target
-9. If gaps exist:
+10. If gaps exist:
    - write `.goalkeeper/gaps/<phase>-gaps.md`
    - list missing waves/steps/evidence
    - include closure plan seed
-10. If docs conflict with code/commits and confidence is low, ask one user question.
+11. If docs conflict with code/commits and confidence is low, ask one user question.
 
 ## Rules
 
@@ -41,3 +42,4 @@ Use this skill after a phase is believed complete.
 - Keep output terse.
 - Never silently continue past a missing phase, already-archived phase, or phase/dependency mismatch.
 - Treat root logs as indexes; gap/archive judgment should inspect scoped phase/wave/step files.
+- End with exactly one route: `Next: $goalkeeper-close-gaps`, `Next: $goalkeeper-next`, or `Stop: <question>`.

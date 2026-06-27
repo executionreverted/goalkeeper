@@ -61,3 +61,6 @@ Job: <observable job they need done>
 - Handoff to `goalkeeper-intake` when the project boundaries are clear enough to form `goal-contract.md`.
 - Keep discovery details in `.goalkeeper/phases/PHASE-0001-new-project-discovery/`, not only root logs.
 - Keep user-facing replies concise unless the user asks for detail.
+- End with exactly one route:
+  - `Next: answer the discovery question` when more discovery is needed.
+  - `Next: $goalkeeper-intake` when boundaries are clear enough for a project-level contract.

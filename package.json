@@ -17,7 +17,7 @@
   ],
   "scripts": {
     "check": "node --check bin/goalkeeper.cjs && node --check scripts/goalkeeper-state.cjs",
-    "smoke": "npm run check && node bin/goalkeeper.cjs doctor",
+    "smoke": "npm run check && bash scripts/goalkeeper-smoke-test.sh && node bin/goalkeeper.cjs doctor",
     "publish:0.1": "bash scripts/publish-npm.sh"
   },
   "engines": {

@@ -112,6 +112,7 @@ function parsePhasePlan(markdown) {
 function parseNextTarget(markdown) {
   const phaseLine = firstLineAfter(markdown, '## Current Active Scope');
   const nextPhaseTarget = firstLineAfter(markdown, '## Next Phase Target');
+  const recommendedCommand = firstLineAfter(markdown, '## Recommended Command');
   const phaseMatch = markdown.match(/^Phase:\s*(PHASE-\d+)(?::\s*(.*))?$/m);
   const waveMatch = markdown.match(/^Wave:\s*(WAVE-\d+-[A-Z])(?::\s*(.*))?$/m);
   const stepMatch = markdown.match(/^Step:\s*(STEP-\d+-[A-Z]-\d+)(?::\s*(.*))?$/m);
@@ -122,6 +123,7 @@ function parseNextTarget(markdown) {
     wave_id: waveMatch ? waveMatch[1] : '',
     step_id: stepMatch ? stepMatch[1] : '',
     next_phase_target: nextPhaseTarget,
+    recommended_command: recommendedCommand,
     confidence: confidenceMatch ? confidenceMatch[1].trim() : '',
   };
 }
@@ -140,6 +142,7 @@ function loadProject(targetArg) {
     phasePlanPath,
     phases: parsePhasePlan(phasePlan),
     nextTarget: parseNextTarget(nextTarget),
+    goalContract: read(path.join(gkDir, 'goal-contract.md')),
     resume: read(path.join(gkDir, 'resume-snapshot.md')),
     verification: read(path.join(gkDir, 'verification-log.md')),
     progress: read(path.join(gkDir, 'progress-log.md')),
@@ -169,17 +172,64 @@ function slugTitle(title) {
 
 function scopedArtifactPaths(project, next) {
   if (!next?.phase) return [];
-  const phaseSlug = `${next.phase.id}-${slugTitle(next.phase.title)}`;
+  return scopedPathsFor(next.phase, next.wave, next.step);
+}
+
+function scopedPathsFor(phase, wave = null, step = null) {
+  if (!phase) return [];
+  const phaseSlug = `${phase.id}-${slugTitle(phase.title)}`;
   const paths = [`.goalkeeper/phases/${phaseSlug}/phase.md`];
-  if (next.wave) {
-    const waveSlug = `${next.wave.id}-${slugTitle(next.wave.title)}`;
+  if (wave) {
+    const waveSlug = `${wave.id}-${slugTitle(wave.title)}`;
     paths.push(`.goalkeeper/phases/${phaseSlug}/waves/${waveSlug}/wave.md`);
-    if (next.step) {
-      const stepSlug = `${next.step.id}-${slugTitle(next.step.title)}`;
+    if (step) {
+      const stepSlug = `${step.id}-${slugTitle(step.title)}`;
       paths.push(`.goalkeeper/phases/${phaseSlug}/waves/${waveSlug}/steps/${stepSlug}.md`);
     }
   }
   return paths;
+}
+
+function relToAbs(project, relPath) {
+  return path.join(project.targetDir, relPath);
+}
+
+function expectedScopedArtifactsForPhase(phase) {
+  const paths = [...scopedPathsFor(phase)];
+  for (const wave of phase.waves) {
+    paths.push(...scopedPathsFor(phase, wave).slice(1));
+    for (const step of wave.steps) {
+      paths.push(...scopedPathsFor(phase, wave, step).slice(2));
+    }
+  }
+  return paths;
+}
+
+function scopedStepPath(phase, wave, step) {
+  return scopedPathsFor(phase, wave, step).at(-1);
+}
+
+function hasRealEvidenceText(markdown) {
+  const match = markdown.match(/Verification evidence:\s*([\s\S]*?)(?:\n[A-Z][A-Za-z ]+:\s*|\n## |\n#### |\n### |$)/);
+  if (!match) return false;
+  const evidence = match[1]
+    .split(/\r?\n/)
+    .map((line) => line.replace(/^-\s*/, '').trim())
+    .filter(Boolean)
+    .join('\n')
+    .trim();
+  if (!evidence) return false;
+  return !/^(TBD|Pending|Pending discovery|Pending discovery-log evidence|\[?\s*\]?)\.?$/i.test(evidence);
+}
+
+function stepHasScopedEvidence(project, phase, wave, step) {
+  const relPath = scopedStepPath(phase, wave, step);
+  if (!relPath) return false;
+  const absPath = relToAbs(project, relPath);
+  if (!fs.existsSync(absPath)) return false;
+  const markdown = read(absPath);
+  const status = (markdown.match(/^Status:\s*(.*)$/m) || [])[1] || '';
+  return isClosed(status) && hasRealEvidenceText(markdown);
 }
 
 function suggestPhase(project, requestedId) {
@@ -294,6 +344,7 @@ function printStatus(project) {
   console.log(`verification: ${lastVerification}`);
   const paths = scopedArtifactPaths(project, next);
   if (paths.length) console.log(`active_artifacts: ${paths.join(', ')}`);
+  console.log(`recommended_command: ${recommendedCommand(project, next)}`);
 }
 
 function printNext(project) {
@@ -303,6 +354,7 @@ function printNext(project) {
     console.log('mode: none');
     console.log('next: no actionable phase/wave/step found');
     if (project.nextTarget.next_phase_target) console.log(`next_phase_target: ${project.nextTarget.next_phase_target}`);
+    console.log(`recommended_command: ${recommendedCommand(project, next, 'none')}`);
     return;
   }
   console.log(`phase: ## ${next.phase.id}: ${next.phase.title}`);
@@ -317,12 +369,10 @@ function printNext(project) {
     console.log(`dispatch: Dispatch: ${next.wave.dispatch || 'main-agent'}`);
   }
   const guards = printGuards(project, next);
-  if (guards.length > 0) console.log('mode: blocked');
-  else if (normalizeStatus(status) === 'needs_review') console.log('mode: verify');
-  else if (normalizeStatus(status) === 'blocked') console.log('mode: blocked');
-  else if ((next.wave?.dispatch || '').includes('subagents')) console.log('mode: subagents');
-  else console.log('mode: main-agent');
+  const mode = guards.length > 0 ? 'blocked' : modeFor(next);
+  console.log(`mode: ${mode}`);
   if (project.nextTarget.next_phase_target) console.log(`next_phase_target: ${project.nextTarget.next_phase_target}`);
+  console.log(`recommended_command: ${recommendedCommand(project, next, mode)}`);
 }
 
 function modeFor(next) {
@@ -335,6 +385,26 @@ function modeFor(next) {
   return 'main-agent';
 }
 
+function isBootstrapPlan(project) {
+  return project.phases.length === 1 && project.phases[0]?.id === 'PHASE-0000';
+}
+
+function hasPendingGoalContract(project) {
+  const contract = project.goalContract || '';
+  return /Pending discovery/i.test(contract) || /Current phase:\s*new_project/i.test(contract);
+}
+
+function recommendedCommand(project, next, mode = modeFor(next)) {
+  if (isBootstrapPlan(project)) return '$goalkeeper-new-project';
+  if (mode === 'interrogate') return '$goalkeeper-new-project';
+  if (!next && hasPendingGoalContract(project)) return '$goalkeeper-intake';
+  if (mode === 'verify') return '$goalkeeper-verify';
+  if (mode === 'subagents' || mode === 'main-agent') return '$goalkeeper-execute';
+  if (mode === 'blocked') return '$goalkeeper-status';
+  if (!next) return '$goalkeeper-plan';
+  return '$goalkeeper-next';
+}
+
 function printLoop(project) {
   const next = selectNext(project);
   console.log('Goalkeeper loop');
@@ -345,6 +415,7 @@ function printLoop(project) {
     console.log('mode: none');
     console.log('action: no actionable phase/wave/step found; inspect goal-contract and archive/done state');
     console.log('stop: ask user whether to create a new phase or finish the goal');
+    console.log(`recommended_command: ${recommendedCommand(project, next, 'none')}`);
     return;
   }
 
@@ -381,6 +452,7 @@ function printLoop(project) {
   console.log('after_action: update active scoped phase/wave/step files, phase-plan index, compact root logs, resume-snapshot, and next-target');
   console.log('continue_rule: continue automatically only while autonomy and stop conditions allow');
   console.log(`next_phase_target: ${project.nextTarget.next_phase_target || 'unknown'}`);
+  console.log(`recommended_command: ${recommendedCommand(project, next, mode)}`);
 }
 
 function validate(project) {
@@ -422,12 +494,26 @@ function validate(project) {
     if (!phase.status) {
       console.log(`WARN ${phase.id} missing status`);
     }
+    for (const relPath of expectedScopedArtifactsForPhase(phase)) {
+      if (fs.existsSync(relToAbs(project, relPath))) console.log(`OK ${relPath}`);
+      else {
+        console.log(`FAIL missing scoped artifact ${relPath}`);
+        failCount += 1;
+      }
+    }
     for (const wave of phase.waves) {
       if (!wave.status) console.log(`WARN ${wave.id} missing status`);
       for (const step of wave.steps) {
         if (!step.status) console.log(`WARN ${step.id} missing status`);
-        if (['done', 'verified'].includes(normalizeStatus(step.status)) && !step.verification_evidence) {
-          console.log(`WARN ${step.id} done/verified without verification evidence`);
+        if (['done', 'verified'].includes(normalizeStatus(step.status))) {
+          if (!step.verification_evidence) {
+            console.log(`FAIL ${step.id} done/verified without phase-plan verification evidence`);
+            failCount += 1;
+          }
+          if (!stepHasScopedEvidence(project, phase, wave, step)) {
+            console.log(`FAIL ${step.id} done/verified without scoped step verification evidence`);
+            failCount += 1;
+          }
         }
       }
     }
@@ -444,6 +530,12 @@ function validate(project) {
   }
   const selected = selectNext(project);
   const selectedGuards = openPhaseGuards(project, selected?.phase);
+  const selectedMode = selectedGuards.length > 0 ? 'blocked' : (selected ? modeFor(selected) : 'none');
+  const expectedCommand = recommendedCommand(project, selected, selectedMode);
+  if (project.nextTarget.recommended_command && project.nextTarget.recommended_command !== expectedCommand) {
+    console.log(`FAIL next-target recommended command mismatch: ${project.nextTarget.recommended_command} != ${expectedCommand}`);
+    failCount += 1;
+  }
   for (const guard of selectedGuards) console.log(`WARN ${guard}`);
   const git = gitInfo(project.targetDir);
   if (git.hasGit) {
@@ -483,12 +575,20 @@ function analyzePhase(project, phaseId) {
   const git = gitInfo(project.targetDir);
 
   const gaps = [];
+  for (const relPath of expectedScopedArtifactsForPhase(phase)) {
+    if (!fs.existsSync(relToAbs(project, relPath))) {
+      gaps.push(`- Missing scoped artifact: ${relPath}`);
+    }
+  }
   for (const wave of phase.waves) {
     if (!isClosed(wave.status)) gaps.push(`- ### ${wave.id}: ${wave.title} -> Status: ${wave.status || 'missing'}`);
     for (const step of wave.steps) {
       if (!isClosed(step.status)) gaps.push(`- #### ${step.id}: ${step.title} -> Status: ${step.status || 'missing'}`);
       if (['done', 'verified'].includes(normalizeStatus(step.status)) && !step.verification_evidence) {
         gaps.push(`- #### ${step.id}: ${step.title} -> Missing verification evidence`);
+      }
+      if (['done', 'verified'].includes(normalizeStatus(step.status)) && !stepHasScopedEvidence(project, phase, wave, step)) {
+        gaps.push(`- #### ${step.id}: ${step.title} -> Missing scoped step verification evidence`);
       }
     }
   }

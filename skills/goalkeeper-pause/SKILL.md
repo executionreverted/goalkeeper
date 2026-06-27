@@ -20,7 +20,7 @@ Use this skill to stop safely.
    - verification state
    - active scoped artifact paths
 4. Do not move to next step.
-5. Final response: concise paused state.
+5. Final response: concise paused state plus `Next: $goalkeeper-resume`.
 
 ## Rules
 
@@ -28,3 +28,4 @@ Use this skill to stop safely.
 - Preserve enough context for `goalkeeper-resume`.
 - Do not mark work done unless verification already exists.
 - Sync active scoped files before root indexes.
+- Pause always ends with `Next: $goalkeeper-resume`.

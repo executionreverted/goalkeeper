@@ -29,7 +29,8 @@ Every iteration must:
 4. Perform one bounded unit of work.
 5. Write progress, decisions, wave dispatch results, and verification evidence into the scoped step/wave/phase files.
 6. Refresh `.goalkeeper/resume-snapshot.md`.
-7. Continue automatically when policy allows it.
+7. End with exactly one next recommended command or stop reason.
+8. Continue automatically when policy allows it.
 
 `scripts/goalkeeper-loop.sh <project-dir>` emits the deterministic loop card for the current iteration. The LLM performs the work; the script does not edit product code.
 
@@ -48,6 +49,16 @@ Stop and ask the user when:
 - Credentials or private access are missing.
 - Verification fails repeatedly and a new strategy is required.
 - The active autonomy level does not allow the next action.
+
+## Invalid Command Handling
+
+If a user invokes a skill that does not match current state, Goalkeeper must not perform busywork. It should state the mismatch and recommend the single most valid next skill command.
+
+Examples:
+
+- Execute before planning: `Next: $goalkeeper-plan`.
+- Verify before any `needs_review` step: `Next: $goalkeeper-execute`.
+- Research repeated with no new question: reuse recorded evidence and `Next: $goalkeeper-plan`.
 
 ## Done Conditions
 

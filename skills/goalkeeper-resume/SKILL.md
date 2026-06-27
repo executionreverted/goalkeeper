@@ -22,7 +22,7 @@ Use this skill to rebuild working context from artifacts.
 5. Prefer code plus verified artifacts over stale docs.
 6. If confidence is low, ask one question before choosing the next step.
 7. Identify the current phase, wave, next step, blockers, and approval requirements.
-8. Refresh `.goalkeeper/resume-snapshot.md` with a compact continuation brief.
+8. Refresh `.goalkeeper/resume-snapshot.md` with a compact continuation brief and recommended command.
 
 ## Resume Rules
 
@@ -32,3 +32,4 @@ Use this skill to rebuild working context from artifacts.
 - Ask one concise question only if no artifact establishes the next safe action.
 - Preserve phase-level next target while selecting specific current step.
 - Prefer scoped step files for detailed evidence; root logs are only indexes.
+- End with exactly one route: `Next: $goalkeeper-execute`, `Next: $goalkeeper-verify`, `Next: $goalkeeper-plan`, or `Stop: <question>`.

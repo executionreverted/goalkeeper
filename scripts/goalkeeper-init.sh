@@ -88,4 +88,8 @@ write_from_template "$TEMPLATE_DIR/progress-log.md" "$GK_DIR/progress-log.md"
 write_from_template "$TEMPLATE_DIR/verification-log.md" "$GK_DIR/verification-log.md"
 write_from_template "$TEMPLATE_DIR/resume-snapshot.md" "$GK_DIR/resume-snapshot.md"
 
+write_from_template "$TEMPLATE_DIR/phase.md" "$GK_PHASES_DIR/PHASE-0000-bootstrap-goalkeeper/phase.md"
+write_from_template "$TEMPLATE_DIR/wave.md" "$GK_PHASES_DIR/PHASE-0000-bootstrap-goalkeeper/waves/WAVE-0000-A-discovery/wave.md"
+write_from_template "$TEMPLATE_DIR/step.md" "$GK_PHASES_DIR/PHASE-0000-bootstrap-goalkeeper/waves/WAVE-0000-A-discovery/steps/STEP-0000-A-01-run-new-project-discovery.md"
+
 echo "ok: Goalkeeper initialized at $GK_DIR"

@@ -11,6 +11,7 @@ Goalkeeper v0.1 harness is introspective, not autonomous runtime.
 - `scripts/goalkeeper-pause.sh`: sync resume snapshot and stop without advancing.
 - `scripts/goalkeeper-validate.sh`: check required artifacts and surface git/doc sync risk.
 - `scripts/goalkeeper-analyze-phase.sh`: archive completed phases or write gap reports.
+- `scripts/goalkeeper-smoke-test.sh`: behavioral regression test for init/new/validate/analyze routing and evidence guards.
 - `scripts/goalkeeper-state.cjs`: schema-aware parser used by status, next, validate, and analyze-phase.
 - `scripts/goalkeeper-init.sh`: create `.goalkeeper/` in target project.
 - `scripts/install-skills.sh`: install Goalkeeper skills.
@@ -69,7 +70,25 @@ Next must:
 - then `needs_review`
 - then `blocked`
 - report dispatch mode
+- report exactly one recommended command
 - not execute work
+
+## Command Routing Contract
+
+Every Goalkeeper skill response must end with exactly one of:
+
+```text
+Next: $goalkeeper-...
+Stop: <reason>
+```
+
+If the invoked skill is not valid for current state, it must not do placeholder work. It should briefly say why it is invalid now and recommend the single most valid command instead.
+
+Examples:
+
+- `goalkeeper-execute` with no executable step -> `Next: $goalkeeper-plan` or `Next: $goalkeeper-next`.
+- `goalkeeper-research` when the same question is already answered -> summarize existing evidence and `Next: $goalkeeper-plan`.
+- `goalkeeper-verify` when nothing is in `needs_review` -> `Next: $goalkeeper-execute` or `Next: $goalkeeper-analyze-phase`.
 
 ## Loop Contract
 
@@ -80,6 +99,7 @@ Loop must:
 - follow mode from parser: `interrogate`, `verify`, `main-agent`, `subagents`, `blocked`, or `none`
 - block and ask when a hinted/requested phase skips an open earlier or dependency phase
 - sync scoped state after action, then root indexes
+- output next recommended command
 - continue only while autonomy and stop conditions allow
 
 ## Edge Guards
@@ -105,6 +125,17 @@ After each step or commit, sync:
 - `next-target.md`
 
 If docs conflict with code, inspect git status, diff, recent commits, and source files before deciding. Ask user only when confidence is low.
+
+## Validation Contract
+
+`validate` must hard-fail when:
+
+- required root files or directories are missing
+- any Phase/Wave/Step in `phase-plan.md` lacks its expected scoped artifact under `.goalkeeper/phases/`
+- a `done` or `verified` step lacks both phase-plan evidence and scoped step evidence
+- `next-target.md` recommended command disagrees with parser state
+
+Warnings are allowed for soft metadata gaps only. Completion/evidence gaps are failures.
 
 ## Next Target Contract
 

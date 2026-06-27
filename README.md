@@ -118,6 +118,8 @@ Most users only need `install` and `init`, then continue in chat with `$goalkeep
 
 The CLI also includes shell helpers like `status`, `next`, `loop`, `pause`, and `analyze-phase`. They are for skills, debugging, and maintainers. They are not the main user workflow.
 
+Every Goalkeeper skill should end with one clear next command, for example `Next: $goalkeeper-plan`. If a command is called too early, the agent should say why and recommend the valid command instead of doing filler work.
+
 Install options:
 
 ```text
@@ -526,6 +528,8 @@ It is useful for dogfooding real projects, but it is not a daemon and does not a
 npm run check
 npm run smoke
 ```
+
+`npm run smoke` covers syntax, package health, init/new-project routing, scoped artifact validation, fake-done evidence blocking, and recommended-command drift.
 
 Publish:
 

@@ -22,8 +22,9 @@ Use this skill to select next action, not execute it.
    - `verify`
    - `blocked`
 5. Report the active scoped artifact paths so the executor can load minimal context.
-6. If a requested or hinted later phase skips an open earlier/dependency phase, stop and ask whether to continue later or handle the open phase first.
-7. Keep response terse.
+6. Report exactly one recommended command.
+7. If a requested or hinted later phase skips an open earlier/dependency phase, stop and ask whether to continue later or handle the open phase first.
+8. Keep response terse.
 
 ## Rules
 
@@ -32,3 +33,4 @@ Use this skill to select next action, not execute it.
 - If wave is parallelizable, include subagent split suggestion.
 - Keep next target phase-level; do not replace it with a tiny wave/step unless reporting current action.
 - Do not silently skip open prerequisite phases.
+- End with `Next: $goalkeeper-execute`, `Next: $goalkeeper-verify`, `Next: $goalkeeper-plan`, or `Stop: <reason>`.
