@@ -23,7 +23,7 @@ The loop is allowed to continue with minimal user action while the goal remains 
 ## Design Principles
 
 - Persist state after every meaningful loop.
-- Prefer one active goal contract over scattered notes.
+- Prefer one project-level goal contract over scattered notes.
 - Keep steps small enough to execute and verify independently.
 - Group independent steps into waves for parallel subagent dispatch.
 - Use compressed subagent prompts by default to reduce token spend.
@@ -34,7 +34,7 @@ The loop is allowed to continue with minimal user action while the goal remains 
 
 ## Project Start Gate
 
-`goalkeeper-new-project` captures the raw idea in `project-seed.md` and uses a grill-style interview to fill `discovery-log.md`. It does not plan implementation. Its job is to make the project boundaries clear enough for `goalkeeper-intake` to convert them into a durable `goal-contract.md`.
+`goalkeeper-new-project` captures the raw idea in `project-seed.md` and uses a grill-style interview to fill `discovery-log.md`. It does not plan implementation. Its job is to make the project boundaries clear enough for `goalkeeper-intake` to convert them into a durable project-level `goal-contract.md` with a short phase-goal map.
 
 ## v0.1 Runtime Surface
 

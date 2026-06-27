@@ -9,7 +9,7 @@ Goalkeeper uses Markdown artifacts because they are human-readable, diffable, an
 - `.goalkeeper/compression-profile.md`: built-in token discipline profile for subagents and bounded loop cards.
 - `.goalkeeper/project-seed.md`: raw project idea before it becomes a goal.
 - `.goalkeeper/discovery-log.md`: grill-style questions, answers, recommended defaults, and unresolved branches.
-- `.goalkeeper/goal-contract.md`: objective, constraints, autonomy, success criteria.
+- `.goalkeeper/goal-contract.md`: project-level objective, project success criteria, phase goal summary, constraints, autonomy, and approval boundaries.
 - `.goalkeeper/context-ledger.md`: durable facts learned during intake and research.
 - `.goalkeeper/decision-log.md`: cross-phase decisions with rationale and date.
 - `.goalkeeper/phase-plan.md`: compact canonical Phase/Wave/Step index with dependencies and parallelization.
@@ -64,6 +64,30 @@ Initial constraints:
 Unknowns:
 Seed status:
 ```
+
+## Goal Contract Shape
+
+```text
+Contract scope:
+Project-level. This file defines the whole project goal, not a single phase.
+
+Project goal:
+
+Project success criteria:
+
+Phase goals:
+- PHASE-0001:
+
+Non-goals:
+Constraints:
+User preferences:
+Autonomy level:
+Approval required for:
+Current phase:
+Definition of done:
+```
+
+Phase goals in `goal-contract.md` are short project-map entries. Detailed phase purpose, acceptance checks, decisions, and verification live in `.goalkeeper/phases/<phase>/phase.md`.
 
 ## Decision Record Shape
 

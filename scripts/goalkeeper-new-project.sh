@@ -203,13 +203,19 @@ if write_file "$GK_DIR/goal-contract.md"; then
   cat > "$GK_DIR/goal-contract.md" <<EOF
 # Goal Contract
 
-Goal:
+Contract scope:
+Project-level. This file defines the whole project goal, not a single phase.
+
+Project goal:
 Pending discovery.
 
-Non-goals:
+Project success criteria:
 - Pending discovery.
 
-Success criteria:
+Phase goals:
+- PHASE-0001: New Project Discovery -> clarify raw idea into a durable project contract.
+
+Non-goals:
 - Pending discovery.
 
 Constraints:

@@ -32,6 +32,6 @@ Use this skill to decide whether a step, wave, phase, or goal can move from `nee
 - Evidence beats assertion.
 - Use concrete outputs: command results, diff summaries, screenshots, source links, or user-visible artifacts.
 - Record residual risk when verification is partial.
-- Do not mark the overall goal done until all success criteria are satisfied.
+- Do not mark the overall goal done until all project success criteria and phase goals in `goal-contract.md` are satisfied or explicitly superseded.
 - Do not silently re-verify archived phases; ask before spending time on deep verification.
 - Root verification log is an index; detailed output belongs in the scoped step/wave/phase files.

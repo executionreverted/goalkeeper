@@ -182,7 +182,7 @@ Goalkeeper creates small Markdown files so state is human-readable and git-frien
 
 Important files:
 
-- `goal-contract.md`: what success means.
+- `goal-contract.md`: project goal, project success criteria, non-goals, constraints, and short phase-goal map.
 - `phase-plan.md`: compact Phase -> Wave -> Step index.
 - `phases/`: detailed phase, wave, and step working files.
 - `always-read.md`: rules the agent must read before every loop.
@@ -323,18 +323,26 @@ Tell the agent:
 $goalkeeper-intake
 ```
 
-Goalkeeper turns the raw idea into `goal-contract.md`, roughly:
+Goalkeeper turns the raw idea into project-level `goal-contract.md`, roughly:
 
 ```text
-Goal:
+Contract scope:
+Project-level. This file defines the whole project goal, not a single phase.
+
+Project goal:
 Build a local TODO web app.
 
-Success criteria:
+Project success criteria:
 - User can add a task.
 - User can mark a task done.
 - User can delete a task.
 - User can filter all/active/completed.
 - Tasks persist after refresh.
+
+Phase goals:
+- PHASE-0001: App Scaffold -> Create the usable local app shell.
+- PHASE-0002: TODO Core -> Implement task creation, completion, deletion, and filters.
+- PHASE-0003: Persistence And Verification -> Persist tasks and verify acceptance checks.
 
 Non-goals:
 - Authentication.

@@ -43,8 +43,9 @@ Use this skill to create or revise the compact `.goalkeeper/phase-plan.md` index
    - changed files, commands, decisions, and notes placeholders
 9. Use 3-4 word lowercase slug suffixes after ids, e.g. `PHASE-0002-todo-core`, `WAVE-0002-A-task-behavior`, `STEP-0002-A-01-create-task-flow.md`.
 10. Mark independent steps in the same wave only when they can run without shared file conflicts or output dependencies.
-11. Record planning assumptions in `.goalkeeper/context-ledger.md`.
-12. Refresh `.goalkeeper/resume-snapshot.md` and `.goalkeeper/next-target.md`.
+11. Update `Phase goals` in `.goalkeeper/goal-contract.md` with one short goal per phase.
+12. Record planning assumptions in `.goalkeeper/context-ledger.md`.
+13. Refresh `.goalkeeper/resume-snapshot.md` and `.goalkeeper/next-target.md`.
 
 ## Planning Rules
 
@@ -56,3 +57,4 @@ Use this skill to create or revise the compact `.goalkeeper/phase-plan.md` index
 - Use `docs/parallelization.md` before marking a wave parallelizable.
 - Use `docs/subagent-policy.md` for subagent prompt constraints.
 - Do not put detailed step progress into root logs; root logs are compact indexes.
+- Do not move detailed phase acceptance checks into `goal-contract.md`; keep contract phase goals short.

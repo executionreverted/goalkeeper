@@ -53,7 +53,8 @@ Stop and ask the user when:
 
 Mark a goal done only when:
 
-- Every success criterion in `goal-contract.md` is satisfied.
+- Every project success criterion in `goal-contract.md` is satisfied.
+- Every phase goal listed in `goal-contract.md` is complete, skipped with rationale, or superseded by an accepted decision.
 - Required verification is recorded in scoped step/wave/phase files and indexed in `verification-log.md`.
 - `phase-plan.md` has no open required phases, waves, or steps.
 - `resume-snapshot.md` includes the final state and no dangling blockers.
