@@ -11,7 +11,7 @@ Use this skill as the first gate before `goalkeeper-intake`.
 
 1. Check whether `.goalkeeper/` exists in the user's project.
 2. If missing, ask the user to run `bash scripts/goalkeeper-init.sh <project-dir>` or run the project-local init script when available and allowed.
-3. Read `.goalkeeper/always-read.md`.
+3. Read `.goalkeeper/always-read.md` and `.goalkeeper/config.json` when present.
 4. Prefer `scripts/goalkeeper-new-project.sh <project-dir> --idea "<raw idea>" --context7 yes|no|unknown --autonomy A1` when available.
 5. If no script exists, manually capture the raw idea in `.goalkeeper/project-seed.md`, start `discovery-log.md`, create the first discovery phase/wave/step files under `.goalkeeper/phases/`, set `next-target.md`, and refresh `resume-snapshot.md`.
 6. Ask whether Context7 is installed/configured when unknown. Record answer in `project-seed.md` and `context-ledger.md`.

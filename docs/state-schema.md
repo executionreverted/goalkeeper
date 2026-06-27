@@ -7,6 +7,7 @@ Goalkeeper uses Markdown artifacts because they are human-readable, diffable, an
 - `.goalkeeper/active-goal.md`: one-line pointer to the active goal and status.
 - `.goalkeeper/always-read.md`: mandatory invariant checklist read before each phase/wave/step/resume.
 - `.goalkeeper/compression-profile.md`: built-in token discipline profile for subagents and bounded loop cards.
+- `.goalkeeper/config.json`: machine-readable workflow settings used by routing, validation, and future tools.
 - `.goalkeeper/project-seed.md`: raw project idea before it becomes a goal.
 - `.goalkeeper/discovery-log.md`: grill-style questions, answers, recommended defaults, and unresolved branches.
 - `.goalkeeper/goal-contract.md`: project-level objective, project success criteria, phase goal summary, constraints, autonomy, and approval boundaries.
@@ -18,6 +19,8 @@ Goalkeeper uses Markdown artifacts because they are human-readable, diffable, an
 - `.goalkeeper/progress-log.md`: compact chronological index that points to scoped files.
 - `.goalkeeper/verification-log.md`: compact verification index that points to scoped evidence.
 - `.goalkeeper/resume-snapshot.md`: compact state for context recovery.
+- `.goalkeeper/codebase/`: compact repository map used to avoid rediscovering structure every loop.
+- `.goalkeeper/quick/`: small tracked ad-hoc tasks outside the phase plan.
 - `.goalkeeper/phases/`: detailed phase/wave/step working artifacts.
 - `.goalkeeper/archive/`: completed phase reports with commit evidence.
 - `.goalkeeper/gaps/`: open or invalidated phase gap reports.
@@ -41,6 +44,35 @@ Use ids plus 3-4 word lowercase slugs so files are searchable and cherry-pickabl
 
 Every phase, wave, and step in `phase-plan.md` must have its expected scoped artifact. Closed steps must also have closed status and verification evidence in their scoped step file.
 
+## Quick Task Shape
+
+Quick tasks live outside `phase-plan.md`:
+
+```text
+.goalkeeper/quick/
+  20260627-120000-fix-readme-typo/
+    quick.md
+```
+
+`quick.md` carries status, request, changed files, commands, verification, summary, and a next route. Promote quick work to a phase only when it grows beyond one focused loop.
+
+## Codebase Map Shape
+
+Codebase memory lives under `.goalkeeper/codebase/`:
+
+```text
+.goalkeeper/codebase/
+  structure.md
+  architecture.md
+  stack.md
+  testing.md
+  conventions.md
+  integrations.md
+  risks.md
+```
+
+The generated map is intentionally compact and evidence-first. Refresh it after major folder, framework, test, or integration changes.
+
 ## Work Statuses
 
 ```text
@@ -53,6 +85,32 @@ verified
 done
 skipped
 ```
+
+## Config Shape
+
+```json
+{
+  "version": 1,
+  "autonomy_level": "A1",
+  "context7": "unknown",
+  "research_enabled": true,
+  "verifier_enabled": true,
+  "review_required_before_done": true,
+  "subagent_policy": "safe_parallel",
+  "commit_docs": true,
+  "model_profile": "inherit",
+  "ship_requires_approval": true,
+  "branch_strategy": "current_branch"
+}
+```
+
+Accepted values:
+
+- `autonomy_level`: `A0 | A1 | A2 | A3 | A4`
+- `context7`: `yes | no | unknown`
+- `subagent_policy`: `main_only | safe_parallel | aggressive_parallel`
+- `model_profile`: `inherit | budget | balanced | quality`
+- `branch_strategy`: `current_branch | phase_branch | worktree`
 
 ## Project Seed Shape
 

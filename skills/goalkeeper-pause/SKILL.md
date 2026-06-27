@@ -9,7 +9,7 @@ Use this skill to stop safely.
 
 ## Workflow
 
-1. Read `.goalkeeper/always-read.md`, `.goalkeeper/resume-snapshot.md`, `.goalkeeper/next-target.md`, `.goalkeeper/phase-plan.md`, compact root logs, and the active scoped phase/wave/step files under `.goalkeeper/phases/`.
+1. Read `.goalkeeper/always-read.md`, `.goalkeeper/config.json`, `.goalkeeper/resume-snapshot.md`, `.goalkeeper/next-target.md`, `.goalkeeper/phase-plan.md`, compact root logs, and the active scoped phase/wave/step files under `.goalkeeper/phases/`.
 2. Prefer running `scripts/goalkeeper-pause.sh <project-dir> --reason "..."`
 3. Sync:
    - current phase/wave/step

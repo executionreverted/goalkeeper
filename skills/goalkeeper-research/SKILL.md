@@ -9,7 +9,7 @@ Use this skill to gather evidence for a Goalkeeper decision or plan.
 
 ## Workflow
 
-1. Read `.goalkeeper/goal-contract.md`, `.goalkeeper/context-ledger.md`, `.goalkeeper/decision-log.md`, `.goalkeeper/resume-snapshot.md`, and the active scoped phase/wave/step files when research belongs to a planned step.
+1. Read `.goalkeeper/config.json`, `.goalkeeper/goal-contract.md`, `.goalkeeper/context-ledger.md`, `.goalkeeper/decision-log.md`, `.goalkeeper/resume-snapshot.md`, and the active scoped phase/wave/step files when research belongs to a planned step.
 2. Identify the research question and scope from the active goal.
 3. Normalize the research question into a lowercase canonical `Normalized question`.
 4. Check `## Research Records` in `context-ledger.md` for an active (`proposed` or `accepted`) record with the same normalized question.

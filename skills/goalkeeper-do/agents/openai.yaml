@@ -1,0 +1,4 @@
+version: 1
+metadata:
+  short_description: "Route freeform intent to the right Goalkeeper skill"
+  default_prompt: "Use $goalkeeper-do to route my request to the right Goalkeeper workflow step."

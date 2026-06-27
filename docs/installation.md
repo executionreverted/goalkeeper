@@ -40,6 +40,7 @@ bash scripts/goalkeeper-init.sh . --force
   active-goal.md
   always-read.md
   compression-profile.md
+  config.json
   project-seed.md
   discovery-log.md
   goal-contract.md
@@ -50,6 +51,8 @@ bash scripts/goalkeeper-init.sh . --force
   progress-log.md
   verification-log.md
   resume-snapshot.md
+  codebase/
+  quick/
   phases/
   archive/
   gaps/
@@ -62,7 +65,11 @@ After init:
 
 ```bash
 bash scripts/goalkeeper-new-project.sh /path/to/project --idea "build a p2p mobile chat app" --context7 unknown
+node bin/goalkeeper.cjs do /path/to/project --text "what next?"
+node bin/goalkeeper.cjs quick /path/to/project --text "fix typo in README"
+node bin/goalkeeper.cjs map-codebase /path/to/project
 bash scripts/goalkeeper-status.sh /path/to/project
+node scripts/goalkeeper-state.cjs config /path/to/project
 bash scripts/goalkeeper-next.sh /path/to/project
 bash scripts/goalkeeper-loop.sh /path/to/project
 bash scripts/goalkeeper-pause.sh /path/to/project --reason "stopping work"

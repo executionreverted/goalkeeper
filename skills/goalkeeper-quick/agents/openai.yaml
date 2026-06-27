@@ -1,0 +1,4 @@
+version: 1
+metadata:
+  short_description: "Run a small tracked quick task"
+  default_prompt: "Use $goalkeeper-quick to run a small self-contained task with Goalkeeper tracking."

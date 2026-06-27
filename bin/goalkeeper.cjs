@@ -30,7 +30,11 @@ Usage:
   goalkeeper uninstall [options]     remove Goalkeeper skills
   goalkeeper init [dir] [options]    create .goalkeeper artifacts
   goalkeeper new [dir] --idea TEXT   helper: write new-project intake packet
+  goalkeeper do [dir] --text TEXT    helper: route freeform intent to a skill
+  goalkeeper quick [dir] [options]   helper: create/list/status/resume quick tasks
+  goalkeeper map-codebase [dir]      helper: write compact .goalkeeper/codebase docs
   goalkeeper status [dir]            helper: show current Goalkeeper state
+  goalkeeper config [dir]            helper: print project config JSON
   goalkeeper next [dir]              helper: show next action card
   goalkeeper loop [dir]              helper: print one bounded loop card
   goalkeeper pause [dir] [options]   pause and sync state
@@ -52,6 +56,10 @@ Project options:
   --dry-run                          init only: print actions only
   --context7 yes|no|unknown          new only, default: unknown
   --autonomy A0|A1|A2|A3|A4          new only, default: A1
+  --text TEXT                        do/quick text
+  --research                         quick only: request research before execution
+  --validate                         quick only: request validation/review before done
+  --full                             quick only: request research + validation
 `);
 }
 
@@ -71,7 +79,11 @@ async function main() {
   if (command === 'uninstall' || command === 'remove' || command === 'rm') return uninstallCommand(rest);
   if (command === 'init') return initCommand(rest);
   if (command === 'new' || command === 'new-project') return newProjectCommand(rest);
+  if (command === 'do') return doCommand(rest);
+  if (command === 'quick') return quickCommand(rest);
+  if (command === 'map-codebase' || command === 'map') return mapCodebaseCommand(rest);
   if (command === 'status') return stateCommand('status', rest);
+  if (command === 'config') return stateCommand('config', rest);
   if (command === 'next') return stateCommand('next', rest);
   if (command === 'loop') return stateCommand('loop', rest);
   if (command === 'validate') return stateCommand('validate', rest);
@@ -174,6 +186,409 @@ function newProjectCommand(args) {
   ];
   if (options.force) scriptArgs.push('--force');
   runShellScript('goalkeeper-new-project.sh', scriptArgs);
+}
+
+function doCommand(args) {
+  const options = parseOptions(args);
+  const positionals = positionalArgs(args);
+  const target = positionals[0] || '.';
+  const text = options.text || positionals.slice(1).join(' ');
+  runNode(STATE_SCRIPT, ['do', target, text]);
+}
+
+function quickCommand(args) {
+  const options = parseOptions(args);
+  const positionals = positionalArgs(args);
+  const subcommands = new Set(['run', 'list', 'status', 'resume']);
+  let target = '.';
+  let subcommand = 'run';
+  let subArgs = [];
+
+  if (positionals[0] && subcommands.has(positionals[0])) {
+    subcommand = positionals[0];
+    subArgs = positionals.slice(1);
+  } else {
+    target = positionals[0] || '.';
+    if (positionals[1] && subcommands.has(positionals[1])) {
+      subcommand = positionals[1];
+      subArgs = positionals.slice(2);
+    } else {
+      subArgs = positionals.slice(1);
+    }
+  }
+
+  const targetDir = path.resolve(expandHome(target));
+  const gkDir = path.join(targetDir, '.goalkeeper');
+  if (!fs.existsSync(gkDir)) fail(`.goalkeeper not found in ${targetDir}`);
+  const quickRoot = path.join(gkDir, 'quick');
+  fs.mkdirSync(quickRoot, { recursive: true });
+
+  if (subcommand === 'list') return quickList(quickRoot);
+  if (subcommand === 'status') return quickStatus(quickRoot, subArgs[0]);
+  if (subcommand === 'resume') return quickResume(quickRoot, subArgs[0]);
+  return quickRun({ targetDir, gkDir, quickRoot, text: options.text || subArgs.join(' '), options });
+}
+
+function quickRun({ targetDir, gkDir, quickRoot, text, options }) {
+  if (!text || !text.trim()) fail('quick requires --text TEXT or a task description');
+  const now = new Date();
+  const stamp = now.toISOString().replace(/[-:]/g, '').replace(/\..+$/, '').replace('T', '-');
+  const shortSlug = slugify(text).slice(0, 48) || 'quick-task';
+  const slug = `${stamp}-${shortSlug}`;
+  const dir = path.join(quickRoot, slug);
+  const file = path.join(dir, 'quick.md');
+  const research = Boolean(options.research || options.full);
+  const validate = Boolean(options.validate || options.full);
+  fs.mkdirSync(dir, { recursive: true });
+  const body = `# Quick Task
+
+Slug: ${slug}
+Status: ready
+Created: ${now.toISOString()}
+Mode: quick
+Research requested: ${research ? 'yes' : 'no'}
+Validation requested: ${validate ? 'yes' : 'no'}
+
+## Request
+
+${text.trim()}
+
+## Acceptance Checks
+
+- Define the smallest safe change before editing.
+- Record changed files and commands.
+- Verify the result before marking done.
+
+## Changed Files
+
+- pending
+
+## Commands
+
+- pending
+
+## Verification
+
+- pending
+
+## Summary
+
+Pending execution.
+
+## Next
+
+recommended_command: $goalkeeper-quick
+`;
+  fs.writeFileSync(file, body);
+  appendProgress(gkDir, `- Index: created quick task ${slug}\n- Detail: .goalkeeper/quick/${slug}/quick.md\n`);
+  console.log('Goalkeeper quick');
+  console.log(`quick: .goalkeeper/quick/${slug}/quick.md`);
+  console.log(`slug: ${slug}`);
+  console.log('status: ready');
+  console.log('recommended_command: $goalkeeper-quick');
+}
+
+function quickList(quickRoot) {
+  console.log('Goalkeeper quick tasks');
+  const entries = quickEntries(quickRoot);
+  if (entries.length === 0) {
+    console.log('none');
+    return;
+  }
+  for (const entry of entries) {
+    const markdown = fs.readFileSync(path.join(entry.path, 'quick.md'), 'utf8');
+    console.log(`${entry.slug}\t${field(markdown, 'Status') || 'unknown'}\t${field(markdown, 'Created') || 'unknown'}`);
+  }
+}
+
+function quickStatus(quickRoot, slug) {
+  const entry = requireQuickEntry(quickRoot, slug);
+  const markdown = fs.readFileSync(path.join(entry.path, 'quick.md'), 'utf8');
+  console.log(`Quick Task: ${entry.slug}`);
+  console.log(`Status: ${field(markdown, 'Status') || 'unknown'}`);
+  console.log(`Created: ${field(markdown, 'Created') || 'unknown'}`);
+  console.log(`File: .goalkeeper/quick/${entry.slug}/quick.md`);
+  console.log(`Request: ${firstSectionLine(markdown, '## Request') || 'unknown'}`);
+}
+
+function quickResume(quickRoot, slug) {
+  const entry = requireQuickEntry(quickRoot, slug);
+  const markdown = fs.readFileSync(path.join(entry.path, 'quick.md'), 'utf8');
+  console.log('Goalkeeper quick resume');
+  console.log(`slug: ${entry.slug}`);
+  console.log(`status: ${field(markdown, 'Status') || 'unknown'}`);
+  console.log(`file: .goalkeeper/quick/${entry.slug}/quick.md`);
+  console.log(`request: ${firstSectionLine(markdown, '## Request') || 'unknown'}`);
+  console.log('recommended_command: $goalkeeper-quick');
+}
+
+function mapCodebaseCommand(args) {
+  const target = firstPositional(args) || '.';
+  const targetDir = path.resolve(expandHome(target));
+  const gkDir = path.join(targetDir, '.goalkeeper');
+  if (!fs.existsSync(gkDir)) fail(`.goalkeeper not found in ${targetDir}`);
+  const codebaseDir = path.join(gkDir, 'codebase');
+  fs.mkdirSync(codebaseDir, { recursive: true });
+
+  const now = new Date().toISOString();
+  const snapshot = inspectCodebase(targetDir);
+  const docs = codebaseDocs(snapshot, now);
+  for (const [filename, body] of Object.entries(docs)) {
+    fs.writeFileSync(path.join(codebaseDir, filename), body);
+  }
+  appendProgress(gkDir, `- Index: refreshed codebase map\n- Detail: .goalkeeper/codebase/structure.md\n`);
+
+  console.log('Goalkeeper codebase map');
+  for (const filename of Object.keys(docs).sort()) {
+    console.log(`write: .goalkeeper/codebase/${filename}`);
+  }
+  console.log('recommended_command: $goalkeeper-next');
+}
+
+function quickEntries(quickRoot) {
+  if (!fs.existsSync(quickRoot)) return [];
+  return fs.readdirSync(quickRoot, { withFileTypes: true })
+    .filter((entry) => entry.isDirectory())
+    .map((entry) => ({ slug: entry.name, path: path.join(quickRoot, entry.name) }))
+    .filter((entry) => /^[a-zA-Z0-9-]+$/.test(entry.slug) && fs.existsSync(path.join(entry.path, 'quick.md')))
+    .sort((a, b) => a.slug.localeCompare(b.slug));
+}
+
+function inspectCodebase(targetDir) {
+  const ignore = new Set([
+    '.git',
+    '.goalkeeper',
+    '.docs',
+    'node_modules',
+    'dist',
+    'build',
+    'coverage',
+    '.next',
+    '.turbo',
+    '.cache',
+  ]);
+  const entries = fs.readdirSync(targetDir, { withFileTypes: true })
+    .filter((entry) => !ignore.has(entry.name))
+    .sort((a, b) => a.name.localeCompare(b.name));
+  const dirs = entries.filter((entry) => entry.isDirectory()).map((entry) => entry.name);
+  const files = entries.filter((entry) => entry.isFile()).map((entry) => entry.name);
+  const manifests = readManifests(targetDir);
+  const scripts = manifests.packageJson?.scripts || {};
+  return {
+    targetDir,
+    dirs,
+    files,
+    manifests,
+    scripts,
+    git: gitSnapshot(targetDir),
+  };
+}
+
+function readManifests(targetDir) {
+  const out = {};
+  const packagePath = path.join(targetDir, 'package.json');
+  if (fs.existsSync(packagePath)) {
+    try {
+      out.packageJson = JSON.parse(fs.readFileSync(packagePath, 'utf8'));
+    } catch {
+      out.packageJson = null;
+    }
+  }
+  out.present = [
+    'package.json',
+    'pnpm-lock.yaml',
+    'package-lock.json',
+    'yarn.lock',
+    'tsconfig.json',
+    'vite.config.ts',
+    'vite.config.js',
+    'next.config.js',
+    'next.config.mjs',
+    'pyproject.toml',
+    'requirements.txt',
+    'Cargo.toml',
+    'go.mod',
+  ].filter((file) => fs.existsSync(path.join(targetDir, file)));
+  return out;
+}
+
+function gitSnapshot(targetDir) {
+  if (!fs.existsSync(path.join(targetDir, '.git'))) return { hasGit: false, dirty: '', commits: '' };
+  const status = spawnSync('git', ['status', '--short'], { cwd: targetDir, encoding: 'utf8' });
+  const log = spawnSync('git', ['log', '--oneline', '-5'], { cwd: targetDir, encoding: 'utf8' });
+  return {
+    hasGit: true,
+    dirty: status.status === 0 ? status.stdout.trim() : '',
+    commits: log.status === 0 ? log.stdout.trim() : '',
+  };
+}
+
+function codebaseDocs(snapshot, now) {
+  const packageName = snapshot.manifests.packageJson?.name || 'unknown';
+  const deps = Object.keys(snapshot.manifests.packageJson?.dependencies || {});
+  const devDeps = Object.keys(snapshot.manifests.packageJson?.devDependencies || {});
+  const scripts = Object.entries(snapshot.scripts);
+  const manifestLines = snapshot.manifests.present.map((file) => `- ${file}`).join('\n') || '- none detected';
+  const dirLines = snapshot.dirs.map((dir) => `- ${dir}/`).join('\n') || '- none detected';
+  const fileLines = snapshot.files.slice(0, 40).map((file) => `- ${file}`).join('\n') || '- none detected';
+  const scriptLines = scripts.map(([name, command]) => `- \`${name}\`: \`${command}\``).join('\n') || '- none detected';
+  const depLines = deps.slice(0, 30).map((name) => `- ${name}`).join('\n') || '- none detected';
+  const devDepLines = devDeps.slice(0, 30).map((name) => `- ${name}`).join('\n') || '- none detected';
+  const dirtyLines = snapshot.git.dirty || 'clean or unavailable';
+  const commitLines = snapshot.git.commits || 'none available';
+
+  return {
+    'structure.md': `# Codebase Structure
+
+Generated: ${now}
+Package: ${packageName}
+
+## Top-Level Directories
+
+${dirLines}
+
+## Top-Level Files
+
+${fileLines}
+
+## Manifests
+
+${manifestLines}
+`,
+    'architecture.md': `# Codebase Architecture
+
+Generated: ${now}
+
+## Current Read
+
+- Architecture summary is pending human/agent refinement.
+- Start from top-level folders in \`structure.md\`.
+- Update this file after the first implementation wave identifies real module boundaries.
+
+## Likely Entry Points
+
+${likelyEntryPoints(snapshot).map((entry) => `- ${entry}`).join('\n') || '- unknown'}
+`,
+    'stack.md': `# Codebase Stack
+
+Generated: ${now}
+
+## Package
+
+- Name: ${packageName}
+- Type: ${snapshot.manifests.packageJson?.type || 'unknown'}
+
+## Dependencies
+
+${depLines}
+
+## Dev Dependencies
+
+${devDepLines}
+`,
+    'testing.md': `# Codebase Testing
+
+Generated: ${now}
+
+## Scripts
+
+${scriptLines}
+
+## Suggested Verification
+
+- Prefer the narrowest relevant script first.
+- Run the full smoke/check command before claiming completion.
+`,
+    'conventions.md': `# Codebase Conventions
+
+Generated: ${now}
+
+## Observed
+
+- Keep edits consistent with nearby files.
+- Prefer existing scripts and project-local helpers.
+- Update Goalkeeper artifacts after each bounded work loop.
+`,
+    'integrations.md': `# Codebase Integrations
+
+Generated: ${now}
+
+## Manifests and External Surfaces
+
+${manifestLines}
+
+## Notes
+
+- Add API, database, deployment, MCP, and cloud integrations here as they are discovered.
+`,
+    'risks.md': `# Codebase Risks
+
+Generated: ${now}
+
+## Git State
+
+\`\`\`text
+${dirtyLines}
+\`\`\`
+
+## Recent Commits
+
+\`\`\`text
+${commitLines}
+\`\`\`
+
+## Open Risks
+
+- Generated map is structural only; verify architecture assumptions before large changes.
+`,
+  };
+}
+
+function likelyEntryPoints(snapshot) {
+  const candidates = [
+    'package.json',
+    'src/index.ts',
+    'src/index.js',
+    'src/main.ts',
+    'src/main.js',
+    'app/page.tsx',
+    'pages/index.tsx',
+    'bin/goalkeeper.cjs',
+    'README.md',
+  ];
+  return candidates.filter((candidate) => fs.existsSync(path.join(snapshot.targetDir, candidate)));
+}
+
+function requireQuickEntry(quickRoot, slug) {
+  if (!slug || !/^[a-zA-Z0-9-]+$/.test(slug)) fail('quick status/resume requires a valid slug');
+  const entry = quickEntries(quickRoot).find((candidate) => candidate.slug === slug || candidate.slug.endsWith(`-${slug}`));
+  if (!entry) fail(`quick task not found: ${slug}`);
+  return entry;
+}
+
+function field(markdown, name) {
+  const match = markdown.match(new RegExp(`^${escapeRegex(name)}:\\s*(.*)$`, 'm'));
+  return match ? match[1].trim() : '';
+}
+
+function firstSectionLine(markdown, heading) {
+  const lines = markdown.split(/\r?\n/);
+  let found = false;
+  for (const line of lines) {
+    if (line.trim() === heading) {
+      found = true;
+      continue;
+    }
+    if (found && /^##\s+/.test(line)) return '';
+    if (found && line.trim()) return line.trim();
+  }
+  return '';
+}
+
+function appendProgress(gkDir, entry) {
+  const file = path.join(gkDir, 'progress-log.md');
+  const now = new Date().toISOString();
+  fs.appendFileSync(file, `\n## ${now}\n\n${entry}`);
 }
 
 function stateCommand(command, args) {
@@ -347,7 +762,7 @@ function parseOptions(args) {
     const [rawKey, inlineValue] = arg.slice(2).split('=', 2);
     const key = rawKey.replace(/-([a-z])/g, (_, char) => char.toUpperCase());
 
-    if (['force', 'dryRun', 'yes'].includes(key)) {
+    if (['force', 'dryRun', 'yes', 'research', 'validate', 'full'].includes(key)) {
       options[key] = true;
       continue;
     }
@@ -369,7 +784,7 @@ function positionalArgs(args) {
       continue;
     }
     const key = arg.slice(2).split('=', 1)[0].replace(/-([a-z])/g, (_, char) => char.toUpperCase());
-    if (!['force', 'dryRun', 'yes'].includes(key) && !arg.includes('=')) i += 1;
+    if (!['force', 'dryRun', 'yes', 'research', 'validate', 'full'].includes(key) && !arg.includes('=')) i += 1;
   }
   return out;
 }
@@ -414,6 +829,18 @@ function expandHome(value) {
   if (value === '~') return os.homedir();
   if (value.startsWith('~/')) return path.join(os.homedir(), value.slice(2));
   return value;
+}
+
+function slugify(value) {
+  return (value || '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+    .replace(/-{2,}/g, '-');
+}
+
+function escapeRegex(value) {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
 function countSkillDirs() {

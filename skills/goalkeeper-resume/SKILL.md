@@ -9,7 +9,7 @@ Use this skill to rebuild working context from artifacts.
 
 ## Workflow
 
-1. Read `.goalkeeper/always-read.md` and `.goalkeeper/resume-snapshot.md` first.
+1. Read `.goalkeeper/always-read.md`, `.goalkeeper/config.json`, and `.goalkeeper/resume-snapshot.md` first.
 2. Read the linked active artifacts:
    - `.goalkeeper/active-goal.md`
    - `.goalkeeper/goal-contract.md`

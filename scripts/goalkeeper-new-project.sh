@@ -88,6 +88,52 @@ if [[ ! -f "$GK_DIR/compression-profile.md" && -f "$TEMPLATE_DIR/compression-pro
   echo "write: .goalkeeper/compression-profile.md"
 fi
 
+write_config() {
+  local file="$GK_DIR/config.json"
+  local template="$TEMPLATE_DIR/config.json"
+  local should_write=0
+
+  if [[ ! -f "$file" || "$FORCE" -eq 1 ]]; then
+    should_write=1
+  elif [[ -f "$template" ]] && cmp -s "$file" "$template"; then
+    should_write=1
+  fi
+
+  if [[ "$should_write" -eq 1 ]]; then
+    cat > "$file" <<EOF
+{
+  "version": 1,
+  "autonomy_level": "$AUTONOMY",
+  "context7": "$CONTEXT7",
+  "research_enabled": true,
+  "verifier_enabled": true,
+  "review_required_before_done": true,
+  "subagent_policy": "safe_parallel",
+  "commit_docs": true,
+  "model_profile": "inherit",
+  "ship_requires_approval": true,
+  "branch_strategy": "current_branch"
+}
+EOF
+    echo "write: .goalkeeper/config.json"
+    return
+  fi
+
+  node - "$file" "$CONTEXT7" "$AUTONOMY" <<'NODE'
+const fs = require('fs');
+const [file, context7, autonomy] = process.argv.slice(2);
+try {
+  const config = JSON.parse(fs.readFileSync(file, 'utf8'));
+  config.context7 = context7;
+  config.autonomy_level = autonomy;
+  fs.writeFileSync(file, `${JSON.stringify(config, null, 2)}\n`);
+  console.log('update: .goalkeeper/config.json');
+} catch (error) {
+  console.error(`warn: could not update .goalkeeper/config.json: ${error.message}`);
+}
+NODE
+}
+
 write_file() {
   local file="$1"
   if [[ -e "$file" && "$FORCE" -ne 1 ]]; then
@@ -103,6 +149,8 @@ write_file() {
 }
 
 now="$(date '+%Y-%m-%d %H:%M:%S %z')"
+
+write_config
 
 if write_file "$GK_DIR/project-seed.md"; then
   cat > "$GK_DIR/project-seed.md" <<EOF
@@ -368,6 +416,7 @@ Acceptance checks:
 Verification evidence:
 - discovery-log.md contains the answer.
 Changed files:
+- .goalkeeper/config.json
 - .goalkeeper/project-seed.md
 - .goalkeeper/discovery-log.md
 - .goalkeeper/phase-plan.md

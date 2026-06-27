@@ -1,0 +1,4 @@
+name: goalkeeper-map-codebase
+description: Map durable repository context into .goalkeeper/codebase.
+instructions:
+  default_prompt: "Use $goalkeeper-map-codebase to create or refresh compact repository memory."

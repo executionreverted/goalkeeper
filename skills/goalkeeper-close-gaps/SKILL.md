@@ -16,7 +16,7 @@ Require one:
 
 ## Workflow
 
-1. Read `.goalkeeper/always-read.md`.
+1. Read `.goalkeeper/always-read.md` and `.goalkeeper/config.json`.
 2. Read the gap report.
 3. If no gap report exists or the target phase is not known, do not invent gaps; route to `goalkeeper-analyze-phase`.
 4. If the gap report is already invalidated and archive exists, do not redo closure; route to `goalkeeper-next`.

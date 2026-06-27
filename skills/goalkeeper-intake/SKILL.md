@@ -9,7 +9,7 @@ Use this skill to turn an ambiguous request or completed `goalkeeper-new-project
 
 ## Workflow
 
-1. Read existing `.goalkeeper/project-seed.md`, `.goalkeeper/discovery-log.md`, `.goalkeeper/active-goal.md`, `.goalkeeper/goal-contract.md`, `.goalkeeper/context-ledger.md`, and `.goalkeeper/resume-snapshot.md` if they exist.
+1. Read existing `.goalkeeper/config.json`, `.goalkeeper/project-seed.md`, `.goalkeeper/discovery-log.md`, `.goalkeeper/active-goal.md`, `.goalkeeper/goal-contract.md`, `.goalkeeper/context-ledger.md`, and `.goalkeeper/resume-snapshot.md` if they exist.
 2. Extract the user's actual project objective, non-goals, constraints, project success criteria, user preferences, and approval boundaries.
 3. Ask at most one concise clarification question only when the missing answer materially changes the plan.
 4. Set an autonomy level:

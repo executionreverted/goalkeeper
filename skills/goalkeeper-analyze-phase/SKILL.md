@@ -9,7 +9,7 @@ Use this skill after a phase is believed complete.
 
 ## Workflow
 
-1. Read `.goalkeeper/always-read.md`.
+1. Read `.goalkeeper/always-read.md` and `.goalkeeper/config.json`.
 2. Read `.goalkeeper/phase-plan.md`, compact root logs, `.goalkeeper/next-target.md`, `.goalkeeper/resume-snapshot.md`, and all scoped files for the target phase under `.goalkeeper/phases/<phase>/`.
 3. Accept phase id, phase title, or explicit phase block.
 4. Prefer running `scripts/goalkeeper-analyze-phase.sh <project-dir> <phase-id>` when available.

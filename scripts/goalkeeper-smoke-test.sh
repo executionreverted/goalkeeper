@@ -28,11 +28,52 @@ expect_fails() {
 
 "$ROOT_DIR/scripts/goalkeeper-init.sh" "$TMP_DIR" >"$TMP_DIR/init.out"
 "$ROOT_DIR/scripts/goalkeeper-validate.sh" "$TMP_DIR" >"$TMP_DIR/validate-init.out"
+node "$ROOT_DIR/bin/goalkeeper.cjs" config "$TMP_DIR" >"$TMP_DIR/config-init.out"
+expect_contains "$TMP_DIR/config-init.out" '"autonomy_level": "A1"'
+node "$ROOT_DIR/bin/goalkeeper.cjs" do "$TMP_DIR" --text "what next" >"$TMP_DIR/do-init.out"
+expect_contains "$TMP_DIR/do-init.out" 'recommended_command: $goalkeeper-new-project'
+node "$ROOT_DIR/bin/goalkeeper.cjs" do "$TMP_DIR" --text "change autonomy to A2" >"$TMP_DIR/do-config.out"
+expect_contains "$TMP_DIR/do-config.out" 'recommended_command: $goalkeeper-config'
 "$ROOT_DIR/scripts/goalkeeper-next.sh" "$TMP_DIR" >"$TMP_DIR/next-init.out"
 expect_contains "$TMP_DIR/next-init.out" 'recommended_command: $goalkeeper-new-project'
 
 "$ROOT_DIR/scripts/goalkeeper-new-project.sh" "$TMP_DIR" --idea "build TODO" --context7 yes --autonomy A2 >"$TMP_DIR/new.out"
 "$ROOT_DIR/scripts/goalkeeper-validate.sh" "$TMP_DIR" >"$TMP_DIR/validate-new.out"
+node "$ROOT_DIR/bin/goalkeeper.cjs" config "$TMP_DIR" >"$TMP_DIR/config-new.out"
+expect_contains "$TMP_DIR/config-new.out" '"autonomy_level": "A2"'
+expect_contains "$TMP_DIR/config-new.out" '"context7": "yes"'
+cp "$TMP_DIR/.goalkeeper/config.json" "$TMP_DIR/config.good.json"
+perl -0pi -e 's/"autonomy_level": "A2"/"autonomy_level": "Z9"/' "$TMP_DIR/.goalkeeper/config.json"
+expect_fails "$TMP_DIR/validate-bad-config.out" "$ROOT_DIR/scripts/goalkeeper-validate.sh" "$TMP_DIR"
+expect_contains "$TMP_DIR/validate-bad-config.out" "config.json autonomy_level invalid"
+mv "$TMP_DIR/config.good.json" "$TMP_DIR/.goalkeeper/config.json"
+node "$ROOT_DIR/bin/goalkeeper.cjs" do "$TMP_DIR" --text "change autonomy to A3" >"$TMP_DIR/do-config-new.out"
+expect_contains "$TMP_DIR/do-config-new.out" 'recommended_command: $goalkeeper-config'
+node "$ROOT_DIR/bin/goalkeeper.cjs" do "$TMP_DIR" --text "research storage options" >"$TMP_DIR/do-research-new.out"
+expect_contains "$TMP_DIR/do-research-new.out" 'recommended_command: $goalkeeper-research'
+node "$ROOT_DIR/bin/goalkeeper.cjs" do "$TMP_DIR" --text "map the codebase" >"$TMP_DIR/do-map-codebase-new.out"
+expect_contains "$TMP_DIR/do-map-codebase-new.out" 'recommended_command: $goalkeeper-map-codebase'
+node "$ROOT_DIR/bin/goalkeeper.cjs" map-codebase "$TMP_DIR" >"$TMP_DIR/map-codebase.out"
+expect_contains "$TMP_DIR/map-codebase.out" "Goalkeeper codebase map"
+expect_contains "$TMP_DIR/map-codebase.out" ".goalkeeper/codebase/structure.md"
+expect_contains "$TMP_DIR/.goalkeeper/codebase/structure.md" "# Codebase Structure"
+expect_contains "$TMP_DIR/.goalkeeper/codebase/stack.md" "# Codebase Stack"
+expect_contains "$TMP_DIR/.goalkeeper/codebase/testing.md" "# Codebase Testing"
+"$ROOT_DIR/scripts/goalkeeper-validate.sh" "$TMP_DIR" >"$TMP_DIR/validate-codebase.out"
+node "$ROOT_DIR/bin/goalkeeper.cjs" do "$TMP_DIR" --text "quick fix typo in README" >"$TMP_DIR/do-quick-new.out"
+expect_contains "$TMP_DIR/do-quick-new.out" 'recommended_command: $goalkeeper-quick'
+node "$ROOT_DIR/bin/goalkeeper.cjs" quick "$TMP_DIR" --text "fix typo in README" >"$TMP_DIR/quick-run.out"
+expect_contains "$TMP_DIR/quick-run.out" "quick:"
+expect_contains "$TMP_DIR/quick-run.out" 'recommended_command: $goalkeeper-quick'
+quick_slug="$(awk '/^slug:/ { print $2 }' "$TMP_DIR/quick-run.out")"
+test -n "$quick_slug"
+node "$ROOT_DIR/bin/goalkeeper.cjs" quick "$TMP_DIR" list >"$TMP_DIR/quick-list.out"
+expect_contains "$TMP_DIR/quick-list.out" "$quick_slug"
+node "$ROOT_DIR/bin/goalkeeper.cjs" quick "$TMP_DIR" status "$quick_slug" >"$TMP_DIR/quick-status.out"
+expect_contains "$TMP_DIR/quick-status.out" "Status: ready"
+node "$ROOT_DIR/bin/goalkeeper.cjs" quick "$TMP_DIR" resume "$quick_slug" >"$TMP_DIR/quick-resume.out"
+expect_contains "$TMP_DIR/quick-resume.out" 'recommended_command: $goalkeeper-quick'
+"$ROOT_DIR/scripts/goalkeeper-validate.sh" "$TMP_DIR" >"$TMP_DIR/validate-quick.out"
 "$ROOT_DIR/scripts/goalkeeper-next.sh" "$TMP_DIR" >"$TMP_DIR/next-new.out"
 expect_contains "$TMP_DIR/next-new.out" 'mode: interrogate'
 expect_contains "$TMP_DIR/next-new.out" 'recommended_command: $goalkeeper-new-project'

@@ -9,7 +9,7 @@ Use this skill to create or revise the compact `.goalkeeper/phase-plan.md` index
 
 ## Workflow
 
-1. Read `.goalkeeper/always-read.md`, `.goalkeeper/goal-contract.md`, `.goalkeeper/context-ledger.md`, `.goalkeeper/decision-log.md`, existing `.goalkeeper/phase-plan.md`, `.goalkeeper/next-target.md`, and any active files under `.goalkeeper/phases/`.
+1. Read `.goalkeeper/always-read.md`, `.goalkeeper/config.json`, `.goalkeeper/goal-contract.md`, `.goalkeeper/context-ledger.md`, `.goalkeeper/decision-log.md`, existing `.goalkeeper/phase-plan.md`, `.goalkeeper/next-target.md`, and any active files under `.goalkeeper/phases/`.
 2. If the project-level goal contract is missing, vague, or still says `Pending discovery`, do not plan; route to `goalkeeper-intake`.
 3. If the existing phase plan already matches the current goal contract and no contract/decision changed, do not rewrite it; route to next execution.
 4. Use accepted `DEC-*` records and active `RSR-*` records as planning inputs.

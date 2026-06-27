@@ -9,7 +9,7 @@ Use this skill to decide whether a step, wave, phase, or goal can move from `nee
 
 ## Workflow
 
-1. Read `.goalkeeper/always-read.md`, `.goalkeeper/goal-contract.md`, `.goalkeeper/phase-plan.md`, `.goalkeeper/next-target.md`, `.goalkeeper/progress-log.md`, `.goalkeeper/verification-log.md`, and the active scoped phase/wave/step files under `.goalkeeper/phases/`.
+1. Read `.goalkeeper/always-read.md`, `.goalkeeper/config.json`, `.goalkeeper/goal-contract.md`, `.goalkeeper/phase-plan.md`, `.goalkeeper/next-target.md`, `.goalkeeper/progress-log.md`, `.goalkeeper/verification-log.md`, and the active scoped phase/wave/step files under `.goalkeeper/phases/`.
 2. If no step/wave/phase is in `needs_review` and no phase-level verification was requested, do not run arbitrary checks; route to `goalkeeper-execute` or `goalkeeper-analyze-phase`.
 3. Identify the step, wave, and phase acceptance checks plus expected evidence.
 4. For phase-level verification, prefer `scripts/goalkeeper-analyze-phase.sh <project-dir> <phase-id>` when available.

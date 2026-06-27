@@ -5,6 +5,10 @@ Goalkeeper v0.1 harness is introspective, not autonomous runtime.
 ## Scripts
 
 - `scripts/goalkeeper-status.sh`: summarize persisted state.
+- `goalkeeper do`: route freeform user intent to a valid next skill.
+- `goalkeeper quick`: create/list/status/resume small tracked quick tasks.
+- `goalkeeper map-codebase`: write compact durable repo context under `.goalkeeper/codebase/`.
+- `goalkeeper config`: print project `config.json` through the state parser.
 - `scripts/goalkeeper-next.sh`: find next actionable phase/wave/step without executing.
 - `scripts/goalkeeper-loop.sh`: emit the next bounded goal-loop cycle card.
 - `scripts/goalkeeper-new-project.sh`: write the initial intake packet from a raw idea.
@@ -21,6 +25,10 @@ Goalkeeper v0.1 harness is introspective, not autonomous runtime.
 ```text
 always-read -> load invariants
 status -> inspect
+do -> route intent
+quick -> small tracked task
+map-codebase -> durable repo memory
+config -> inspect machine-readable workflow settings
 next -> select
 new-project -> raw idea intake packet
 loop -> one bounded cycle card
@@ -116,6 +124,7 @@ Goalkeeper must avoid silent drift:
 After each step or commit, sync:
 
 - active files under `.goalkeeper/phases/<phase>/waves/<wave>/steps/`
+- relevant compact files under `.goalkeeper/codebase/` when repository context changed
 - parent `wave.md` and `phase.md` when wave/phase state changed
 - `phase-plan.md` as compact index
 - `progress-log.md` as compact index

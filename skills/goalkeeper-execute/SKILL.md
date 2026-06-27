@@ -9,7 +9,7 @@ Use this skill to perform the next bounded step or dispatch a parallel wave.
 
 ## Workflow
 
-1. Read `.goalkeeper/always-read.md`, `.goalkeeper/resume-snapshot.md`, `.goalkeeper/next-target.md`, `.goalkeeper/goal-contract.md`, `.goalkeeper/phase-plan.md`, `.goalkeeper/progress-log.md`, and the active phase/wave/step files under `.goalkeeper/phases/`.
+1. Read `.goalkeeper/always-read.md`, `.goalkeeper/config.json`, `.goalkeeper/resume-snapshot.md`, `.goalkeeper/next-target.md`, `.goalkeeper/goal-contract.md`, `.goalkeeper/phase-plan.md`, `.goalkeeper/progress-log.md`, and the active phase/wave/step files under `.goalkeeper/phases/`.
 2. Select the first `ready` or `in_progress` step whose phase and wave dependencies are satisfied.
 3. If no phase plan exists or only bootstrap planning exists, do not execute; route to `goalkeeper-new-project` or `goalkeeper-plan`.
 4. If no executable step exists, do not perform filler work; run/consult `goalkeeper-next` and route to the recommended command.

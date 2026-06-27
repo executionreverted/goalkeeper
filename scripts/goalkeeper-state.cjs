@@ -13,6 +13,15 @@ function read(file) {
   return fs.existsSync(file) ? fs.readFileSync(file, 'utf8') : '';
 }
 
+function parseJson(raw, label) {
+  if (!raw.trim()) return { value: null, error: `${label} is empty or missing` };
+  try {
+    return { value: JSON.parse(raw), error: '' };
+  } catch (error) {
+    return { value: null, error: `${label} is invalid JSON: ${error.message}` };
+  }
+}
+
 function firstLineAfter(markdown, heading) {
   const lines = markdown.split(/\r?\n/);
   let found = false;
@@ -136,10 +145,14 @@ function loadProject(targetArg) {
   if (!fs.existsSync(phasePlanPath)) fail(`phase-plan.md not found in ${gkDir}`);
   const phasePlan = read(phasePlanPath);
   const nextTarget = read(path.join(gkDir, 'next-target.md'));
+  const configRaw = read(path.join(gkDir, 'config.json'));
+  const configParsed = parseJson(configRaw, 'config.json');
   return {
     targetDir,
     gkDir,
     phasePlanPath,
+    config: configParsed.value,
+    configError: configParsed.error,
     phases: parsePhasePlan(phasePlan),
     nextTarget: parseNextTarget(nextTarget),
     goalContract: read(path.join(gkDir, 'goal-contract.md')),
@@ -398,6 +411,8 @@ function printStatus(project) {
 
   console.log('Goalkeeper status');
   console.log(`status: ${status}`);
+  console.log(`autonomy: ${project.config?.autonomy_level || 'unknown'}`);
+  console.log(`context7: ${project.config?.context7 || 'unknown'}`);
   console.log(`current_phase: ${currentPhase}`);
   console.log(`always_read: ${fs.existsSync(path.join(project.gkDir, 'always-read.md')) ? 'present' : 'missing'}`);
   console.log(`phase: ${next?.phase ? `## ${next.phase.id}: ${next.phase.title}` : 'none'}`);
@@ -409,6 +424,72 @@ function printStatus(project) {
   const paths = scopedArtifactPaths(project, next);
   if (paths.length) console.log(`active_artifacts: ${paths.join(', ')}`);
   console.log(`recommended_command: ${recommendedCommand(project, next)}`);
+}
+
+function printConfig(project) {
+  console.log('Goalkeeper config');
+  if (project.configError) {
+    console.log(`error: ${project.configError}`);
+    process.exit(1);
+  }
+  console.log(JSON.stringify(project.config, null, 2));
+}
+
+function printDo(project, intent = '') {
+  const text = (intent || '').trim();
+  const lower = text.toLowerCase();
+  const next = selectNext(project);
+  const guards = openPhaseGuards(project, next?.phase);
+  const mode = guards.length > 0 ? 'blocked' : modeFor(next);
+  let command = recommendedCommand(project, next, mode);
+  let reason = 'fallback to current Goalkeeper state';
+
+  if (/\b(config|setting|settings|autonomy|context7|model profile|branch strategy|verifier|review required)\b/.test(lower)) {
+    command = '$goalkeeper-config';
+    reason = 'intent changes or inspects workflow settings';
+  } else if (/\b(status|progress|where are we|current state|blocker|blockers)\b/.test(lower)) {
+    command = '$goalkeeper-status';
+    reason = 'intent asks for state without advancing work';
+  } else if (/\b(pause|stop here|save state|sync docs|leave work)\b/.test(lower)) {
+    command = '$goalkeeper-pause';
+    reason = 'intent asks to stop without advancing';
+  } else if (/\b(resume|continue after|context loss|pick up|recover)\b/.test(lower)) {
+    command = '$goalkeeper-resume';
+    reason = 'intent asks to recover context before continuing';
+  } else if (/\b(research|compare|investigate|look up|docs|documentation|which library|which framework)\b/.test(lower)) {
+    command = '$goalkeeper-research';
+    reason = 'intent asks for evidence before planning or deciding';
+  } else if (/\b(map codebase|map the codebase|codebase map|repo map|repository map|map repo|analyze codebase|understand repo|scan repo)\b/.test(lower)) {
+    command = '$goalkeeper-map-codebase';
+    reason = 'intent asks to create durable repository context';
+  } else if (/\b(quick|small|tiny|typo|one[- ]?line|minor|hotfix)\b/.test(lower)) {
+    command = '$goalkeeper-quick';
+    reason = 'intent asks for a small self-contained task';
+  } else if (/\b(plan|phase|wave|roadmap|break down|split)\b/.test(lower)) {
+    command = hasPendingGoalContract(project) ? '$goalkeeper-intake' : '$goalkeeper-plan';
+    reason = command === '$goalkeeper-intake' ? 'goal contract is still pending' : 'intent asks to create or revise the plan';
+  } else if (/\b(verify|test|check|review|validate)\b/.test(lower)) {
+    command = mode === 'verify' ? '$goalkeeper-verify' : '$goalkeeper-next';
+    reason = mode === 'verify' ? 'current item is ready for verification' : 'no current needs_review item was detected';
+  } else if (/\b(gap|archive|complete phase|phase complete|analyze phase)\b/.test(lower)) {
+    command = '$goalkeeper-analyze-phase';
+    reason = 'intent asks for phase completion or gap analysis';
+  } else if (isBootstrapPlan(project)) {
+    command = '$goalkeeper-new-project';
+    reason = 'project is initialized but discovery has not started';
+  } else if (/\b(execute|implement|build|fix|add|change|update|continue|next)\b/.test(lower)) {
+    command = recommendedCommand(project, next, mode);
+    reason = `intent asks to advance work; current mode is ${mode}`;
+  }
+
+  console.log('Goalkeeper do');
+  console.log(`intent: ${text || 'none'}`);
+  if (next?.phase) console.log(`phase: ${next.phase.id}: ${next.phase.title}`);
+  if (next?.wave) console.log(`wave: ${next.wave.id}: ${next.wave.title}`);
+  if (next?.step) console.log(`step: ${next.step.id}: ${next.step.title}`);
+  for (const guard of guards) console.log(`guard: ${guard}`);
+  console.log(`reason: ${reason}`);
+  console.log(`recommended_command: ${command}`);
 }
 
 function printNext(project) {
@@ -473,7 +554,8 @@ function printLoop(project) {
   const next = selectNext(project);
   console.log('Goalkeeper loop');
   console.log('intent: run one bounded goal-loop cycle');
-  console.log('required_read: .goalkeeper/always-read.md, .goalkeeper/compression-profile.md, .goalkeeper/resume-snapshot.md, .goalkeeper/next-target.md, .goalkeeper/goal-contract.md, .goalkeeper/phase-plan.md, active scoped files under .goalkeeper/phases/');
+  console.log(`config: autonomy=${project.config?.autonomy_level || 'unknown'}, context7=${project.config?.context7 || 'unknown'}, review_required=${project.config?.review_required_before_done ?? 'unknown'}`);
+  console.log('required_read: .goalkeeper/always-read.md, .goalkeeper/config.json, .goalkeeper/compression-profile.md, .goalkeeper/resume-snapshot.md, .goalkeeper/next-target.md, .goalkeeper/goal-contract.md, .goalkeeper/phase-plan.md, active scoped files under .goalkeeper/phases/');
   console.log('preflight: run goalkeeper-validate before edits when available');
   if (!next) {
     console.log('mode: none');
@@ -524,6 +606,7 @@ function validate(project) {
     'active-goal.md',
     'always-read.md',
     'compression-profile.md',
+    'config.json',
     'project-seed.md',
     'discovery-log.md',
     'goal-contract.md',
@@ -543,7 +626,7 @@ function validate(project) {
       failCount += 1;
     }
   }
-  for (const dir of ['archive', 'gaps', 'phases', 'templates']) {
+  for (const dir of ['archive', 'codebase', 'gaps', 'phases', 'quick', 'templates']) {
     if (fs.existsSync(path.join(project.gkDir, dir))) console.log(`OK ${dir}/`);
     else {
       console.log(`FAIL missing ${dir}/`);
@@ -553,6 +636,46 @@ function validate(project) {
   if (project.phases.length === 0) {
     console.log('FAIL no phases parsed');
     failCount += 1;
+  }
+  if (project.configError) {
+    console.log(`FAIL ${project.configError}`);
+    failCount += 1;
+  } else {
+    const validAutonomy = new Set(['A0', 'A1', 'A2', 'A3', 'A4']);
+    const validContext7 = new Set(['yes', 'no', 'unknown']);
+    const validSubagentPolicy = new Set(['main_only', 'safe_parallel', 'aggressive_parallel']);
+    const validModelProfiles = new Set(['inherit', 'budget', 'balanced', 'quality']);
+    const validBranchStrategies = new Set(['current_branch', 'phase_branch', 'worktree']);
+    if (project.config.version !== 1) {
+      console.log(`FAIL config.json version must be 1, got ${project.config.version || 'missing'}`);
+      failCount += 1;
+    }
+    if (!validAutonomy.has(project.config.autonomy_level)) {
+      console.log(`FAIL config.json autonomy_level invalid: ${project.config.autonomy_level || 'missing'}`);
+      failCount += 1;
+    }
+    if (!validContext7.has(project.config.context7)) {
+      console.log(`FAIL config.json context7 invalid: ${project.config.context7 || 'missing'}`);
+      failCount += 1;
+    }
+    if (!validSubagentPolicy.has(project.config.subagent_policy)) {
+      console.log(`FAIL config.json subagent_policy invalid: ${project.config.subagent_policy || 'missing'}`);
+      failCount += 1;
+    }
+    if (!validModelProfiles.has(project.config.model_profile)) {
+      console.log(`FAIL config.json model_profile invalid: ${project.config.model_profile || 'missing'}`);
+      failCount += 1;
+    }
+    if (!validBranchStrategies.has(project.config.branch_strategy)) {
+      console.log(`FAIL config.json branch_strategy invalid: ${project.config.branch_strategy || 'missing'}`);
+      failCount += 1;
+    }
+    for (const key of ['research_enabled', 'verifier_enabled', 'review_required_before_done', 'commit_docs', 'ship_requires_approval']) {
+      if (typeof project.config[key] !== 'boolean') {
+        console.log(`FAIL config.json ${key} must be boolean`);
+        failCount += 1;
+      }
+    }
   }
   const validRecordStatuses = new Set(['proposed', 'accepted', 'superseded']);
   const decisions = parseDecisions(project.decisionLog);
@@ -817,13 +940,15 @@ Not invalidated.
 
 const [command, target = '.', arg] = process.argv.slice(2);
 if (!command || ['-h', '--help'].includes(command)) {
-  console.log('Usage: goalkeeper-state.cjs <status|next|loop|validate|analyze-phase|phase-json> [target-dir] [arg]');
+  console.log('Usage: goalkeeper-state.cjs <status|config|do|next|loop|validate|analyze-phase|phase-json> [target-dir] [arg]');
   process.exit(command ? 0 : 1);
 }
 
 const project = loadProject(target);
 
 if (command === 'status') printStatus(project);
+else if (command === 'config') printConfig(project);
+else if (command === 'do') printDo(project, arg || '');
 else if (command === 'next') printNext(project);
 else if (command === 'loop') printLoop(project);
 else if (command === 'validate') validate(project);

@@ -1,0 +1,4 @@
+version: 1
+metadata:
+  short_description: "Inspect or update Goalkeeper config"
+  default_prompt: "Use $goalkeeper-config to inspect or update this project's Goalkeeper workflow settings."

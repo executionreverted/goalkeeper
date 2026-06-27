@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "autonomy_level": "A1",
+  "context7": "unknown",
+  "research_enabled": true,
+  "verifier_enabled": true,
+  "review_required_before_done": true,
+  "subagent_policy": "safe_parallel",
+  "commit_docs": true,
+  "model_profile": "inherit",
+  "ship_requires_approval": true,
+  "branch_strategy": "current_branch"
+}

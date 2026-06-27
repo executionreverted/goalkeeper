@@ -91,7 +91,11 @@ Typical flow:
 
 ```text
 $goalkeeper-new-project
+$goalkeeper-do
+$goalkeeper-quick
+$goalkeeper-map-codebase
 $goalkeeper-intake
+$goalkeeper-config
 $goalkeeper-research
 $goalkeeper-plan
 $goalkeeper-execute
@@ -110,13 +114,17 @@ The LLM performs the work and updates the files. The CLI is only the installer/b
 npx @goalkpr/goalkeeper install --agent codex --scope user
 npx @goalkpr/goalkeeper uninstall --agent codex --scope user
 npx @goalkpr/goalkeeper init .
+npx @goalkpr/goalkeeper do . --text "what should we do next?"
+npx @goalkpr/goalkeeper quick . --text "fix typo in README"
+npx @goalkpr/goalkeeper map-codebase .
+npx @goalkpr/goalkeeper config .
 npx @goalkpr/goalkeeper validate .
 npx @goalkpr/goalkeeper doctor
 ```
 
 Most users only need `install` and `init`, then continue in chat with `$goalkeeper-*` skills.
 
-The CLI also includes shell helpers like `status`, `next`, `loop`, `pause`, and `analyze-phase`. They are for skills, debugging, and maintainers. They are not the main user workflow.
+The CLI also includes shell helpers like `do`, `quick`, `map-codebase`, `status`, `config`, `next`, `loop`, `pause`, and `analyze-phase`. They are for skills, debugging, and maintainers. They are not the main user workflow.
 
 Every Goalkeeper skill should end with one clear next command, for example `Next: $goalkeeper-plan`. If a command is called too early, the agent should say why and recommend the valid command instead of doing filler work.
 
@@ -159,6 +167,7 @@ Goalkeeper creates small Markdown files so state is human-readable and git-frien
   active-goal.md
   always-read.md
   compression-profile.md
+  config.json
   project-seed.md
   discovery-log.md
   goal-contract.md
@@ -169,6 +178,8 @@ Goalkeeper creates small Markdown files so state is human-readable and git-frien
   progress-log.md
   verification-log.md
   resume-snapshot.md
+  codebase/
+  quick/
   phases/
     PHASE-0001-short-title/
       phase.md
@@ -188,10 +199,13 @@ Important files:
 - `phase-plan.md`: compact Phase -> Wave -> Step index.
 - `phases/`: detailed phase, wave, and step working files.
 - `always-read.md`: rules the agent must read before every loop.
+- `config.json`: machine-readable workflow settings for routing, autonomy, research, review, and shipping behavior.
 - `compression-profile.md`: built-in token discipline for subagents.
 - `next-target.md`: larger next phase target, not tiny local drift.
 - `resume-snapshot.md`: compact recovery state if context is lost.
 - `progress-log.md` and `verification-log.md`: compact indexes that point to scoped files.
+- `codebase/`: compact repository memory for structure, stack, testing, conventions, integrations, and risks.
+- `quick/`: small ad-hoc tasks that should not become full phases.
 - `gaps/`: missing work found after phase analysis.
 - `archive/`: verified phase completion reports.
 
@@ -260,7 +274,11 @@ This installs skills like:
 
 ```text
 goalkeeper-new-project
+goalkeeper-do
+goalkeeper-quick
+goalkeeper-map-codebase
 goalkeeper-intake
+goalkeeper-config
 goalkeeper-plan
 goalkeeper-execute
 goalkeeper-verify
@@ -295,6 +313,7 @@ The agent reads:
 .goalkeeper/project-seed.md
 .goalkeeper/discovery-log.md
 .goalkeeper/always-read.md
+.goalkeeper/config.json
 .goalkeeper/resume-snapshot.md
 ```
 

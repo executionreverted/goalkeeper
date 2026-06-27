@@ -35,6 +35,8 @@ GK_TEMPLATE_DIR="$GK_DIR/templates"
 GK_PHASES_DIR="$GK_DIR/phases"
 GK_ARCHIVE_DIR="$GK_DIR/archive"
 GK_GAPS_DIR="$GK_DIR/gaps"
+GK_QUICK_DIR="$GK_DIR/quick"
+GK_CODEBASE_DIR="$GK_DIR/codebase"
 
 if [[ ! -d "$TEMPLATE_DIR" ]]; then
   echo "error: templates dir missing: $TEMPLATE_DIR" >&2
@@ -68,15 +70,19 @@ run mkdir -p "$GK_TEMPLATE_DIR"
 run mkdir -p "$GK_PHASES_DIR"
 run mkdir -p "$GK_ARCHIVE_DIR"
 run mkdir -p "$GK_GAPS_DIR"
+run mkdir -p "$GK_QUICK_DIR"
+run mkdir -p "$GK_CODEBASE_DIR"
 
 for template in "$TEMPLATE_DIR"/*.md; do
   [[ -f "$template" ]] || continue
   write_from_template "$template" "$GK_TEMPLATE_DIR/$(basename "$template")"
 done
+write_from_template "$TEMPLATE_DIR/config.json" "$GK_TEMPLATE_DIR/config.json"
 
 write_from_template "$TEMPLATE_DIR/active-goal.md" "$GK_DIR/active-goal.md"
 write_from_template "$TEMPLATE_DIR/always-read.md" "$GK_DIR/always-read.md"
 write_from_template "$TEMPLATE_DIR/compression-profile.md" "$GK_DIR/compression-profile.md"
+write_from_template "$TEMPLATE_DIR/config.json" "$GK_DIR/config.json"
 write_from_template "$TEMPLATE_DIR/project-seed.md" "$GK_DIR/project-seed.md"
 write_from_template "$TEMPLATE_DIR/discovery-log.md" "$GK_DIR/discovery-log.md"
 write_from_template "$TEMPLATE_DIR/goal-contract.md" "$GK_DIR/goal-contract.md"

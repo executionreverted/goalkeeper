@@ -23,7 +23,7 @@ done
 
 Every iteration must:
 
-1. Read `.goalkeeper/always-read.md`, `.goalkeeper/resume-snapshot.md`, and the relevant active scoped artifacts under `.goalkeeper/phases/`.
+1. Read `.goalkeeper/always-read.md`, `.goalkeeper/config.json`, `.goalkeeper/resume-snapshot.md`, relevant compact files under `.goalkeeper/codebase/`, and the relevant active scoped artifacts under `.goalkeeper/phases/`.
 2. Select the next phase, wave, and step from `.goalkeeper/phase-plan.md`.
 3. Load only the context required for that state.
 4. Perform one bounded unit of work.
@@ -124,7 +124,7 @@ Use `scripts/goalkeeper-new-project.sh <project-dir> --idea "<raw idea>"` to wri
 
 ## Mandatory Always-Read File
 
-Before any phase, wave, step, resume, or subagent dispatch, read `.goalkeeper/always-read.md`. It contains non-negotiable workflow invariants: Context7 policy, Goalkeeper compression profile, review after code, verification, pause/snapshot rules, and resume conflict policy.
+Before any phase, wave, step, resume, or subagent dispatch, read `.goalkeeper/always-read.md` and `.goalkeeper/config.json`. They contain non-negotiable workflow invariants, machine-readable workflow settings, Context7 policy, Goalkeeper compression profile, review after code, verification, pause/snapshot rules, and resume conflict policy.
 
 ## Next Target
 

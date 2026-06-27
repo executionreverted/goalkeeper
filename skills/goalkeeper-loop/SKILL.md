@@ -9,7 +9,7 @@ Run one bounded loop cycle at a time; continue only while policy allows.
 
 ## Workflow
 
-1. Read `.goalkeeper/always-read.md`, `resume-snapshot.md`, `next-target.md`, `goal-contract.md`, `phase-plan.md`, and the active scoped phase/wave/step files under `.goalkeeper/phases/`.
+1. Read `.goalkeeper/always-read.md`, `config.json`, `resume-snapshot.md`, `next-target.md`, `goal-contract.md`, `phase-plan.md`, and the active scoped phase/wave/step files under `.goalkeeper/phases/`.
 2. Prefer `scripts/goalkeeper-loop.sh <project-dir>` when available.
 3. Run `scripts/goalkeeper-validate.sh <project-dir>` before edits when available.
 4. Follow the loop card:
