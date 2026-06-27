@@ -19,8 +19,6 @@ The loop is allowed to continue with minimal user action while the goal remains 
 - `templates/`: Copyable artifact shapes for new goals, decisions, phases, waves, steps, and verification records.
 - `skills/`: Codex-compatible procedural skills that operate each part of the loop.
 - `scripts/`: Local install/init scripts for v0.1.
-- `harness/`: Future runtime code, schemas, policies, and tool adapters.
-- `examples/`: Example runs and fixtures.
 
 ## Design Principles
 

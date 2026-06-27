@@ -1,19 +1,21 @@
 # Next Target
 
-Updated:
-Confidence:
+Updated: pending
+Confidence: low
 
 ## Current Active Scope
 
-Phase:
-Wave:
-Step:
+Phase: PHASE-0000: Bootstrap Goalkeeper
+Wave: WAVE-0000-A: Discovery
+Step: STEP-0000-A-01: Run new-project discovery
 
 ## Next Phase Target
 
+Run `goalkeeper-new-project` with the user's raw idea, then replace the bootstrap plan.
 
 ## Why
 
+Goalkeeper has been initialized but no project-specific discovery has been completed yet.
 
 ## Required Sync After Each Step Or Commit
 

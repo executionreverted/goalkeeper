@@ -1,30 +1,32 @@
 # Phase Plan
 
-## PHASE-0000: Title
+## PHASE-0000: Bootstrap Goalkeeper
 
-Status:
-Goal link:
-Depends on:
-Purpose:
+Status: ready
+Goal link: active-goal.md
+Depends on: none
+Purpose: Replace this bootstrap plan with a project-specific Phase/Wave/Step plan after new-project discovery.
 Acceptance checks:
-- 
+- Goal contract is filled.
+- Project-specific phases are written.
 
-### WAVE-0000-A: Title
+### WAVE-0000-A: Discovery
 
-Status:
-Parallelizable:
-Depends on:
-Dispatch:
+Status: ready
+Parallelizable: no
+Depends on: none
+Dispatch: main-agent
 
-#### STEP-0000-A-01: Title
+#### STEP-0000-A-01: Run new-project discovery
 
-Status:
-Owner:
-Inputs:
-Expected output:
+Status: ready
+Owner: main-agent
+Inputs: project-seed.md, discovery-log.md
+Expected output: goal-contract.md and a project-specific phase-plan.md
 Acceptance checks:
-- 
+- Raw idea has been clarified.
+- Goal contract can drive planning.
 Verification evidence:
-- 
+- Pending discovery.
 Notes:
-- 
+- This placeholder exists so a fresh install validates before project discovery.
