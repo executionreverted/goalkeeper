@@ -443,9 +443,9 @@ function printDo(project, intent = '') {
   let command = recommendedCommand(project, next, mode);
   let reason = 'fallback to current Goalkeeper state';
 
-  if (/\b(config|setting|settings|autonomy|context7|model profile|branch strategy|verifier|review required)\b/.test(lower)) {
+  if (/\b(config|setting|settings|autonomy|context7|model profile|branch strategy|verifier|review required|tool policy|available tool|preferred tool|forbidden tool|mcp|connector|cli available|installed tool|use playwright|use figma|use browser|use chrome)\b/.test(lower)) {
     command = '$goalkeeper-config';
-    reason = 'intent changes or inspects workflow settings';
+    reason = 'intent changes workflow settings or durable tool policy';
   } else if (/\b(status|progress|where are we|current state|blocker|blockers)\b/.test(lower)) {
     command = '$goalkeeper-status';
     reason = 'intent asks for state without advancing work';

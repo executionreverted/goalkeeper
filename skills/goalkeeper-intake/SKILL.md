@@ -36,6 +36,8 @@ Use this skill to turn an ambiguous request or completed `goalkeeper-new-project
 - Keep phase goal entries high-level; put detailed phase purpose and acceptance checks in `.goalkeeper/phases/<phase>/phase.md`.
 - Prefer explicit project success criteria over broad aspiration.
 - Put durable facts in `context-ledger.md`, not only in the final answer.
+- Never store secrets, tokens, API keys, passwords, cookies, private keys, or credential material in `.goalkeeper/`, docs, source, logs, reports, commits, or any file that may be pushed to GitHub.
+- If the user mentions a tool plus a secret, record only redacted capability evidence and route durable tool notes to `.goalkeeper/policies/tool-policy.md`.
 - If the raw idea is still too vague, hand back to `goalkeeper-new-project` instead of forcing a contract.
 - Do not create a phase/wave/step plan here unless the contract is stable; use `goalkeeper-plan` next.
 - Keep user-facing replies within the compression budget unless the user asks for detail.

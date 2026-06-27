@@ -19,7 +19,7 @@ Use this skill as the natural-language router for Goalkeeper.
 
 - Raw project idea or initialized bootstrap state -> `Next: $goalkeeper-new-project`
 - Vague or pending goal contract -> `Next: $goalkeeper-intake`
-- Workflow setting changes -> `Next: $goalkeeper-config`
+- Workflow setting, available tool, preferred tool, or tool policy changes -> `Next: $goalkeeper-config`
 - New feature or product behavior change -> `Next: $goalkeeper-add-feature`
 - Research/comparison/current docs request -> `Next: $goalkeeper-research`
 - Plan/roadmap/phase/wave request -> `Next: $goalkeeper-plan`

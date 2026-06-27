@@ -35,3 +35,38 @@ After using a tool, update at least one of:
 - `decision-log.md` for cross-phase decisions
 - `verification-log.md` as a compact index
 - `resume-snapshot.md`
+
+## Project Tool Notes
+
+Agents may update this section when the user says a specific tool, MCP server, connector, CLI, account, service, or local capability is available, preferred, forbidden, or conditionally useful.
+
+Record the tool here only when it is likely to affect future phases, waves, verification, research, design, deployment, or resume behavior. Do not record one-off tool mentions that only apply to the current answer.
+
+## Secret Red Alarm
+
+Never write secrets, tokens, API keys, passwords, private keys, cookies, session values, recovery codes, or credential material into `.goalkeeper/`, docs, source files, logs, reports, commits, or any file that may be pushed to GitHub.
+
+If the user includes a secret in chat:
+
+- Do not quote it back.
+- Do not store it verbatim.
+- Record only a redacted capability note, such as `Evidence: user says <service> credentials are configured`.
+- Ask for explicit approval before writing any credential material anywhere.
+- If storage is approved, prefer a gitignored local file, environment variable, OS keychain, or external secret manager; first verify it will not be committed.
+
+Use this compact format:
+
+```text
+### TOOL-0000: <tool name>
+Status: available | preferred | conditional | forbidden | unknown
+Scope: <where this applies>
+Use when: <short trigger>
+Do not use when: <short limit>
+Risk class: R0 | R1 | R2 | R3 | R4
+Source: user | detected | inferred
+Last checked: YYYY-MM-DD
+Evidence: <redacted user statement, command, config path, or connector name>
+Notes: <optional short note>
+```
+
+If confidence is low, record `Status: unknown` or ask one blocking question only when the next action depends on the tool. External-state tools still follow approval defaults.

@@ -58,9 +58,17 @@ expect_not_contains "$ROOT_DIR/README.md" "The agent then uses:"
 expect_contains "$ROOT_DIR/templates/always-read.md" "After verification passes for a step or quick task"
 expect_contains "$ROOT_DIR/templates/always-read.md" "before any user-facing Goalkeeper reply"
 expect_contains "$ROOT_DIR/templates/always-read.md" "Apply the main-agent reply budget"
+expect_contains "$ROOT_DIR/templates/always-read.md" "Never write secrets"
 expect_contains "$ROOT_DIR/templates/compression-profile.md" "## Main Agent Reply Budget"
 expect_contains "$ROOT_DIR/templates/compression-profile.md" "1-4 short bullets or 1 compact paragraph"
+expect_contains "$ROOT_DIR/docs/tool-policy.md" "## Secret Red Alarm"
+expect_contains "$ROOT_DIR/docs/tool-policy.md" "Do not quote it back"
+expect_contains "$ROOT_DIR/docs/tool-policy.md" "Evidence: <redacted user statement"
+expect_contains "$ROOT_DIR/skills/goalkeeper-config/SKILL.md" "Never store secrets"
+expect_contains "$ROOT_DIR/skills/goalkeeper-new-project/SKILL.md" "Never store secrets"
+expect_contains "$ROOT_DIR/skills/goalkeeper-intake/SKILL.md" "Never store secrets"
 expect_contains "$ROOT_DIR/README.md" "terse-output discipline for main-agent replies and subagents"
+expect_contains "$ROOT_DIR/README.md" "Tool notes must redact secrets"
 for skill_file in "$ROOT_DIR"/skills/goalkeeper-*/SKILL.md; do
   expect_contains "$skill_file" "compression-profile.md"
   expect_contains "$skill_file" "main-agent reply budget"
@@ -98,6 +106,9 @@ node "$ROOT_DIR/bin/goalkeeper.cjs" do "$TMP_DIR" --text "what next" >"$TMP_DIR/
 expect_contains "$TMP_DIR/do-init.out" 'recommended_command: $goalkeeper-new-project'
 node "$ROOT_DIR/bin/goalkeeper.cjs" do "$TMP_DIR" --text "change autonomy to A2" >"$TMP_DIR/do-config.out"
 expect_contains "$TMP_DIR/do-config.out" 'recommended_command: $goalkeeper-config'
+node "$ROOT_DIR/bin/goalkeeper.cjs" do "$TMP_DIR" --text "use playwright when browser tests are needed" >"$TMP_DIR/do-tool-policy.out"
+expect_contains "$TMP_DIR/do-tool-policy.out" 'recommended_command: $goalkeeper-config'
+expect_contains "$TMP_DIR/do-tool-policy.out" 'durable tool policy'
 "$ROOT_DIR/scripts/goalkeeper-next.sh" "$TMP_DIR" >"$TMP_DIR/next-init.out"
 expect_contains "$TMP_DIR/next-init.out" 'recommended_command: $goalkeeper-new-project'
 

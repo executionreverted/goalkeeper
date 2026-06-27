@@ -88,6 +88,8 @@ Rules:
 - Make the recommended answer concrete, not generic.
 - Challenge vague words such as easy, fast, smart, automatic, minimal, robust, and production-ready.
 - Do not plan implementation yet.
+- Never store secrets, tokens, API keys, passwords, cookies, private keys, or credential material in `.goalkeeper/`, docs, source, logs, reports, commits, or any file that may be pushed to GitHub.
+- If the user mentions a tool plus a secret, record only redacted capability evidence and ask explicit approval before writing credential material anywhere.
 - Do not continue with a partial or broken `.goalkeeper`; repair it through the CLI first.
 - Handoff to `goalkeeper-intake` when the project boundaries are clear enough to form `goal-contract.md`.
 - Keep discovery details in `.goalkeeper/phases/PHASE-0001-new-project-discovery/`, not only root logs.

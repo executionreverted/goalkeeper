@@ -205,7 +205,7 @@ Important files:
 - `resume-snapshot.md`: compact recovery state if context is lost.
 - `progress-log.md` and `verification-log.md`: compact indexes that point to scoped files.
 - `codebase/`: compact repository memory for structure, stack, testing, conventions, integrations, and risks.
-- `policies/`: project-local Goalkeeper tool, subagent, and parallelization rules used by skills.
+- `policies/`: project-local Goalkeeper tool, subagent, and parallelization rules used by skills. Tool notes must redact secrets.
 - `quick/`: small ad-hoc tasks that should not become full phases.
 - `ship/`: readiness packets and draft PR/release notes before external action.
 - `gaps/`: missing work found after phase analysis.
