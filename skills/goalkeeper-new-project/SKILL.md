@@ -14,7 +14,7 @@ Use this skill as the first gate before `goalkeeper-intake`.
 3. If missing, initialize it yourself with the shell/tooling available to the agent unless the user explicitly forbids edits:
    - prefer `goalkeeper init <project-dir>` when the CLI is on PATH
    - otherwise use `npx --yes @goalkpr/goalkeeper init <project-dir>`
-4. If `.goalkeeper/` exists but required root files such as `goal-contract.md`, `phase-plan.md`, or `always-read.md` are missing, repair it yourself by running the same init command without `--force`.
+4. If `.goalkeeper/` exists but required root files such as `goal-contract.md`, `phase-plan.md`, `always-read.md`, or `.goalkeeper/policies/*.md` are missing, repair it yourself by running the same init command without `--force`.
 5. Read `.goalkeeper/always-read.md` and `.goalkeeper/config.json` when present.
 6. Run `goalkeeper new <project-dir> --idea "<raw idea>" --context7 yes|no|unknown --autonomy A1` or `npx --yes @goalkpr/goalkeeper new <project-dir> --idea "<raw idea>" --context7 yes|no|unknown --autonomy A1` yourself.
 7. Do not hand-create partial `.goalkeeper` state. If both CLI forms fail, stop with `Stop: Goalkeeper CLI unavailable` and include the exact error, not a manual fallback.

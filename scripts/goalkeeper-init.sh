@@ -29,9 +29,11 @@ done
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ROOT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 TEMPLATE_DIR="$ROOT_DIR/templates"
+DOCS_DIR="$ROOT_DIR/docs"
 TARGET_DIR="$(cd "$TARGET" && pwd)"
 GK_DIR="$TARGET_DIR/.goalkeeper"
 GK_TEMPLATE_DIR="$GK_DIR/templates"
+GK_POLICIES_DIR="$GK_DIR/policies"
 GK_PHASES_DIR="$GK_DIR/phases"
 GK_ARCHIVE_DIR="$GK_DIR/archive"
 GK_GAPS_DIR="$GK_DIR/gaps"
@@ -68,6 +70,7 @@ write_from_template() {
 
 run mkdir -p "$GK_DIR"
 run mkdir -p "$GK_TEMPLATE_DIR"
+run mkdir -p "$GK_POLICIES_DIR"
 run mkdir -p "$GK_PHASES_DIR"
 run mkdir -p "$GK_ARCHIVE_DIR"
 run mkdir -p "$GK_GAPS_DIR"
@@ -80,6 +83,10 @@ for template in "$TEMPLATE_DIR"/*.md; do
   write_from_template "$template" "$GK_TEMPLATE_DIR/$(basename "$template")"
 done
 write_from_template "$TEMPLATE_DIR/config.json" "$GK_TEMPLATE_DIR/config.json"
+
+write_from_template "$DOCS_DIR/tool-policy.md" "$GK_POLICIES_DIR/tool-policy.md"
+write_from_template "$DOCS_DIR/subagent-policy.md" "$GK_POLICIES_DIR/subagent-policy.md"
+write_from_template "$DOCS_DIR/parallelization.md" "$GK_POLICIES_DIR/parallelization.md"
 
 write_from_template "$TEMPLATE_DIR/active-goal.md" "$GK_DIR/active-goal.md"
 write_from_template "$TEMPLATE_DIR/always-read.md" "$GK_DIR/always-read.md"

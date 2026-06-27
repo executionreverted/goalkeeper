@@ -11,7 +11,7 @@ Act as the Goalkeeper orchestrator: find the next valid action, perform it when 
 
 1. Read `.goalkeeper/always-read.md`, `config.json`, `resume-snapshot.md`, `next-target.md`, `goal-contract.md`, `phase-plan.md`, and the active scoped phase/wave/step files under `.goalkeeper/phases/`.
 2. If `.goalkeeper/` is missing, do not ask the user to run CLI commands; stop with `Next: $goalkeeper-new-project`.
-3. If required root files are missing, repair them yourself with `goalkeeper init <project-dir>` or `npx --yes @goalkpr/goalkeeper init <project-dir>` before deciding the loop is blocked.
+3. If required root files or `.goalkeeper/policies/*.md` are missing, repair them yourself with `goalkeeper init <project-dir>` or `npx --yes @goalkpr/goalkeeper init <project-dir>` before deciding the loop is blocked.
 4. Prefer running `goalkeeper loop <project-dir>` or `npx --yes @goalkpr/goalkeeper loop <project-dir>` yourself.
 5. Run `goalkeeper validate <project-dir>` or `npx --yes @goalkpr/goalkeeper validate <project-dir>` yourself before edits when available.
 6. Follow the loop card by applying the matching workflow directly; do not merely recommend another skill when the action is safe:

@@ -560,7 +560,7 @@ function printLoop(project) {
   console.log('Goalkeeper loop');
   console.log('intent: run one bounded goal-loop cycle');
   console.log(`config: autonomy=${project.config?.autonomy_level || 'unknown'}, context7=${project.config?.context7 || 'unknown'}, review_required=${project.config?.review_required_before_done ?? 'unknown'}`);
-  console.log('required_read: .goalkeeper/always-read.md, .goalkeeper/config.json, .goalkeeper/compression-profile.md, .goalkeeper/resume-snapshot.md, .goalkeeper/next-target.md, .goalkeeper/goal-contract.md, .goalkeeper/phase-plan.md, active scoped files under .goalkeeper/phases/');
+  console.log('required_read: .goalkeeper/always-read.md, .goalkeeper/config.json, .goalkeeper/compression-profile.md, .goalkeeper/policies/tool-policy.md, .goalkeeper/policies/subagent-policy.md, .goalkeeper/policies/parallelization.md, .goalkeeper/resume-snapshot.md, .goalkeeper/next-target.md, .goalkeeper/goal-contract.md, .goalkeeper/phase-plan.md, active scoped files under .goalkeeper/phases/');
   console.log('preflight: run goalkeeper-validate before edits when available');
   if (!next) {
     console.log('mode: none');
@@ -595,7 +595,7 @@ function printLoop(project) {
       console.log('action: inspect blockers, git status, recent commits, and source; ask user only if confidence stays low');
     }
   } else if (mode === 'subagents') {
-    console.log('action: split independent steps into subagent briefs using compression-profile, integrate results, then verify');
+    console.log('action: split independent steps into subagent briefs using .goalkeeper/policies/subagent-policy.md and compression-profile, integrate results, then verify');
   } else {
     console.log('action: execute the bounded step, update artifacts, then run verification');
   }
@@ -631,10 +631,18 @@ function validate(project) {
       failCount += 1;
     }
   }
-  for (const dir of ['archive', 'codebase', 'gaps', 'phases', 'quick', 'ship', 'templates']) {
+  for (const dir of ['archive', 'codebase', 'gaps', 'phases', 'policies', 'quick', 'ship', 'templates']) {
     if (fs.existsSync(path.join(project.gkDir, dir))) console.log(`OK ${dir}/`);
     else {
       console.log(`FAIL missing ${dir}/`);
+      failCount += 1;
+    }
+  }
+  for (const file of ['tool-policy.md', 'subagent-policy.md', 'parallelization.md']) {
+    const relPath = path.join('policies', file);
+    if (fs.existsSync(path.join(project.gkDir, relPath))) console.log(`OK ${relPath}`);
+    else {
+      console.log(`FAIL missing ${relPath}`);
       failCount += 1;
     }
   }

@@ -4,7 +4,7 @@ Read this before every phase, wave, step, resume, or subagent dispatch.
 
 ## Mandatory Loop
 
-1. Load `config.json`, `resume-snapshot.md`, `goal-contract.md`, `phase-plan.md`, `next-target.md`, this file, relevant compact files from `codebase/`, and only the active phase/wave/step files needed from `phases/`.
+1. Load `config.json`, `resume-snapshot.md`, `goal-contract.md`, `phase-plan.md`, `next-target.md`, this file, relevant files from `policies/`, relevant compact files from `codebase/`, and only the active phase/wave/step files needed from `phases/`.
 2. Check whether docs and code appear in sync.
 3. Use Context7 for current library/framework/SDK/API/CLI/cloud docs when applicable and available.
 4. Use subagent-driven development for independent wave steps when safe.
