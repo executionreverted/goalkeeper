@@ -467,6 +467,9 @@ function printDo(project, intent = '') {
   } else if (/\b(quick|small|tiny|typo|one[- ]?line|minor|hotfix)\b/.test(lower)) {
     command = '$goalkeeper-quick';
     reason = 'intent asks for a small self-contained task';
+  } else if (/\b(add|create|support|enable|introduce|extend|implement)\b/.test(lower) && !/\b(test|check|review|validate|status|progress|config|setting|pause|resume)\b/.test(lower)) {
+    command = '$goalkeeper-add-feature';
+    reason = 'intent asks to add or extend product behavior';
   } else if (/\b(plan|phase|wave|roadmap|break down|split)\b/.test(lower)) {
     command = hasPendingGoalContract(project) ? '$goalkeeper-intake' : '$goalkeeper-plan';
     reason = command === '$goalkeeper-intake' ? 'goal contract is still pending' : 'intent asks to create or revise the plan';

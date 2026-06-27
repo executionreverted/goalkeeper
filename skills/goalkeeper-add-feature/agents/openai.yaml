@@ -1,0 +1,4 @@
+name: goalkeeper-add-feature
+description: Route feature requests into Goalkeeper planning or quick lanes.
+instructions:
+  default_prompt: "Use $goalkeeper-add-feature to classify this feature request and update planning context before routing."

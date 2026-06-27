@@ -72,6 +72,8 @@ node "$ROOT_DIR/bin/goalkeeper.cjs" do "$TMP_DIR" --text "change autonomy to A3"
 expect_contains "$TMP_DIR/do-config-new.out" 'recommended_command: $goalkeeper-config'
 node "$ROOT_DIR/bin/goalkeeper.cjs" do "$TMP_DIR" --text "research storage options" >"$TMP_DIR/do-research-new.out"
 expect_contains "$TMP_DIR/do-research-new.out" 'recommended_command: $goalkeeper-research'
+node "$ROOT_DIR/bin/goalkeeper.cjs" do "$TMP_DIR" --text "add recurring todos" >"$TMP_DIR/do-add-feature-new.out"
+expect_contains "$TMP_DIR/do-add-feature-new.out" 'recommended_command: $goalkeeper-add-feature'
 node "$ROOT_DIR/bin/goalkeeper.cjs" do "$TMP_DIR" --text "map the codebase" >"$TMP_DIR/do-map-codebase-new.out"
 expect_contains "$TMP_DIR/do-map-codebase-new.out" 'recommended_command: $goalkeeper-map-codebase'
 mkdir -p "$TMP_DIR/.agents/skills/example"

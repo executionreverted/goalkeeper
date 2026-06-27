@@ -92,6 +92,7 @@ Typical flow:
 ```text
 $goalkeeper-new-project
 $goalkeeper-do
+$goalkeeper-add-feature
 $goalkeeper-map-codebase
 $goalkeeper-intake
 $goalkeeper-config
@@ -279,6 +280,7 @@ This installs skills like:
 ```text
 goalkeeper-new-project
 goalkeeper-do
+goalkeeper-add-feature
 goalkeeper-quick
 goalkeeper-map-codebase
 goalkeeper-ship
