@@ -16,6 +16,17 @@ expect_contains() {
   fi
 }
 
+expect_not_contains() {
+  local file="$1"
+  local pattern="$2"
+  if grep -Fq "$pattern" "$file"; then
+    echo "FAIL did not expect '$pattern' in $file" >&2
+    echo "--- output ---" >&2
+    cat "$file" >&2
+    exit 1
+  fi
+}
+
 expect_fails() {
   local output="$1"
   shift
@@ -26,8 +37,10 @@ expect_fails() {
   fi
 }
 
+git -C "$TMP_DIR" init >/dev/null 2>&1
 "$ROOT_DIR/scripts/goalkeeper-init.sh" "$TMP_DIR" >"$TMP_DIR/init.out"
 "$ROOT_DIR/scripts/goalkeeper-validate.sh" "$TMP_DIR" >"$TMP_DIR/validate-init.out"
+expect_not_contains "$TMP_DIR/validate-init.out" "fatal:"
 node "$ROOT_DIR/bin/goalkeeper.cjs" config "$TMP_DIR" >"$TMP_DIR/config-init.out"
 expect_contains "$TMP_DIR/config-init.out" '"autonomy_level": "A1"'
 node "$ROOT_DIR/bin/goalkeeper.cjs" do "$TMP_DIR" --text "what next" >"$TMP_DIR/do-init.out"
@@ -53,13 +66,16 @@ node "$ROOT_DIR/bin/goalkeeper.cjs" do "$TMP_DIR" --text "research storage optio
 expect_contains "$TMP_DIR/do-research-new.out" 'recommended_command: $goalkeeper-research'
 node "$ROOT_DIR/bin/goalkeeper.cjs" do "$TMP_DIR" --text "map the codebase" >"$TMP_DIR/do-map-codebase-new.out"
 expect_contains "$TMP_DIR/do-map-codebase-new.out" 'recommended_command: $goalkeeper-map-codebase'
+mkdir -p "$TMP_DIR/.agents/skills/example"
 node "$ROOT_DIR/bin/goalkeeper.cjs" map-codebase "$TMP_DIR" >"$TMP_DIR/map-codebase.out"
 expect_contains "$TMP_DIR/map-codebase.out" "Goalkeeper codebase map"
 expect_contains "$TMP_DIR/map-codebase.out" ".goalkeeper/codebase/structure.md"
 expect_contains "$TMP_DIR/.goalkeeper/codebase/structure.md" "# Codebase Structure"
+expect_not_contains "$TMP_DIR/.goalkeeper/codebase/structure.md" ".agents/"
 expect_contains "$TMP_DIR/.goalkeeper/codebase/stack.md" "# Codebase Stack"
 expect_contains "$TMP_DIR/.goalkeeper/codebase/testing.md" "# Codebase Testing"
 "$ROOT_DIR/scripts/goalkeeper-validate.sh" "$TMP_DIR" >"$TMP_DIR/validate-codebase.out"
+expect_not_contains "$TMP_DIR/validate-codebase.out" "fatal:"
 node "$ROOT_DIR/bin/goalkeeper.cjs" do "$TMP_DIR" --text "ship this project" >"$TMP_DIR/do-ship-new.out"
 expect_contains "$TMP_DIR/do-ship-new.out" 'recommended_command: $goalkeeper-ship'
 node "$ROOT_DIR/bin/goalkeeper.cjs" ship "$TMP_DIR" >"$TMP_DIR/ship.out"

@@ -2,7 +2,7 @@
 
 const fs = require('fs');
 const path = require('path');
-const { execSync } = require('child_process');
+const { execSync, spawnSync } = require('child_process');
 
 function fail(message, code = 1) {
   console.error(`error: ${message}`);
@@ -393,11 +393,10 @@ function printGuards(project, next) {
 function gitInfo(targetDir) {
   const gitDir = path.join(targetDir, '.git');
   if (!fs.existsSync(gitDir)) return { hasGit: false, dirty: '', commits: '' };
-  const dirty = execSync('git status --short', { cwd: targetDir, encoding: 'utf8' }).trim();
-  let commits = '';
-  try {
-    commits = execSync('git log --oneline -20', { cwd: targetDir, encoding: 'utf8' }).trim();
-  } catch {}
+  const status = spawnSync('git', ['status', '--short'], { cwd: targetDir, encoding: 'utf8' });
+  const log = spawnSync('git', ['log', '--oneline', '-20'], { cwd: targetDir, encoding: 'utf8' });
+  const dirty = status.status === 0 ? status.stdout.trim() : '';
+  const commits = log.status === 0 ? log.stdout.trim() : '';
   return { hasGit: true, dirty, commits };
 }
 

@@ -390,7 +390,10 @@ function inspectCodebase(targetDir) {
   const ignore = new Set([
     '.git',
     '.goalkeeper',
+    '.agents',
+    '.claude',
     '.docs',
+    '.vscode',
     'node_modules',
     'dist',
     'build',
