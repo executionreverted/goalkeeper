@@ -50,6 +50,15 @@ expect_not_contains "$ROOT_DIR/skills/goalkeeper-loop/SKILL.md" "recommend that 
 expect_contains "$ROOT_DIR/README.md" "The skill is the active orchestrator"
 expect_not_contains "$ROOT_DIR/README.md" "The agent then uses:"
 expect_contains "$ROOT_DIR/templates/always-read.md" "After verification passes for a step or quick task"
+expect_contains "$ROOT_DIR/templates/always-read.md" "before any user-facing Goalkeeper reply"
+expect_contains "$ROOT_DIR/templates/always-read.md" "Apply the main-agent reply budget"
+expect_contains "$ROOT_DIR/templates/compression-profile.md" "## Main Agent Reply Budget"
+expect_contains "$ROOT_DIR/templates/compression-profile.md" "1-4 short bullets or 1 compact paragraph"
+expect_contains "$ROOT_DIR/README.md" "terse-output discipline for main-agent replies and subagents"
+for skill_file in "$ROOT_DIR"/skills/goalkeeper-*/SKILL.md; do
+  expect_contains "$skill_file" "compression-profile.md"
+  expect_contains "$skill_file" "main-agent reply budget"
+done
 expect_contains "$ROOT_DIR/skills/goalkeeper-verify/SKILL.md" "commit code plus updated Goalkeeper artifacts"
 expect_contains "$ROOT_DIR/skills/goalkeeper-quick/SKILL.md" "Prefer the final commit after verification"
 expect_contains "$ROOT_DIR/skills/goalkeeper-execute/SKILL.md" 'Leave final step commits to `goalkeeper-verify`'

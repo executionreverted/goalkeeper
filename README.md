@@ -196,7 +196,7 @@ Important files:
 - `phases/`: detailed phase, wave, and step working files.
 - `always-read.md`: rules the agent must read before every loop.
 - `config.json`: machine-readable workflow settings for routing, autonomy, research, review, and shipping behavior.
-- `compression-profile.md`: built-in token discipline for subagents.
+- `compression-profile.md`: built-in terse-output discipline for main-agent replies and subagents.
 - `next-target.md`: larger next phase target, not tiny local drift.
 - `resume-snapshot.md`: compact recovery state if context is lost.
 - `progress-log.md` and `verification-log.md`: compact indexes that point to scoped files.
@@ -220,7 +220,7 @@ Phase -> Wave -> Step
 - Wave: steps that share dependencies and may be parallelized.
 - Step: smallest executable and verifiable unit.
 
-Independent wave steps can be sent to subagents. Subagents use `compression-profile.md` by default, so Goalkeeper does not depend on an external "caveman" skill.
+Independent wave steps can be sent to subagents. Main-agent replies and subagents use `compression-profile.md` by default, so Goalkeeper does not depend on an external "caveman" skill.
 
 ## Autonomy Levels
 
@@ -440,7 +440,7 @@ PHASE-0003: Persistence And Verification
     STEP-0003-A-02: Verify acceptance criteria
 ```
 
-If steps are independent, Goalkeeper can mark a wave as `Dispatch: subagents`. Subagents use `.goalkeeper/compression-profile.md`.
+If steps are independent, Goalkeeper can mark a wave as `Dispatch: subagents`. Main-agent replies and subagents use `.goalkeeper/compression-profile.md`.
 
 The detailed files live under `phases/`:
 

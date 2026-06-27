@@ -37,6 +37,7 @@ Use this skill after a phase is believed complete.
 
 ## Rules
 
+- Apply `.goalkeeper/compression-profile.md` main-agent reply budget to every user-facing reply.
 - Do not mark phase complete without evidence.
 - Code + verified artifacts beat stale docs.
 - Keep output terse.

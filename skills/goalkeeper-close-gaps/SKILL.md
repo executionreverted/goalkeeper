@@ -35,6 +35,7 @@ Require one:
 
 ## Rules
 
+- Apply `.goalkeeper/compression-profile.md` main-agent reply budget to every user-facing reply.
 - Do not bypass `always-read.md`.
 - Do not skip review after code changes.
 - Do not invalidate gap report until archive exists.

@@ -20,7 +20,7 @@ Use this skill to inspect, not mutate.
    - last verification
    - active scoped artifact paths
    - recommended command
-4. Keep response terse.
+4. Apply `.goalkeeper/compression-profile.md` main-agent reply budget.
 
 ## Rules
 

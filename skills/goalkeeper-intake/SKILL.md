@@ -28,6 +28,7 @@ Use this skill to turn an ambiguous request or completed `goalkeeper-new-project
 
 ## Output Rules
 
+- Apply `.goalkeeper/compression-profile.md` main-agent reply budget to every user-facing reply.
 - If discovery is still too vague, do not force a contract; explain the missing input and end with `Next: $goalkeeper-new-project`.
 - Keep the contract concrete enough that another agent can resume without chat history.
 - `goal-contract.md` is project-level, not phase-level.
@@ -37,7 +38,7 @@ Use this skill to turn an ambiguous request or completed `goalkeeper-new-project
 - Put durable facts in `context-ledger.md`, not only in the final answer.
 - If the raw idea is still too vague, hand back to `goalkeeper-new-project` instead of forcing a contract.
 - Do not create a phase/wave/step plan here unless the contract is stable; use `goalkeeper-plan` next.
-- Keep user-facing replies concise unless the user asks for detail.
+- Keep user-facing replies within the compression budget unless the user asks for detail.
 - End with exactly one route:
   - `Next: $goalkeeper-research` when there is a concrete open research question.
   - `Next: $goalkeeper-plan` when the contract is stable and no research is needed.

@@ -27,6 +27,7 @@ Use this skill to perform the next bounded step or dispatch a parallel wave.
 
 ## Execution Rules
 
+- Apply `.goalkeeper/compression-profile.md` main-agent reply budget to every user-facing reply.
 - Do not expand scope opportunistically.
 - Do not hide failed attempts; log them briefly.
 - Do not claim completion without verification evidence.

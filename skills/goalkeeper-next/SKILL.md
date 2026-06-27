@@ -24,7 +24,7 @@ Use this skill to select next action, not execute it.
 5. Report the active scoped artifact paths so the executor can load minimal context.
 6. Report exactly one recommended command.
 7. If a requested or hinted later phase skips an open earlier/dependency phase, stop and ask whether to continue later or handle the open phase first.
-8. Keep response terse.
+8. Apply `.goalkeeper/compression-profile.md` main-agent reply budget.
 
 ## Rules
 

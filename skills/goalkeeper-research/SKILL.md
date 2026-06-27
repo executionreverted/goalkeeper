@@ -27,6 +27,7 @@ Use this skill to gather evidence for a Goalkeeper decision or plan.
 
 ## Output Rules
 
+- Apply `.goalkeeper/compression-profile.md` main-agent reply budget to every user-facing reply.
 - Summarize what matters for the active goal, not everything found.
 - Link sources when web or docs research influenced the decision.
 - Call out uncertainty and stale information risk.

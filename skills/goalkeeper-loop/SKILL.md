@@ -36,6 +36,7 @@ Act as the Goalkeeper orchestrator: find the next valid action, perform it when 
 
 ## Rules
 
+- Apply `.goalkeeper/compression-profile.md` main-agent reply budget to every user-facing reply.
 - Keep user updates short.
 - Do not claim done without evidence.
 - Do not bury pause requests; use `goalkeeper-pause`.

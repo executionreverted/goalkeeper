@@ -23,8 +23,9 @@ Use this skill for small ad-hoc work with Goalkeeper guarantees.
 
 ## Quick Rules
 
+- Apply `.goalkeeper/compression-profile.md` main-agent reply budget to every user-facing reply.
 - Use quick only when the task fits one focused loop.
 - Use `--research`, `--validate`, or `--full` when uncertainty or risk warrants it.
-- Keep user-facing output short.
+- Keep user-facing output within the compression budget.
 - Prefer the final commit after verification, not before.
 - End with exactly one route: `Next: $goalkeeper-verify`, `Next: $goalkeeper-next`, `Next: $goalkeeper-plan`, or `Stop: <blocker>`.

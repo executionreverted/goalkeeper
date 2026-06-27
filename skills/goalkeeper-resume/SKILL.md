@@ -26,6 +26,7 @@ Use this skill to rebuild working context from artifacts.
 
 ## Resume Rules
 
+- Apply `.goalkeeper/compression-profile.md` main-agent reply budget to every user-facing reply.
 - Do not rely on chat memory when artifacts disagree.
 - Do not restart planning unless the goal contract changed.
 - Continue with the first `ready` step or parallelizable wave when policy allows it.

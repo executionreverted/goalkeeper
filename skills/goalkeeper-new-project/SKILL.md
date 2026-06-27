@@ -58,6 +58,7 @@ Job: <observable job they need done>
 
 ## Output Rules
 
+- Apply `.goalkeeper/compression-profile.md` main-agent reply budget after `.goalkeeper/` exists; before that, use the same budget from the package template.
 - Do not ask the user to run `goalkeeper init`, `goalkeeper new`, `npx`, or shell commands; run them yourself through tools.
 - Do not expose CLI commands as the main next action. The user-facing workflow is skill-first.
 - Ask one question per turn.
@@ -67,7 +68,7 @@ Job: <observable job they need done>
 - Do not continue with a partial or broken `.goalkeeper`; repair it through the CLI first.
 - Handoff to `goalkeeper-intake` when the project boundaries are clear enough to form `goal-contract.md`.
 - Keep discovery details in `.goalkeeper/phases/PHASE-0001-new-project-discovery/`, not only root logs.
-- Keep user-facing replies concise unless the user asks for detail.
+- Keep user-facing replies within the compression budget unless the user asks for detail.
 - End with exactly one route:
   - `Next: answer the discovery question` when more discovery is needed.
   - `Next: $goalkeeper-intake` when boundaries are clear enough for a project-level contract.

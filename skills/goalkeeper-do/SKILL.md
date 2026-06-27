@@ -32,7 +32,7 @@ Use this skill as the natural-language router for Goalkeeper.
 
 ## Output Rules
 
-- Keep the answer short.
+- Apply `.goalkeeper/compression-profile.md` main-agent reply budget.
 - Include why the route is valid.
 - End with exactly one `Next: $goalkeeper-...` route or `Stop: <question>`.
 - Never execute product work inside this skill; route first.

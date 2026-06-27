@@ -4,7 +4,7 @@ Goalkeeper uses subagents for independent wave steps.
 
 ## Token Economy
 
-Subagents must use `.goalkeeper/compression-profile.md` by default. This is a Goalkeeper-owned utility, not an external skill dependency.
+Subagents must use `.goalkeeper/compression-profile.md` by default. Main agents also use that profile for user-facing reply budgets. This is a Goalkeeper-owned utility, not an external skill dependency.
 
 - No filler.
 - No long explanations unless requested.

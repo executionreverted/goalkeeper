@@ -33,6 +33,7 @@ Use this skill to decide whether a step, wave, phase, or goal can move from `nee
 
 ## Verification Rules
 
+- Apply `.goalkeeper/compression-profile.md` main-agent reply budget to every user-facing reply.
 - Evidence beats assertion.
 - Use concrete outputs: command results, diff summaries, screenshots, source links, or user-visible artifacts.
 - Record residual risk when verification is partial.

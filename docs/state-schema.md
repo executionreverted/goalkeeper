@@ -6,7 +6,7 @@ Goalkeeper uses Markdown artifacts because they are human-readable, diffable, an
 
 - `.goalkeeper/active-goal.md`: one-line pointer to the active goal and status.
 - `.goalkeeper/always-read.md`: mandatory invariant checklist read before each phase/wave/step/resume.
-- `.goalkeeper/compression-profile.md`: built-in token discipline profile for subagents and bounded loop cards.
+- `.goalkeeper/compression-profile.md`: built-in terse-output discipline profile for main-agent replies, subagents, and bounded loop cards.
 - `.goalkeeper/config.json`: machine-readable workflow settings used by routing, validation, and future tools.
 - `.goalkeeper/project-seed.md`: raw project idea before it becomes a goal.
 - `.goalkeeper/discovery-log.md`: grill-style questions, answers, recommended defaults, and unresolved branches.

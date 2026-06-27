@@ -19,6 +19,7 @@ Prepare shipping evidence; never perform external actions without approval.
 
 ## Rules
 
+- Apply `.goalkeeper/compression-profile.md` main-agent reply budget to every user-facing reply.
 - Do not ship with open gaps, missing verification, or unknown dirty worktree changes.
 - Do not invent verification evidence.
 - Prefer dry-run or draft output before any external side effect.

@@ -24,6 +24,7 @@ Use this skill to stop safely.
 
 ## Rules
 
+- Apply `.goalkeeper/compression-profile.md` main-agent reply budget to every user-facing reply.
 - Pause means no continuation.
 - Preserve enough context for `goalkeeper-resume`.
 - Do not mark work done unless verification already exists.

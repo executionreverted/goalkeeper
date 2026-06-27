@@ -25,6 +25,7 @@ Use this skill to inspect or update `.goalkeeper/config.json`.
 
 ## Config Rules
 
+- Apply `.goalkeeper/compression-profile.md` main-agent reply budget to every user-facing reply.
 - Do not change autonomy, shipping approval, branch strategy, or model profile without clear user intent.
 - Do not disable review or verifier silently.
 - If Context7 is set to `unknown`, agents should ask once when library/framework docs matter.

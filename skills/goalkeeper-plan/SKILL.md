@@ -53,6 +53,7 @@ Use this skill to create or revise the compact `.goalkeeper/phase-plan.md` index
 
 ## Planning Rules
 
+- Apply `.goalkeeper/compression-profile.md` main-agent reply budget to every user-facing reply.
 - Keep steps small enough to finish in one focused loop.
 - Put decision-making phases before implementation phases.
 - Put verification steps after risky implementation work.

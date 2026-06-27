@@ -33,6 +33,6 @@ Route a feature request into the right planning lane.
 
 ## Output Rules
 
-- Keep the answer short.
+- Apply `.goalkeeper/compression-profile.md` main-agent reply budget.
 - State the classification and why.
 - End with exactly one route: `Next: $goalkeeper-quick`, `Next: $goalkeeper-intake`, `Next: $goalkeeper-research`, `Next: $goalkeeper-plan`, or `Stop: <question>`.

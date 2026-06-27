@@ -29,6 +29,7 @@ Create compact repository memory under `.goalkeeper/codebase/`.
 
 ## Rules
 
+- Apply `.goalkeeper/compression-profile.md` main-agent reply budget to every user-facing reply.
 - Do not invent architecture beyond inspected evidence.
 - Refresh after big folder moves, framework changes, or test harness changes.
 - Prefer compact bullets over long prose.
