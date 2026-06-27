@@ -4,11 +4,13 @@ Goalkeeper is an artifact-driven harness for long-running LLM work. Its core rul
 
 ## Operating Model
 
-Goalkeeper starts with a project-shaping gate, then runs a durable goal loop:
+Goalkeeper starts with a project-shaping gate, then runs an artifact-backed goal loop:
 
 ```text
-New Project -> Interrogate -> Clarify -> Research -> Decide -> Plan -> Execute -> Verify -> Snapshot -> Continue
+New Project -> Interrogate -> Clarify -> Research/Decide -> Plan -> Execute -> Verify -> Snapshot -> Continue
 ```
+
+Research and decisions are conditional gates, not mandatory commands every cycle. Snapshot means syncing scoped phase/wave/step files, compact root indexes, `resume-snapshot.md`, and `next-target.md` so the next session can continue.
 
 The loop is allowed to continue with minimal user action while the goal remains active. It must stop for user input only when the next step requires product judgment, high-risk action, missing credentials, destructive changes, external publishing, or an ambiguity that would materially change the result.
 

@@ -2,13 +2,13 @@
 
 Goalkeeper is a workflow harness for long-running LLM coding projects.
 
-It gives agents a durable goal loop:
+It gives agents an artifact-backed goal loop:
 
 ```text
-New Project -> Clarify -> Research -> Decide -> Plan -> Execute -> Verify -> Snapshot -> Continue
+New Project -> Clarify -> Research/Decide -> Plan -> Execute -> Verify -> Snapshot -> Continue
 ```
 
-Instead of trusting chat history, Goalkeeper writes the project goal, decisions, phase index, scoped phase/wave/step work files, verification evidence, gaps, and resume state into `.goalkeeper/` files that any later agent session can reload.
+Instead of trusting chat history, Goalkeeper writes the project goal, decisions, phase index, scoped phase/wave/step work files, verification evidence, gaps, and resume state into `.goalkeeper/` files that any later agent session can reload. Research and decisions are conditional, and snapshots are the sync/update of `resume-snapshot.md`, `next-target.md`, compact logs, and scoped phase files after work.
 
 ## What It Installs
 
