@@ -1,22 +1,45 @@
 # Goalkeeper
 
-Goalkeeper is an artifact-driven workflow harness for long-running LLM coding work.
+Goalkeeper is a workflow harness for long-running LLM coding projects.
 
-It installs `goalkeeper-*` skills and provides a small CLI for creating and resuming `.goalkeeper/` project state.
+It gives agents a durable goal loop:
 
-## Install
+```text
+New Project -> Clarify -> Research -> Decide -> Plan -> Execute -> Verify -> Snapshot -> Continue
+```
+
+Instead of trusting chat history, Goalkeeper writes the project goal, decisions, phase plan, verification evidence, gaps, and resume state into `.goalkeeper/` files that any later agent session can reload.
+
+## What It Installs
+
+Goalkeeper ships three things:
+
+- `goalkeeper` CLI for setup and state inspection.
+- `goalkeeper-*` skills for Codex and Claude Code style agents.
+- `.goalkeeper/` templates for project-local workflow state.
+
+The package is scoped because `goalkeeper` is already taken on npm. The installed binary is still named `goalkeeper`.
+
+## Quick Start
+
+Install the skills for your agent:
 
 ```bash
 npx @goalkpr/goalkeeper
 ```
 
-The wizard asks whether to install skills for Codex, Claude Code, both, or a custom skills directory.
+The wizard asks where to install:
 
-Non-interactive examples:
+- Codex
+- Claude Code
+- both
+- custom skills path
+
+Non-interactive install:
 
 ```bash
 npx @goalkpr/goalkeeper install --agent codex --scope user --force
-npx @goalkpr/goalkeeper install --agent claude --scope project
+npx @goalkpr/goalkeeper install --agent claude --scope user --force
 ```
 
 For a persistent local command:
@@ -25,36 +48,431 @@ For a persistent local command:
 npm install -g @goalkpr/goalkeeper
 ```
 
-## Project Commands
+## Start A Project
+
+From inside your project folder:
 
 ```bash
 npx @goalkpr/goalkeeper init .
 npx @goalkpr/goalkeeper new . --idea "build a simple p2p mobile chat app"
+```
+
+`init` creates `.goalkeeper/`.
+
+`new` records the raw idea and sets the first discovery question. The agent should then interrogate the idea before planning implementation.
+
+## Use Inside Your Agent
+
+After install, ask your coding agent for the next Goalkeeper action:
+
+```text
+Use goalkeeper-next
+```
+
+or:
+
+```text
+Use goalkeeper-loop and continue while allowed.
+```
+
+Typical flow:
+
+```text
+goalkeeper-new-project
+goalkeeper-intake
+goalkeeper-research
+goalkeeper-plan
+goalkeeper-execute
+goalkeeper-verify
+goalkeeper-analyze-phase
+goalkeeper-close-gaps
+goalkeeper-pause
+goalkeeper-resume
+```
+
+The CLI prints deterministic state cards. The LLM performs the work and updates the files.
+
+## CLI Commands
+
+```bash
+npx @goalkpr/goalkeeper install --agent codex --scope user
+npx @goalkpr/goalkeeper init .
+npx @goalkpr/goalkeeper new . --idea "your idea"
 npx @goalkpr/goalkeeper status .
 npx @goalkpr/goalkeeper next .
 npx @goalkpr/goalkeeper loop .
 npx @goalkpr/goalkeeper pause . --reason "stopping work"
 npx @goalkpr/goalkeeper validate .
 npx @goalkpr/goalkeeper analyze-phase . PHASE-0001
+npx @goalkpr/goalkeeper doctor
 ```
 
-## Package Contents
+Install options:
 
 ```text
-docs/
-scripts/
-skills/
-templates/
+--agent codex|claude|both
+--scope user|project
+--target DIR
+--force
+--dry-run
+--yes
 ```
 
-## Notes
+Project options:
 
-The npm package name is scoped because `goalkeeper` is already taken on npm. The installed binary is still named `goalkeeper`.
+```text
+--context7 yes|no|unknown
+--autonomy A0|A1|A2|A3|A4
+--force
+--dry-run
+```
 
-## Publish
+## The `.goalkeeper/` Folder
 
-Set `NPM_TOKEN` in `.env`, then run:
+Goalkeeper creates small Markdown files so state is human-readable and git-friendly:
+
+```text
+.goalkeeper/
+  active-goal.md
+  always-read.md
+  compression-profile.md
+  project-seed.md
+  discovery-log.md
+  goal-contract.md
+  context-ledger.md
+  decision-log.md
+  phase-plan.md
+  next-target.md
+  progress-log.md
+  verification-log.md
+  resume-snapshot.md
+  archive/
+  gaps/
+  templates/
+```
+
+Important files:
+
+- `goal-contract.md`: what success means.
+- `phase-plan.md`: Phase -> Wave -> Step plan.
+- `always-read.md`: rules the agent must read before every loop.
+- `compression-profile.md`: built-in token discipline for subagents.
+- `next-target.md`: larger next phase target, not tiny local drift.
+- `resume-snapshot.md`: compact recovery state if context is lost.
+- `gaps/`: missing work found after phase analysis.
+- `archive/`: verified phase completion reports.
+
+## Phase, Wave, Step
+
+Goalkeeper plans work as:
+
+```text
+Phase -> Wave -> Step
+```
+
+- Phase: milestone-sized body of work.
+- Wave: steps that share dependencies and may be parallelized.
+- Step: smallest executable and verifiable unit.
+
+Independent wave steps can be sent to subagents. Subagents use `compression-profile.md` by default, so Goalkeeper does not depend on an external "caveman" skill.
+
+## Autonomy Levels
+
+```text
+A0 Analyze only.
+A1 Plan and wait for approval.
+A2 Execute low-risk local work.
+A3 Run local verify/fix loops.
+A4 Prepare external actions, but ask before publishing/deploying/PRs.
+```
+
+Goalkeeper should stop and ask when the next action changes product direction, requires credentials, is destructive, publishes externally, or skips an open prerequisite phase.
+
+## Example Session
+
+```bash
+cd my-app
+npx @goalkpr/goalkeeper init .
+npx @goalkpr/goalkeeper new . --idea "I want a simple p2p mobile chat app" --context7 yes --autonomy A2
+npx @goalkpr/goalkeeper loop .
+```
+
+Then tell your agent:
+
+```text
+Use goalkeeper-loop. Ask the next discovery question, update the Goalkeeper files, and stop if product direction is ambiguous.
+```
+
+Later:
+
+```bash
+npx @goalkpr/goalkeeper status .
+npx @goalkpr/goalkeeper next .
+npx @goalkpr/goalkeeper pause . --reason "end of session"
+```
+
+## Walkthrough: TODO App
+
+This is what a real Goalkeeper run can look like for a small TODO app.
+
+### 1. Install Skills
+
+```bash
+npx @goalkpr/goalkeeper install --agent codex --scope user
+```
+
+This installs skills like:
+
+```text
+goalkeeper-new-project
+goalkeeper-intake
+goalkeeper-plan
+goalkeeper-execute
+goalkeeper-verify
+goalkeeper-next
+goalkeeper-pause
+goalkeeper-resume
+```
+
+### 2. Initialize The Project
+
+```bash
+mkdir todo-app
+cd todo-app
+npx @goalkpr/goalkeeper init .
+```
+
+Goalkeeper creates `.goalkeeper/` with bootstrap state files.
+
+### 3. Start From A Raw Idea
+
+```bash
+npx @goalkpr/goalkeeper new . --idea "I want to build a simple TODO app" --context7 yes --autonomy A2
+```
+
+Then tell your agent:
+
+```text
+Use goalkeeper-new-project.
+```
+
+The agent reads:
+
+```text
+.goalkeeper/project-seed.md
+.goalkeeper/discovery-log.md
+.goalkeeper/always-read.md
+.goalkeeper/resume-snapshot.md
+```
+
+The first useful question should be narrow, for example:
+
+```text
+Who is the first real user of this TODO app, and what exact job are they trying to finish?
+```
+
+You might answer:
+
+```text
+Me. I want a local web app where I can add tasks, mark them done, filter active/completed, and keep the list after refresh.
+```
+
+The agent records that answer in `discovery-log.md`.
+
+### 4. Turn Answers Into A Goal Contract
+
+Tell the agent:
+
+```text
+Use goalkeeper-intake.
+```
+
+Goalkeeper turns the raw idea into `goal-contract.md`, roughly:
+
+```text
+Goal:
+Build a local TODO web app.
+
+Success criteria:
+- User can add a task.
+- User can mark a task done.
+- User can delete a task.
+- User can filter all/active/completed.
+- Tasks persist after refresh.
+
+Non-goals:
+- Authentication.
+- Team sharing.
+- Cloud sync.
+```
+
+If the idea is still vague, `goalkeeper-intake` should ask another question instead of forcing a plan.
+
+### 5. Research If Needed
+
+If the stack matters, use:
+
+```text
+Use goalkeeper-research.
+```
+
+For example, if the project uses React or Next.js, the agent should use current docs when available and record durable findings in:
+
+```text
+.goalkeeper/context-ledger.md
+.goalkeeper/decision-log.md
+```
+
+For a tiny TODO app, research may decide:
+
+```text
+Decision:
+Use plain React state plus localStorage.
+```
+
+### 6. Create Phases, Waves, And Steps
+
+Tell the agent:
+
+```text
+Use goalkeeper-plan.
+```
+
+The agent writes `phase-plan.md`:
+
+```text
+PHASE-0001: App Scaffold
+  WAVE-0001-A: Project setup
+    STEP-0001-A-01: Create app shell
+    STEP-0001-A-02: Add base styles
+
+PHASE-0002: TODO Core
+  WAVE-0002-A: Task behavior
+    STEP-0002-A-01: Add create task flow
+    STEP-0002-A-02: Add complete/delete behavior
+    STEP-0002-A-03: Add filters
+
+PHASE-0003: Persistence And Verification
+  WAVE-0003-A: Storage and checks
+    STEP-0003-A-01: Persist tasks to localStorage
+    STEP-0003-A-02: Verify acceptance criteria
+```
+
+If steps are independent, Goalkeeper can mark a wave as `Dispatch: subagents`. Subagents use `.goalkeeper/compression-profile.md`.
+
+### 7. Execute One Bounded Loop
+
+Ask:
+
+```text
+Use goalkeeper-loop.
+```
+
+or inspect first:
+
+```bash
+npx @goalkpr/goalkeeper next .
+```
+
+The CLI prints the current phase, wave, step, mode, dispatch type, and next action. The agent then uses:
+
+```text
+goalkeeper-execute
+```
+
+It should do only the selected step, then update:
+
+```text
+.goalkeeper/progress-log.md
+.goalkeeper/phase-plan.md
+.goalkeeper/resume-snapshot.md
+.goalkeeper/next-target.md
+```
+
+### 8. Verify Before Marking Done
+
+After implementation:
+
+```text
+Use goalkeeper-verify.
+```
+
+For the TODO app, verification might run:
+
+```bash
+npm test
+npm run build
+```
+
+or manually inspect behavior if no tests exist yet.
+
+The evidence goes into:
+
+```text
+.goalkeeper/verification-log.md
+```
+
+Goalkeeper should not mark a step or phase done without evidence.
+
+### 9. Analyze The Phase
+
+When a phase appears complete:
+
+```bash
+npx @goalkpr/goalkeeper analyze-phase . PHASE-0002
+```
+
+If complete, Goalkeeper writes:
+
+```text
+.goalkeeper/archive/phase-0002-report.md
+```
+
+If something is missing, it writes:
+
+```text
+.goalkeeper/gaps/phase-0002-gaps.md
+```
+
+Then ask:
+
+```text
+Use goalkeeper-close-gaps for PHASE-0002.
+```
+
+### 10. Pause And Resume
+
+At the end of a session:
+
+```bash
+npx @goalkpr/goalkeeper pause . --reason "end of session"
+```
+
+Later:
+
+```text
+Use goalkeeper-resume.
+```
+
+The agent reloads `.goalkeeper/resume-snapshot.md`, checks docs/code/git consistency, and continues from the next safe phase or step.
+
+## Current Status
+
+Goalkeeper `0.1.0` is an alpha workflow package.
+
+It is useful for dogfooding real projects, but it is not a daemon and does not autonomously execute product work by itself. It gives the LLM a durable harness, state files, skills, and guardrails.
+
+## Development
+
+```bash
+npm run check
+npm run smoke
+```
+
+Publish:
 
 ```bash
 npm run publish:0.1
 ```
+
+`publish:0.1` reads `NPM_TOKEN` from `.env` or the environment and uses a temporary npm config file.

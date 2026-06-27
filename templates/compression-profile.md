@@ -1,10 +1,10 @@
 # Compression Profile
 
-Goalkeeper includes this profile so token discipline does not depend on any external skill, a.k.a Caveman
+Goalkeeper includes this profile so token discipline does not depend on any external skill.
 
 ## Default Mode
 
-Use compressed technical communication by default for subagents and bounded loop cards. But do not let it effect your code quality.
+Use compressed technical communication by default for subagents and bounded loop cards. Do not let brevity reduce code quality.
 
 - No filler.
 - No motivational narration.
