@@ -51,15 +51,7 @@ npm install -g @goalkpr/goalkeeper
 
 ## Start A Project
 
-From inside your project folder:
-
-```bash
-npx @goalkpr/goalkeeper init .
-```
-
-`init` creates `.goalkeeper/`.
-
-Then continue in your agent chat:
+From inside your project folder, continue in your agent chat:
 
 ```text
 $goalkeeper-new-project
@@ -67,7 +59,7 @@ $goalkeeper-new-project
 I want to build a simple p2p mobile chat app.
 ```
 
-The skill records the raw idea and starts discovery. Goalkeeper should interrogate the idea before planning implementation.
+The skill initializes `.goalkeeper/` through its internal helper if needed, records the raw idea, and starts discovery. Goalkeeper should interrogate the idea before planning implementation.
 
 ## Use Inside Your Agent
 
@@ -296,13 +288,7 @@ goalkeeper-resume
 
 ### 2. Initialize The Project
 
-```bash
-mkdir todo-app
-cd todo-app
-npx @goalkpr/goalkeeper init .
-```
-
-Goalkeeper creates `.goalkeeper/` with bootstrap state files.
+Open or create the project folder in your agent. You do not need to type an init command during normal use; `$goalkeeper-new-project` runs the bootstrap helper internally when `.goalkeeper/` is missing.
 
 ### 3. Start From A Raw Idea
 
@@ -546,7 +532,27 @@ $goalkeeper-close-gaps
 Close gaps for PHASE-0002.
 ```
 
-### 11. Prepare To Ship
+### 11. Add A Feature Later
+
+For a new product behavior after the first plan exists, ask:
+
+```text
+$goalkeeper-add-feature
+
+Add recurring todos.
+```
+
+or use the natural-language router:
+
+```text
+$goalkeeper-do
+
+Add recurring todos.
+```
+
+Goalkeeper classifies the request. Small isolated changes route to `$goalkeeper-quick`; scope-changing features route to `$goalkeeper-plan` so the agent can add a wave/step, create a new phase, or insert a dependency phase without losing current state.
+
+### 12. Prepare To Ship
 
 After phases are verified and gaps are closed:
 
@@ -562,7 +568,7 @@ Goalkeeper writes a readiness packet under:
 
 The packet summarizes open work, gaps, archive evidence, verification records, git state, recent commits, and a draft PR/release body. It must stop for approval before push, publish, deploy, PR creation, merge, or package release.
 
-### 12. Pause And Resume
+### 13. Pause And Resume
 
 At the end of a session:
 
