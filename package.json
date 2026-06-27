@@ -1,5 +1,5 @@
 {
-  "name": "@canersevince/goalkeeper",
+  "name": "@goalkpr/goalkeeper",
   "version": "0.1.0",
   "description": "Goal-loop workflow harness and skills for long-running LLM coding agents.",
   "license": "MIT",
