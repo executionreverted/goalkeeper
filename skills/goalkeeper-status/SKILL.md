@@ -10,7 +10,7 @@ Use this skill to inspect, not mutate.
 ## Workflow
 
 1. Read `.goalkeeper/always-read.md`, `.goalkeeper/config.json`, `.goalkeeper/resume-snapshot.md`, `.goalkeeper/next-target.md`, `.goalkeeper/active-goal.md`, `.goalkeeper/goal-contract.md`, `.goalkeeper/phase-plan.md`, compact root logs, and the active scoped files under `.goalkeeper/phases/`.
-2. Prefer running `scripts/goalkeeper-status.sh <project-dir>` when available.
+2. Prefer running `goalkeeper status <project-dir>` or `npx --yes @goalkpr/goalkeeper status <project-dir>` when available.
 3. Report:
    - status
    - current phase/wave/step

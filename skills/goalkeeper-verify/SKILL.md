@@ -12,7 +12,7 @@ Use this skill to decide whether a step, wave, phase, or goal can move from `nee
 1. Read `.goalkeeper/always-read.md`, `.goalkeeper/config.json`, `.goalkeeper/goal-contract.md`, `.goalkeeper/phase-plan.md`, `.goalkeeper/next-target.md`, `.goalkeeper/progress-log.md`, `.goalkeeper/verification-log.md`, and the active scoped phase/wave/step files under `.goalkeeper/phases/`.
 2. If no step/wave/phase is in `needs_review` and no phase-level verification was requested, do not run arbitrary checks; route to `goalkeeper-execute` or `goalkeeper-analyze-phase`.
 3. Identify the step, wave, and phase acceptance checks plus expected evidence.
-4. For phase-level verification, prefer `scripts/goalkeeper-analyze-phase.sh <project-dir> <phase-id>` when available.
+4. For phase-level verification, prefer `goalkeeper analyze-phase <project-dir> <phase-id>` or `npx --yes @goalkpr/goalkeeper analyze-phase <project-dir> <phase-id>` when available.
 5. If the phase is already archived and no open gap exists, say it is already complete and ask whether to run a deeper docs/code/commit verification pass.
 6. If the phase id is missing or wrong, stop and ask which suggested phase the user meant.
 7. Run or inspect the minimum sufficient verification.

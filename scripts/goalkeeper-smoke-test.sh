@@ -37,6 +37,11 @@ expect_fails() {
   fi
 }
 
+expect_contains "$ROOT_DIR/skills/goalkeeper-new-project/SKILL.md" "npx --yes @goalkpr/goalkeeper init"
+expect_contains "$ROOT_DIR/skills/goalkeeper-new-project/SKILL.md" "Do not hand-create partial"
+expect_not_contains "$ROOT_DIR/skills/goalkeeper-new-project/SKILL.md" "bash scripts/goalkeeper-init.sh"
+expect_contains "$ROOT_DIR/skills/goalkeeper-loop/SKILL.md" "npx --yes @goalkpr/goalkeeper loop"
+
 git -C "$TMP_DIR" init >/dev/null 2>&1
 "$ROOT_DIR/scripts/goalkeeper-init.sh" "$TMP_DIR" >"$TMP_DIR/init.out"
 "$ROOT_DIR/scripts/goalkeeper-validate.sh" "$TMP_DIR" >"$TMP_DIR/validate-init.out"

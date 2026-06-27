@@ -10,22 +10,24 @@ Run one bounded loop cycle at a time; continue only while policy allows.
 ## Workflow
 
 1. Read `.goalkeeper/always-read.md`, `config.json`, `resume-snapshot.md`, `next-target.md`, `goal-contract.md`, `phase-plan.md`, and the active scoped phase/wave/step files under `.goalkeeper/phases/`.
-2. Prefer `scripts/goalkeeper-loop.sh <project-dir>` when available.
-3. Run `scripts/goalkeeper-validate.sh <project-dir>` before edits when available.
-4. Follow the loop card:
+2. If `.goalkeeper/` is missing, stop and recommend `Next: $goalkeeper-new-project`.
+3. If required root files are missing, repair with `goalkeeper init <project-dir>` or `npx --yes @goalkpr/goalkeeper init <project-dir>` before deciding the loop is blocked.
+4. Prefer `goalkeeper loop <project-dir>` or `npx --yes @goalkpr/goalkeeper loop <project-dir>`.
+5. Run `goalkeeper validate <project-dir>` or `npx --yes @goalkpr/goalkeeper validate <project-dir>` before edits when available.
+6. Follow the loop card:
    - `verify`: run checks, record evidence, update statuses.
    - `interrogate`: ask one discovery question, record answer, continue or hand off to intake.
    - `main-agent`: execute one bounded step, then verify.
    - `subagents`: dispatch independent briefs with `.goalkeeper/compression-profile.md`, integrate, then verify.
    - `blocked`: inspect docs, git, commits, and code before asking user.
    - skipped dependency guard: ask whether to continue later or handle the open phase first.
-5. Sync active scoped files first, then `phase-plan.md`, compact root logs, `resume-snapshot.md`, and `next-target.md`.
-6. End with exactly one recommended command or stop reason.
-7. Repeat from step 2 only if autonomy allows and no stop condition fired.
+7. Sync active scoped files first, then `phase-plan.md`, compact root logs, `resume-snapshot.md`, and `next-target.md`.
+8. End with exactly one recommended command or stop reason.
+9. Repeat from step 4 only if autonomy allows and no stop condition fired.
 
 ## Stop Conditions
 
-- Goal contract is vague or missing.
+- Goal contract is vague or missing after CLI repair.
 - Direction/product decision changed.
 - Destructive, external, paid, deploy, publish, PR, account, email, or credential action is needed.
 - Verification fails repeatedly.
@@ -40,3 +42,4 @@ Run one bounded loop cycle at a time; continue only while policy allows.
 - Do not continue when the loop card says an earlier/dependency phase is open unless the user confirms.
 - Keep root logs compact; detailed loop output belongs in the scoped step file.
 - If the loop card points to another skill, recommend that exact skill instead of making the user infer it.
+- Use exact skill syntax in replies, e.g. `Next: $goalkeeper-new-project`, not prose labels like `Goalkeeper New Project`.

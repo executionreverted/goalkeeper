@@ -10,7 +10,7 @@ Use this skill to select next action, not execute it.
 ## Workflow
 
 1. Read `.goalkeeper/always-read.md`, `.goalkeeper/config.json`, `.goalkeeper/resume-snapshot.md`, `.goalkeeper/next-target.md`, `.goalkeeper/goal-contract.md`, `.goalkeeper/phase-plan.md`, and only the active scoped files needed under `.goalkeeper/phases/`.
-2. Prefer running `scripts/goalkeeper-next.sh <project-dir>` when available.
+2. Prefer running `goalkeeper next <project-dir>` or `npx --yes @goalkpr/goalkeeper next <project-dir>` when available.
 3. Select first actionable unit:
    - `ready` step
    - `in_progress` step needing continuation

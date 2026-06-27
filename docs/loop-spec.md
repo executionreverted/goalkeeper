@@ -32,7 +32,7 @@ Every iteration must:
 7. End with exactly one next recommended command or stop reason.
 8. Continue automatically when policy allows it.
 
-`scripts/goalkeeper-loop.sh <project-dir>` emits the deterministic loop card for the current iteration. The LLM performs the work; the script does not edit product code.
+`goalkeeper loop <project-dir>` emits the deterministic loop card for the current iteration. The LLM performs the work; the CLI does not edit product code.
 
 ## Stop Conditions
 
@@ -118,9 +118,9 @@ New Project -> Interrogate -> Clarify
 - `Interrogate`: ask one grill-style question at a time and record answers in `.goalkeeper/discovery-log.md`.
 - `Clarify`: hand off to `goalkeeper-intake` once boundaries are stable enough for `.goalkeeper/goal-contract.md`.
 
-In a user's project, `New Project` starts after `scripts/goalkeeper-init.sh` has created `.goalkeeper/`.
+In a user's project, `New Project` starts after `goalkeeper init <project-dir>` or `npx --yes @goalkpr/goalkeeper init <project-dir>` has created `.goalkeeper/`.
 
-Use `scripts/goalkeeper-new-project.sh <project-dir> --idea "<raw idea>"` to write the initial intake packet. The first discovery question should identify the first real user and the exact job they need done.
+Use `goalkeeper new <project-dir> --idea "<raw idea>"` to write the initial intake packet. The first discovery question should identify the first real user and the exact job they need done.
 
 ## Mandatory Always-Read File
 

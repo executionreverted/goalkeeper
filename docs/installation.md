@@ -23,14 +23,14 @@ bash scripts/install-skills.sh --target "$HOME/.codex/skills"
 Create `.goalkeeper/` in a target project:
 
 ```bash
-bash scripts/goalkeeper-init.sh /path/to/project
+npx @goalkpr/goalkeeper init /path/to/project
 ```
 
 Options:
 
 ```bash
-bash scripts/goalkeeper-init.sh . --dry-run
-bash scripts/goalkeeper-init.sh . --force
+npx @goalkpr/goalkeeper init . --dry-run
+npx @goalkpr/goalkeeper init . --force
 ```
 
 `goalkeeper-init.sh` creates:
@@ -65,16 +65,16 @@ bash scripts/goalkeeper-init.sh . --force
 After init:
 
 ```bash
-bash scripts/goalkeeper-new-project.sh /path/to/project --idea "build a p2p mobile chat app" --context7 unknown
+node bin/goalkeeper.cjs new /path/to/project --idea "build a p2p mobile chat app" --context7 unknown
 node bin/goalkeeper.cjs do /path/to/project --text "what next?"
 node bin/goalkeeper.cjs quick /path/to/project --text "fix typo in README"
 node bin/goalkeeper.cjs map-codebase /path/to/project
 node bin/goalkeeper.cjs ship /path/to/project
-bash scripts/goalkeeper-status.sh /path/to/project
-node scripts/goalkeeper-state.cjs config /path/to/project
-bash scripts/goalkeeper-next.sh /path/to/project
-bash scripts/goalkeeper-loop.sh /path/to/project
-bash scripts/goalkeeper-pause.sh /path/to/project --reason "stopping work"
-bash scripts/goalkeeper-validate.sh /path/to/project
-bash scripts/goalkeeper-analyze-phase.sh /path/to/project PHASE-0001
+node bin/goalkeeper.cjs status /path/to/project
+node bin/goalkeeper.cjs config /path/to/project
+node bin/goalkeeper.cjs next /path/to/project
+node bin/goalkeeper.cjs loop /path/to/project
+node bin/goalkeeper.cjs pause /path/to/project --reason "stopping work"
+node bin/goalkeeper.cjs validate /path/to/project
+node bin/goalkeeper.cjs analyze-phase /path/to/project PHASE-0001
 ```

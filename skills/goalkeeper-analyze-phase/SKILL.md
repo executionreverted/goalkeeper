@@ -12,7 +12,7 @@ Use this skill after a phase is believed complete.
 1. Read `.goalkeeper/always-read.md` and `.goalkeeper/config.json`.
 2. Read `.goalkeeper/phase-plan.md`, compact root logs, `.goalkeeper/next-target.md`, `.goalkeeper/resume-snapshot.md`, and all scoped files for the target phase under `.goalkeeper/phases/<phase>/`.
 3. Accept phase id, phase title, or explicit phase block.
-4. Prefer running `scripts/goalkeeper-analyze-phase.sh <project-dir> <phase-id>` when available.
+4. Prefer running `goalkeeper analyze-phase <project-dir> <phase-id>` or `npx --yes @goalkpr/goalkeeper analyze-phase <project-dir> <phase-id>` when available.
 5. If the phase does not exist, stop and ask which suggested phase the user meant.
 6. If the phase is already archived and no open gap exists, say that and ask whether the user wants a deeper docs/code/commit verification pass.
 7. If the phase still has open executable steps, do not archive; route to `goalkeeper-execute` or `goalkeeper-verify`.

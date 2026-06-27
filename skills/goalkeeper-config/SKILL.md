@@ -10,7 +10,7 @@ Use this skill to inspect or update `.goalkeeper/config.json`.
 ## Workflow
 
 1. Read `.goalkeeper/config.json`, `.goalkeeper/always-read.md`, and `.goalkeeper/resume-snapshot.md`.
-2. Prefer running `goalkeeper config <project-dir>` or `scripts/goalkeeper-state.cjs config <project-dir>` when available.
+2. Prefer running `goalkeeper config <project-dir>` or `npx --yes @goalkpr/goalkeeper config <project-dir>` when available.
 3. If the config file is missing or invalid, route to `goalkeeper-validate` and repair from `.goalkeeper/templates/config.json` when safe.
 4. For requested changes, update only the requested keys.
 5. Keep values within the accepted schema:
@@ -20,7 +20,7 @@ Use this skill to inspect or update `.goalkeeper/config.json`.
    - `model_profile`: `inherit | budget | balanced | quality`
    - `branch_strategy`: `current_branch | phase_branch | worktree`
    - boolean flags remain booleans, not strings.
-6. After editing config, run `goalkeeper validate <project-dir>` or `scripts/goalkeeper-validate.sh <project-dir>`.
+6. After editing config, run `goalkeeper validate <project-dir>` or `npx --yes @goalkpr/goalkeeper validate <project-dir>`.
 7. Record meaningful config changes in `.goalkeeper/progress-log.md` and refresh `.goalkeeper/resume-snapshot.md` when the change affects the active loop.
 
 ## Config Rules
